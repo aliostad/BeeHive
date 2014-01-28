@@ -1,7 +1,7 @@
 BeeHive
 =======
 
-An Actor Helper Library for Windows Azure. Implementation is very simple - if you need a complex implementation of the Actor Model, you are probbaly doing it wrong.
+An Actor Helper mini-Library for cloud - currently for Windows Azure only. Implementation is very simple - if you need a complex implementation of the Actor Model, you are probbaly doing it wrong.
 
 This library helps implementing purely the business logic and the rest is taken care of.
 
