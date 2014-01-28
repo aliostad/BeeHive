@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\ActorDescriptor.cs" />
     <Compile Include="Actors\FactoryActor.cs" />
     <Compile Include="Actors\IActorFinder.cs" />
     <Compile Include="Actors\IFactoryActor.cs" />
@@ -89,6 +90,8 @@
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventProperties.cs" />
     <Compile Include="Internal\FuncExtensions.cs" />
+    <Compile Include="IQueueOperator.cs" />
+    <Compile Include="Scheduling\AsyncPoller.cs" />
     <Compile Include="Scheduling\Poller.cs" />
     <Compile Include="Internal\PollingWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
