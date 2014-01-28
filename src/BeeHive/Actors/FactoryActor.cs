@@ -10,7 +10,6 @@ namespace BeeHive.Actors
     public class FactoryActor : IFactoryActor
     {
 
-        private Thread _thread;
 
         public FactoryActor()
         {
