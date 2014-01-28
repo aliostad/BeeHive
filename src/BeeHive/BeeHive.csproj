@@ -96,9 +96,7 @@
     <Compile Include="Scheduling\DoublyIncreasingInterval.cs" />
     <Compile Include="Scheduling\IInterval.cs" />
     <Compile Include="Scheduling\IntervalBase.cs" />
-    <Compile Include="Scheduling\PollerExtensions.cs" />
     <Compile Include="Scheduling\PollerResult.cs" />
-    <Compile Include="Scheduling\Pollservable.cs" />
     <Compile Include="Scheduling\RegularlyIncreasingInterval.cs" />
     <Compile Include="ServiceLocator\IServiceLocator.cs" />
   </ItemGroup>
