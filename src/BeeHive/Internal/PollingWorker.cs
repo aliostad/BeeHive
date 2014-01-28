@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace BeeHive.Internal
 {
+
+    [Obsolete("this is classic approach")]
     internal class PollingWorker
     {
 
