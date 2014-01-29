@@ -18,6 +18,8 @@ Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "BeeHive.Demo", "demo\BeeHiv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Demo.Worker", "BeeHive.Demo.Worker\BeeHive.Demo.Worker.csproj", "{B72D6593-7000-4A75-B21E-A6E5B6440488}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.ConsoleDemo", "demo\BeeHive.ConsoleDemo\BeeHive.ConsoleDemo.csproj", "{7F3CC482-F4B0-4E3E-BDDD-8CC352939FB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{B72D6593-7000-4A75-B21E-A6E5B6440488}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B72D6593-7000-4A75-B21E-A6E5B6440488}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B72D6593-7000-4A75-B21E-A6E5B6440488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F3CC482-F4B0-4E3E-BDDD-8CC352939FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F3CC482-F4B0-4E3E-BDDD-8CC352939FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F3CC482-F4B0-4E3E-BDDD-8CC352939FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F3CC482-F4B0-4E3E-BDDD-8CC352939FB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

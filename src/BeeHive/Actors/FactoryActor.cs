@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BeeHive.Internal;
 using BeeHive.Scheduling;
 using BeeHive.ServiceLocator;
 
@@ -13,28 +15,53 @@ namespace BeeHive.Actors
     {
         private readonly IServiceLocator _serviceLocator;
         private readonly ActorDescriptor _actorDescriptor;
-        private readonly IQueueOperator _queueOperator;
-
+        private readonly IEventQueueOperator _queueOperator;
+        private CancellationTokenSource _cancellationTokenSource;
+        private readonly AsyncPoller _poller;
 
         public FactoryActor(IServiceLocator serviceLocator, 
             ActorDescriptor actorDescriptor,
-            IQueueOperator queueOperator)
+            IEventQueueOperator queueOperator)
         {
             _queueOperator = queueOperator;
             _actorDescriptor = actorDescriptor;
             _serviceLocator = serviceLocator;
-            //new Poller(actorDescriptor.Interval, )
-            
+            _poller = new AsyncPoller(actorDescriptor.Interval, Process);
+
+        }
+
+        private async Task<bool> Process(CancellationToken cancellationToken)
+        {
+            var result = await _queueOperator.NextAsync(_actorDescriptor.SourceQueueName);
+            if (result.IsSuccessful)
+            {
+                var actor = (IProcessorActor)_serviceLocator.GetService(_actorDescriptor.ActorType);
+                try
+                {
+                    var evt = await actor.ProcessAsync(result.PollingResult);
+                    await _queueOperator.Commit(result.PollingResult);
+                }
+                catch (Exception exception)
+                {
+                    Trace.TraceWarning(exception.ToString());
+                    _queueOperator.Abandon(result.PollingResult).SafeObserve();
+                    
+                }
+            }
+
+            return result.IsSuccessful;
         }
 
         public void Start()
         {
-            throw new NotImplementedException();
+            _poller.Start();
         }
 
         public void Stop()
         {
-            throw new NotImplementedException();
+            if(_cancellationTokenSource!=null)
+                _cancellationTokenSource.Cancel();
+            _poller.Stop();
         }
     }
 }

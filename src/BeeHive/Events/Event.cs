@@ -61,6 +61,12 @@ namespace BeeHive
         public string EventType { get; set; }
 
 
+        /// <summary>
+        /// Underlying queue message (e.g. BrokeredMessage in case of Azure)
+        /// </summary>
+        public object UnderlyingMessage { get; set; }
+
+
         public T GetBody<T>()
         {
             if(string.IsNullOrEmpty(Body))
