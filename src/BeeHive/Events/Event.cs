@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace BeeHive
 {
     [Serializable]
-    public class Event
+    public class Event : ICloneable
     {
 
         private const string ContentTypeFormat = "application/{0}+json";
@@ -75,5 +75,17 @@ namespace BeeHive
             return JsonConvert.DeserializeObject<T>(Body);
         }
 
+        public object Clone()
+        {
+            return new Event()
+            {
+                Body = Body,
+                ContentType = ContentType,
+                EventType = EventType,
+                Timestamp = Timestamp,
+                UnderlyingMessage = UnderlyingMessage,
+                Url = Url
+            };
+        }
     }
 }
