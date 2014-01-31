@@ -28,21 +28,38 @@ namespace BeeHive.ConsoleDemo
         public Task<PollerResult<Event>> NextAsync(string queueName)
         {
             var name = new QueueName(queueName);
+            var q = GetQueue(name);
+
+            return q.Subscriptions[name.SubscriptionName].NextAsync(name.SubscriptionName)
+                .ContinueWith((task) =>
+                {
+                    if (!task.IsFaulted && task.Result.IsSuccessful)
+                        task.Result.PollingResult.QueueName = queueName;
+
+                    return task.Result;
+                });
+        }
+
+        private InMemoryQueue<Event> GetQueue(QueueName name)
+        {
             var q = _queues.GetOrAdd(name.TopicName,
                 (s) => new InMemoryQueue<Event>(s));
             q.TryAddSubscription(name.SubscriptionName);
-
-            return q.Subscriptions[name.SubscriptionName].NextAsync(name.SubscriptionName);
+            return q;
         }
 
         public Task Abandon(Event message)
         {
-            throw new NotImplementedException();
+            var name = new QueueName(message.QueueName);
+            var q = GetQueue(name);
+            return q.Subscriptions[name.SubscriptionName].Abandon(message);
         }
 
         public Task Commit(Event message)
         {
-            throw new NotImplementedException();
+            var name = new QueueName(message.QueueName);
+            var q = GetQueue(name);
+            return q.Subscriptions[name.SubscriptionName].Commit(message);            
         }
     }
 

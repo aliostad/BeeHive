@@ -54,6 +54,10 @@
       <Project>{3e0f3470-eae7-4a78-9822-52f57dcdde9b}</Project>
       <Name>BeeHive</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BeeHive.Demo.PrismoEcommerce\BeeHive.Demo.PrismoEcommerce.csproj">
+      <Project>{3a33acb5-6752-4429-88fc-c15d245ec79e}</Project>
+      <Name>BeeHive.Demo.PrismoEcommerce</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Demo.Worker", "BeeH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.ConsoleDemo", "demo\BeeHive.ConsoleDemo\BeeHive.ConsoleDemo.csproj", "{7F3CC482-F4B0-4E3E-BDDD-8CC352939FB3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Demo.PrismoEcommerce", "demo\BeeHive.Demo.PrismoEcommerce\BeeHive.Demo.PrismoEcommerce.csproj", "{3A33ACB5-6752-4429-88FC-C15D245EC79E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{7F3CC482-F4B0-4E3E-BDDD-8CC352939FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F3CC482-F4B0-4E3E-BDDD-8CC352939FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F3CC482-F4B0-4E3E-BDDD-8CC352939FB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A33ACB5-6752-4429-88FC-C15D245EC79E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A33ACB5-6752-4429-88FC-C15D245EC79E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A33ACB5-6752-4429-88FC-C15D245EC79E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A33ACB5-6752-4429-88FC-C15D245EC79E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

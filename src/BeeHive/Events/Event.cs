@@ -56,7 +56,7 @@ namespace BeeHive
 
 
         /// <summary>
-        /// Type of the event
+        /// Type of the event. This must be set at the time of creation of event before PushAsync
         /// </summary>
         public string EventType { get; set; }
 
@@ -65,6 +65,11 @@ namespace BeeHive
         /// Underlying queue message (e.g. BrokeredMessage in case of Azure)
         /// </summary>
         public object UnderlyingMessage { get; set; }
+
+        /// <summary>
+        /// This MUST be set by the Queue Operator upon Creation of message usually in NextAsync!!
+        /// </summary>
+        public string QueueName { get; set; }
 
 
         public T GetBody<T>()
