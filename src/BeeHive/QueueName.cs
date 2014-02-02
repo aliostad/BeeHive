@@ -15,7 +15,7 @@ namespace BeeHive
     public class QueueName
     {
 
-        private const string QueueNamePattern = @"^(\w)+(?:-(\w]+))?$";
+        private const string QueueNamePattern = @"^(\w+)(?:\-(\w+))?$";
         public QueueName(string queueName)
         {
             var match = Regex.Match(queueName, QueueNamePattern);

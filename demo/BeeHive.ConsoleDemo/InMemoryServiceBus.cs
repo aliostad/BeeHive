@@ -17,10 +17,9 @@ namespace BeeHive.ConsoleDemo
         public Task PushAsync(Event message)
         {
 
-            var q = _queues.GetOrAdd(message.EventType, (name) =>
-            {
-                return new InMemoryQueue<Event>(name);
-            });
+            var q = _queues.GetOrAdd(message.EventType,
+                new InMemoryQueue<Event>(message.EventType));
+            
 
             return q.PushAsync(message);
         }
@@ -74,12 +73,12 @@ namespace BeeHive.ConsoleDemo
                 // simple queue
                 if (subscriptions.Length == 0)
                 {
-                    queue.Subscriptions.GetOrAdd(topicName, new Subscription<Event>(topicName));
+                    queue.Subscriptions.GetOrAdd(topicName, new InMemorySubscription<Event>(topicName));
                 }
 
                 foreach (var subscription in subscriptions)
                 {
-                    queue.Subscriptions.GetOrAdd(topicName, new Subscription<Event>(topicName));
+                    queue.Subscriptions.GetOrAdd(topicName, new InMemorySubscription<Event>(subscription));
                 }
 
             });
@@ -87,17 +86,28 @@ namespace BeeHive.ConsoleDemo
 
         public Task DeleteQueue(string topicName)
         {
-            throw new NotImplementedException();
+            InMemoryQueue<Event> deleted;
+            return Task.Run(() => _queues.TryRemove(topicName, out deleted));
         }
 
         public Task AddSubscription(string topicName, string subscriptionName)
         {
-            throw new NotImplementedException();
+            return Task.Run(() =>
+            {
+                var q = _queues.GetOrAdd(topicName, new InMemoryQueue<Event>(topicName));
+                q.TryAddSubscription(topicName);
+            });
         }
 
         public Task RemoveSubscription(string topicName, string subscriptionName)
         {
-            throw new NotImplementedException();
+            return Task.Run(() =>
+            {
+                var q = _queues.GetOrAdd(topicName, new InMemoryQueue<Event>(topicName));
+                InMemorySubscription<Event> removed;
+
+                q.Subscriptions.TryRemove(subscriptionName, out removed);
+            });
         }
     }
 
@@ -105,7 +115,7 @@ namespace BeeHive.ConsoleDemo
         where T : ICloneable
     {
 
-        private readonly ConcurrentDictionary<string, Subscription<T>> _subscriptions = new ConcurrentDictionary<string, Subscription<T>>();
+        private readonly ConcurrentDictionary<string, InMemorySubscription<T>> _subscriptions = new ConcurrentDictionary<string, InMemorySubscription<T>>();
         private readonly string _name;
 
         
@@ -119,17 +129,27 @@ namespace BeeHive.ConsoleDemo
             get { return _name; }
         }
 
-        public ConcurrentDictionary<string, Subscription<T>> Subscriptions
+        public ConcurrentDictionary<string, InMemorySubscription<T>> Subscriptions
         {
             get { return _subscriptions; }
         }
 
+        public bool IsSimpleQueue()
+        {
+            return _subscriptions.Count == 1 &&
+                   _subscriptions.Values.First().Name == Name;
+        }
 
         public void TryAddSubscription(string name)
         {
-            Subscriptions.GetOrAdd(name, new Subscription<T>(name));
+            if (IsSimpleQueue())
+                return;
+
+            Subscriptions.GetOrAdd(name, new InMemorySubscription<T>(name));
+
         }
       
+
         public Task PushAsync(T message)
         {
             return Task.Run(() =>
@@ -143,16 +163,22 @@ namespace BeeHive.ConsoleDemo
         }
     }
 
-    internal class Subscription<T> : ISubscriptionOperator<T>
+    internal class InMemorySubscription<T> : ISubscriptionOperator<T>
     {
         private string _name;
         private ConcurrentQueue<T> _messages = new ConcurrentQueue<T>(); 
         private Dictionary<T,T> _leases = new Dictionary<T, T>();
         private CancellationTokenSource _cancellationTokenSource;
 
-        public Subscription(string name)
+        public InMemorySubscription(string name)
         {
-            _name = name;
+            Name = name;
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
         }
 
         internal void AcceptMessage(T message)
