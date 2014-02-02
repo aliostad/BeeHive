@@ -61,6 +61,44 @@ namespace BeeHive.ConsoleDemo
             var q = GetQueue(name);
             return q.Subscriptions[name.SubscriptionName].Commit(message);            
         }
+
+        public Task CreateQueue(string topicName, params string[] subscriptions)
+        {
+            return Task.Run(() =>
+            {
+                if (_queues.ContainsKey(topicName))
+                    throw new InvalidOperationException("Queue already exists");
+
+                var queue = _queues.GetOrAdd(topicName, new InMemoryQueue<Event>(topicName));
+                
+                // simple queue
+                if (subscriptions.Length == 0)
+                {
+                    queue.Subscriptions.GetOrAdd(topicName, new Subscription<Event>(topicName));
+                }
+
+                foreach (var subscription in subscriptions)
+                {
+                    queue.Subscriptions.GetOrAdd(topicName, new Subscription<Event>(topicName));
+                }
+
+            });
+        }
+
+        public Task DeleteQueue(string topicName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddSubscription(string topicName, string subscriptionName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveSubscription(string topicName, string subscriptionName)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     internal class InMemoryQueue<T> : ITopicOperator<T>

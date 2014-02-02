@@ -30,5 +30,25 @@ namespace BeeHive.ConsoleDemo
         {
             throw new NotImplementedException();
         }
+
+        public Task CreateQueue(string topicName, params string[] subscriptions)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteQueue(string topicName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddSubscription(string topicName, string subscriptionName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveSubscription(string topicName, string subscriptionName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
