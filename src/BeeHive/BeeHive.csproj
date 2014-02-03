@@ -75,13 +75,18 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Actors\ActorDescriptor.cs" />
+    <Compile Include="Configuration\AppSettingsActorConfiguration.cs" />
+    <Compile Include="Configuration\AppDomainExplorerActorConfiguration.cs" />
     <Compile Include="Actors\FactoryActor.cs" />
     <Compile Include="Actors\IActorFinder.cs" />
     <Compile Include="Actors\IFactoryActor.cs" />
     <Compile Include="Actors\IProcessorActor.cs" />
-    <Compile Include="Actors\SourceQueueNameAttribute.cs" />
+    <Compile Include="Actors\IService.cs" />
+    <Compile Include="Actors\Orchestrator.cs" />
+    <Compile Include="Actors\ActorDescriptionAttribute.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventProperties.cs" />
+    <Compile Include="Configuration\IActorConfiguration.cs" />
     <Compile Include="Internal\FuncExtensions.cs" />
     <Compile Include="Internal\TaskExtensions.cs" />
     <Compile Include="IQueueOperator.cs" />

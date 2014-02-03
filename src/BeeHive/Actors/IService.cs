@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BeeHive.Actors
+namespace BeeHive
 {
-    public interface IFactoryActor : IService
+    public interface IService
     {
-        void Setup(ActorDescriptor descriptor);
+        void Start();
+
+        void Stop();
     }
 }

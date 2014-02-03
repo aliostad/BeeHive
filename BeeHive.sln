@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{7FF948
 		src\Common\CommonAssemblyInfo.cs = src\Common\CommonAssemblyInfo.cs
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.ServiceLocator.Windsor", "src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj", "{DF541A72-6628-4926-80B9-7756E035F7ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{22E3FC77-78CD-4910-9D27-7494A15A8916}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22E3FC77-78CD-4910-9D27-7494A15A8916}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22E3FC77-78CD-4910-9D27-7494A15A8916}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF541A72-6628-4926-80B9-7756E035F7ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF541A72-6628-4926-80B9-7756E035F7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF541A72-6628-4926-80B9-7756E035F7ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF541A72-6628-4926-80B9-7756E035F7ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

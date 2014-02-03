@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BeeHive.Scheduling
 {
-    public class AsyncPoller
+    public class AsyncPoller : IService
     {
         private readonly IInterval _interval;
         private Func<CancellationToken, Task<bool>> _work;

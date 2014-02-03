@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BeeHive.Actors
+namespace BeeHive
 {
     public class ActorDescriptor
     {
@@ -13,5 +13,8 @@ namespace BeeHive.Actors
         public string SourceQueueName { get; set; }
 
         public IInterval Interval { get; set; }
+
+        public int DegreeOfParallelism { get; set; }
+
     }
 }

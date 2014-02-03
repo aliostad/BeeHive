@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BeeHive
 {
-    public interface IServiceLocator
+    public interface IServiceLocator : IDisposable
     {
         object GetService(Type type);
 

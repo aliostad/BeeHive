@@ -13,19 +13,16 @@ namespace BeeHive.Actors
     public class FactoryActor : IFactoryActor
     {
         private readonly IServiceLocator _serviceLocator;
-        private readonly ActorDescriptor _actorDescriptor;
+        private ActorDescriptor _actorDescriptor;
         private readonly IEventQueueOperator _queueOperator;
         private CancellationTokenSource _cancellationTokenSource;
-        private readonly AsyncPoller _poller;
+        private AsyncPoller _poller;
 
         public FactoryActor(IServiceLocator serviceLocator, 
-            ActorDescriptor actorDescriptor,
             IEventQueueOperator queueOperator)
         {
             _queueOperator = queueOperator;
-            _actorDescriptor = actorDescriptor;
             _serviceLocator = serviceLocator;
-            _poller = new AsyncPoller(actorDescriptor.Interval, Process);
 
         }
 
@@ -44,7 +41,11 @@ namespace BeeHive.Actors
                 {
                     Trace.TraceWarning(exception.ToString());
                     _queueOperator.Abandon(result.PollingResult).SafeObserve();
-                    
+
+                }
+                finally
+                {
+                    _serviceLocator.ReleaseService(actor);
                 }
             }
 
@@ -53,14 +54,29 @@ namespace BeeHive.Actors
 
         public void Start()
         {
+            if (_poller == null)
+                throw new InvalidOperationException("You need to call Setup first.");
+
             _poller.Start();
         }
 
         public void Stop()
         {
+            if(_poller==null)
+                throw new InvalidOperationException("You need to call Setup first.");
+
             if(_cancellationTokenSource!=null)
                 _cancellationTokenSource.Cancel();
             _poller.Stop();
+        }
+
+        public void Setup(ActorDescriptor descriptor)
+        {
+            if(_actorDescriptor!=null)
+                throw new InvalidOperationException("Cannot call Setup twice.");
+
+            _actorDescriptor = descriptor;
+            _poller = new AsyncPoller(descriptor.Interval, Process);
         }
     }
 }
