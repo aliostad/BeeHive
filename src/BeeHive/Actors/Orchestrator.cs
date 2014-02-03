@@ -7,7 +7,7 @@ using BeeHive.Actors;
 
 namespace BeeHive
 {
-    public class Orchestrator : IService
+    public class Orchestrator : IService, IDisposable
     {
         private readonly IActorConfiguration _configuration;
 
@@ -35,6 +35,15 @@ namespace BeeHive
         public void Stop()
         {
             _actors.ForEach(x => x.Stop());
+        }
+
+        public void Dispose()
+        {
+            foreach (var actor in _actors)
+            {
+                _serviceLocator.ReleaseService(actor);
+            }
+            _actors.Clear();
         }
     }
 }
