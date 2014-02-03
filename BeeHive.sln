@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.ConsoleDemo", "demo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Demo.PrismoEcommerce", "demo\BeeHive.Demo.PrismoEcommerce\BeeHive.Demo.PrismoEcommerce.csproj", "{3A33ACB5-6752-4429-88FC-C15D245EC79E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Azure", "src\BeeHive.Azure\BeeHive.Azure.csproj", "{22E3FC77-78CD-4910-9D27-7494A15A8916}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{3A33ACB5-6752-4429-88FC-C15D245EC79E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A33ACB5-6752-4429-88FC-C15D245EC79E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A33ACB5-6752-4429-88FC-C15D245EC79E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22E3FC77-78CD-4910-9D27-7494A15A8916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22E3FC77-78CD-4910-9D27-7494A15A8916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22E3FC77-78CD-4910-9D27-7494A15A8916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22E3FC77-78CD-4910-9D27-7494A15A8916}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
