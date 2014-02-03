@@ -85,6 +85,7 @@
     <Compile Include="Internal\FuncExtensions.cs" />
     <Compile Include="Internal\TaskExtensions.cs" />
     <Compile Include="IQueueOperator.cs" />
+    <Compile Include="ServiceLocator\IServiceLocatorExtensions.cs" />
     <Compile Include="QueueName.cs" />
     <Compile Include="Scheduling\AsyncPoller.cs" />
     <Compile Include="Scheduling\Poller.cs" />
@@ -98,7 +99,6 @@
     <Compile Include="ServiceLocator\IServiceLocator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using BeeHive.Internal;
 using BeeHive.Scheduling;
-using BeeHive.ServiceLocator;
 
 namespace BeeHive.Actors
 {
