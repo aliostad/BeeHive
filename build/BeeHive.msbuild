@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         ToolsVersion="4.0"
+         DefaultTargets="Default">
+
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <SolutionDir Condition=" '$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <BuildArtifactsDir Include=".\..\artifacts\" />
+    <PackageOutputDir Include=".\..\artifacts\packages" />
+    <Solutionfile Include=".\..\CacheCow.sln" />
+    <AppProjFiles Include=".\..\src\**\*.csproj" />
+    <TestProjFiles Include=".\..\test\**\*.csproj" />
+    <ScriptsDir Include=".\" />
+    <NugetExeDir Include=".\..\.nuget\" />
+  </ItemGroup>
+
+  <Target Name="Default" DependsOnTargets="Compile; Package" />
+  <Target Name="DefaultCI" DependsOnTargets="Compile; Package; Publish" />
+  
+  <Target Name="Clean">
+    <RemoveDir Directories="@(BuildArtifactsDir)" />
+  </Target>
+  <Target Name="Init" DependsOnTargets="Clean">
+    <MakeDir Directories="@(BuildArtifactsDir);@(PackageOutputDir)" />
+  </Target>
+  <Target Name="Compile" DependsOnTargets="Init">
+    <MSBuild Projects="@(AppProjFiles)" Targets="Rebuild" Properties="OutDir=%(BuildArtifactsDir.FullPath);Configuration=$(Configuration);SolutionDir=$(SolutionDir)" />
+  </Target>
+  <Target Name="Package">
+    <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive\BeeHive.csproj -Build -OutputDirectory ..\artifacts\packages" />
+    <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive.Azure\BeeHive.Azure.csproj -Build -OutputDirectory ..\artifacts\packages" />
+    <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj -Build -OutputDirectory ..\artifacts\packages" />
+  </Target>
+  <Target Name="Publish">
+    <Exec WorkingDirectory="%(ScriptsDir.FullPath)" Command="powershell -file .\publish.ps1" />
+  </Target>
+
+</Project>

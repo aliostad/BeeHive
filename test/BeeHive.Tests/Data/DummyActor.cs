@@ -15,7 +15,8 @@ namespace BeeHive.Tests.Data
             
         }
 
-        public Task<Event> ProcessAsync(Event evnt)
+      
+        Task<IEnumerable<Event>> IProcessorActor.ProcessAsync(Event evnt)
         {
             throw new NotImplementedException();
         }

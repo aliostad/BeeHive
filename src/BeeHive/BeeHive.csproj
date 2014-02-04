@@ -75,6 +75,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Actors\ActorDescriptor.cs" />
+    <Compile Include="Actors\IOrchestrator.cs" />
     <Compile Include="Configuration\AppSettingsActorConfiguration.cs" />
     <Compile Include="Configuration\AppDomainExplorerActorConfiguration.cs" />
     <Compile Include="Actors\FactoryActor.cs" />

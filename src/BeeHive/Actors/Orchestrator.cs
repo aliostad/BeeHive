@@ -7,25 +7,39 @@ using BeeHive.Actors;
 
 namespace BeeHive
 {
-    public class Orchestrator : IService, IDisposable
+    public interface IOrchestrator
+    {
+        Task SetupAsync();
+    }
+
+    public class Orchestrator : IService, IDisposable, IOrchestrator
     {
         private readonly IActorConfiguration _configuration;
 
         private List<IFactoryActor> _actors = new List<IFactoryActor>();
         private readonly IServiceLocator _serviceLocator;
+        private IEventQueueOperator _queueOperator;
 
-        public Orchestrator(IActorConfiguration configuration, IServiceLocator serviceLocator)
+        public Orchestrator(IActorConfiguration configuration, 
+            IEventQueueOperator queueOperator,
+            IServiceLocator serviceLocator)
         {
+            _queueOperator = queueOperator;
             _serviceLocator = serviceLocator;
             _configuration = configuration;
+ 
+        }
+
+        public async Task SetupAsync()
+        {
             foreach (var descriptor in _configuration.GetDescriptors())
             {
                 var factoryActor = _serviceLocator.GetService<IFactoryActor>();
                 factoryActor.Setup(descriptor);
                 _actors.Add(factoryActor);
+                await _queueOperator.SetupQueueAsync(new QueueName(descriptor.SourceQueueName));
             }
         }
-
 
         public void Start()
         {

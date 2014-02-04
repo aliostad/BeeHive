@@ -35,12 +35,12 @@ namespace BeeHive.Actors
                 try
                 {
                     var evt = await actor.ProcessAsync(result.PollingResult);
-                    await _queueOperator.Commit(result.PollingResult);
+                    await _queueOperator.CommitAsync(result.PollingResult);
                 }
                 catch (Exception exception)
                 {
                     Trace.TraceWarning(exception.ToString());
-                    _queueOperator.Abandon(result.PollingResult).SafeObserve();
+                    _queueOperator.AbandonAsync(result.PollingResult).SafeObserve();
 
                 }
                 finally

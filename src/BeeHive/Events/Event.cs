@@ -7,6 +7,8 @@ namespace BeeHive
     public class Event : ICloneable
     {
 
+        public static readonly Event Empty = new Event();
+
         private const string ContentTypeFormat = "application/{0}+json";
 
         public Event(object body)

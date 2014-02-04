@@ -9,11 +9,18 @@ namespace BeeHive
 {
     public class AppDomainExplorerActorConfiguration : IActorConfiguration
     {
+        private string _assemblyPrefix;
+
+        public AppDomainExplorerActorConfiguration(string assemblyPrefix = "")
+        {
+            _assemblyPrefix = assemblyPrefix;
+        }
 
         public IEnumerable<ActorDescriptor> GetDescriptors()
         {
             foreach (var type in AppDomain.CurrentDomain.GetAssemblies().
-                SelectMany(x => x.ExportedTypes))
+                Where(x => x.FullName.StartsWith(_assemblyPrefix)).
+                SelectMany(y => y.ExportedTypes))
             {
                 if (typeof (IProcessorActor).IsAssignableFrom(type))
                 {

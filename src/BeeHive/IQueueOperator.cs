@@ -12,9 +12,9 @@ namespace BeeHive
     {
         Task<PollerResult<T>> NextAsync(string queueName);
 
-        Task Abandon(T message);
+        Task AbandonAsync(T message);
 
-        Task Commit(T message);
+        Task CommitAsync(T message);
     }
 
     public interface ITopicOperator<T>
@@ -31,13 +31,15 @@ namespace BeeHive
         /// <param name="topicName"></param>
         /// <param name="subscriptions">If this is empty, then it is a simple queue</param>
         /// <returns></returns>
-        Task CreateQueue(string topicName, params string[] subscriptions);
+        Task CreateQueueAsync(string topicName, params string[] subscriptions);
 
-        Task DeleteQueue(string topicName);
+        Task DeleteQueueAsync(string topicName);
 
-        Task AddSubscription(string topicName, string subscriptionName);
+        Task AddSubscriptionAsync(string topicName, string subscriptionName);
 
-        Task RemoveSubscription(string topicName, string subscriptionName);
+        Task RemoveSubscriptionAsync(string topicName, string subscriptionName);
+
+        Task SetupQueueAsync(QueueName name);
 
     }
 

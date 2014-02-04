@@ -20,7 +20,7 @@ namespace BeeHive
         /// </summary>
         /// <param name="evnt">Event to process</param>
         /// <returns>Typically contains 0-1 messages. Exceptionally more than 1</returns>
-        Task<Event> ProcessAsync(Event evnt);
+        Task<IEnumerable<Event>> ProcessAsync(Event evnt);
 
     }
 }

@@ -34,6 +34,11 @@ namespace BeeHive.ConsoleDemo
                 {
                     if (!task.IsFaulted && task.Result.IsSuccessful)
                         task.Result.PollingResult.QueueName = queueName;
+                    else
+                    {
+                        
+                    }
+                    
 
                     return task.Result;
                 });
@@ -47,26 +52,24 @@ namespace BeeHive.ConsoleDemo
             return q;
         }
 
-        public Task Abandon(Event message)
+        public Task AbandonAsync(Event message)
         {
             var name = new QueueName(message.QueueName);
             var q = GetQueue(name);
-            return q.Subscriptions[name.SubscriptionName].Abandon(message);
+            return q.Subscriptions[name.SubscriptionName].AbandonAsync(message);
         }
 
-        public Task Commit(Event message)
+        public Task CommitAsync(Event message)
         {
             var name = new QueueName(message.QueueName);
             var q = GetQueue(name);
-            return q.Subscriptions[name.SubscriptionName].Commit(message);            
+            return q.Subscriptions[name.SubscriptionName].CommitAsync(message);            
         }
 
-        public Task CreateQueue(string topicName, params string[] subscriptions)
+        public Task CreateQueueAsync(string topicName, params string[] subscriptions)
         {
             return Task.Run(() =>
             {
-                if (_queues.ContainsKey(topicName))
-                    throw new InvalidOperationException("Queue already exists");
 
                 var queue = _queues.GetOrAdd(topicName, new InMemoryQueue<Event>(topicName));
                 
@@ -84,13 +87,13 @@ namespace BeeHive.ConsoleDemo
             });
         }
 
-        public Task DeleteQueue(string topicName)
+        public Task DeleteQueueAsync(string topicName)
         {
             InMemoryQueue<Event> deleted;
             return Task.Run(() => _queues.TryRemove(topicName, out deleted));
         }
 
-        public Task AddSubscription(string topicName, string subscriptionName)
+        public Task AddSubscriptionAsync(string topicName, string subscriptionName)
         {
             return Task.Run(() =>
             {
@@ -99,7 +102,7 @@ namespace BeeHive.ConsoleDemo
             });
         }
 
-        public Task RemoveSubscription(string topicName, string subscriptionName)
+        public Task RemoveSubscriptionAsync(string topicName, string subscriptionName)
         {
             return Task.Run(() =>
             {
@@ -108,6 +111,18 @@ namespace BeeHive.ConsoleDemo
 
                 q.Subscriptions.TryRemove(subscriptionName, out removed);
             });
+        }
+
+        public Task SetupQueueAsync(QueueName name)
+        {
+            return Task.Run(() =>
+            {
+                if (name.IsSimpleQueue)
+                    CreateQueueAsync(name.TopicName);
+                else
+                    CreateQueueAsync(name.TopicName, name.SubscriptionName);
+            });
+           
         }
     }
 
@@ -188,23 +203,14 @@ namespace BeeHive.ConsoleDemo
                 _cancellationTokenSource.Cancel();
         }
 
-        public Task<PollerResult<T>> NextAsync(string queueName)
+        public async Task<PollerResult<T>> NextAsync(string queueName)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                _cancellationTokenSource = new CancellationTokenSource();
-                T message;
-                bool success = _messages.TryDequeue(out message);
-                if (!success)
-                {
-                    Task.Delay(TimeSpan.FromSeconds(30), _cancellationTokenSource.Token).Wait();
-                }
-                _cancellationTokenSource = null;
-                return new PollerResult<T>(success, message);
-            });
+            T message;
+            bool success = _messages.TryDequeue(out message);
+            return new PollerResult<T>(success, message);
         }
 
-        public Task Abandon(T message)
+        public Task AbandonAsync(T message)
         {
             return Task.Run(() =>
             {
@@ -213,7 +219,7 @@ namespace BeeHive.ConsoleDemo
             });
         }
 
-        public Task Commit(T message)
+        public Task CommitAsync(T message)
         {
             return Task.Run(() =>
             {

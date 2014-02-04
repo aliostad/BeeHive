@@ -16,7 +16,7 @@ namespace BeeHive.Tests
             const string QueueName = "Hello";
 
             var inMemoryServiceBus = new InMemoryServiceBus();
-            inMemoryServiceBus.CreateQueue(QueueName);
+            inMemoryServiceBus.CreateQueueAsync(QueueName);
             inMemoryServiceBus.PushAsync(new Event("Haya")
             {
                 EventType = QueueName
