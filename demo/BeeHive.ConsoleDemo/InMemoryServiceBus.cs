@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -81,7 +82,7 @@ namespace BeeHive.ConsoleDemo
 
                 foreach (var subscription in subscriptions)
                 {
-                    queue.Subscriptions.GetOrAdd(topicName, new InMemorySubscription<Event>(subscription));
+                    queue.Subscriptions.GetOrAdd(subscription, new InMemorySubscription<Event>(subscription));
                 }
 
             });
@@ -157,6 +158,7 @@ namespace BeeHive.ConsoleDemo
 
         public void TryAddSubscription(string name)
         {
+
             if (IsSimpleQueue())
                 return;
 
