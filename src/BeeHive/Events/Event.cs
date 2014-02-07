@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace BeeHive
 {
     [Serializable]
-    public class Event : ICloneable
+    public sealed class Event : ICloneable
     {
 
         public static readonly Event Empty = new Event();
@@ -36,7 +36,7 @@ namespace BeeHive
         /// <summary>
         /// Normally a GUID
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; private set; }
 
         /// <summary>
         /// Optional URL to the body of the message if Body can be retrieved 
