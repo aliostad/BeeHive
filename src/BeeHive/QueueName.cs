@@ -14,10 +14,12 @@ namespace BeeHive
     /// </summary>
     public class QueueName
     {
+        private string _queueName;
 
         private const string QueueNamePattern = @"^(\w+)(?:\-(\w+))?$";
         public QueueName(string queueName)
         {
+            _queueName = queueName;
             var match = Regex.Match(queueName, QueueNamePattern);
             if(!match.Success)
                 throw new ArgumentException("Queue name does not follow correct pattern", "queueName");
@@ -39,6 +41,11 @@ namespace BeeHive
             {
                 return TopicName == SubscriptionName;
             }
+        }
+
+        public override string ToString()
+        {
+            return _queueName;
         }
     }
 }
