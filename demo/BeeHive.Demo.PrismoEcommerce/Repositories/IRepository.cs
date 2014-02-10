@@ -8,8 +8,14 @@ namespace BeeHive.Demo.PrismoEcommerce.Repositories
 {
     public interface IRepository<T>
     {
-        void Create(T t);
 
-        T Get(Guid id);
+        Task<T> GetAsync(Guid id);
+
+        Task InsertAsync(T t);
+
+        Task UpsertAsync(T t);
+
+        Task DeleteAsync(Guid id);
+
     }
 }

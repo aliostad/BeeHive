@@ -22,7 +22,7 @@ namespace BeeHive.ConsoleDemo
 
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
-            await Task.Delay(_random.Next(100, 500));
+            //await Task.Delay(_random.Next(100, 500));
             Console.WriteLine("Processed a message with Id " + evnt.Id);
             return new Event[0];
         }

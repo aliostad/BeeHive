@@ -21,8 +21,13 @@ namespace BeeHive
             _current = _startInterval;
         }
 
+
+        // NOTE: returns current and calculates next
         public TimeSpan Next()
         {
+            
+            TimeSpan toReturn = _current;
+
             TimeSpan next = CalculateNext(_current);
 
             if(next<_startInterval)
@@ -30,7 +35,7 @@ namespace BeeHive
 
             _current = new TimeSpan(Math.Min(_maxInterval.Ticks, next.Ticks));
 
-            return _current;
+            return toReturn;
         }
 
         public TimeSpan Reset()
