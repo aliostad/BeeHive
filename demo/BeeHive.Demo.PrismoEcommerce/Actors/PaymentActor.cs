@@ -14,13 +14,13 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
 
     [ActorDescription("OrderAccepted-Payment")]
-    public class PaymentProcessorActor : IProcessorActor
+    public class PaymentActor : IProcessorActor
     {
         private PaymentGateway _paymentGateway;
         private IRepository<Payment> _paymentRepo;
         private IRepository<Order> _orderRepo;
 
-        public PaymentProcessorActor(
+        public PaymentActor(
             IRepository<Order> orderRepo,
             IRepository<Payment> paymentRepo,
             PaymentGateway paymentGateway)
@@ -39,6 +39,11 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
         {
             var orderAccepted = evnt.GetBody<OrderAccepted>();
             var order =  await _orderRepo.GetAsync(orderAccepted.OrderId);
+
+            // if order is cancelled no further processing
+            if (order.IsCancelled) 
+                return new Event[0];
+
             var payment = new Payment()
             {
                 Amount   = order.TotalPrice,

@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace BeeHive.Demo.PrismoEcommerce.Events
 {
-    public class OrderProductsAccepted
+    public class OrderItemsNotYetAccountedFor
     {
+
+        public Guid OrderId { get; set; }
+
         public Dictionary<Guid, int> ProductQuantities { get; set; } 
     }
 }

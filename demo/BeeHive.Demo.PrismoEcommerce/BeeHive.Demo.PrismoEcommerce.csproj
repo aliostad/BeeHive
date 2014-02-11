@@ -39,7 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actors\PaymentProcessorActor.cs" />
+    <Compile Include="Actors\FraudCancelOrderActor.cs" />
+    <Compile Include="Actors\FraudCheckActor.cs" />
+    <Compile Include="Actors\OrderInventoryActor.cs" />
+    <Compile Include="Actors\OrderItemInventoryActor.cs" />
+    <Compile Include="Actors\PaymentActor.cs" />
     <Compile Include="Entities\Customer.cs" />
     <Compile Include="Entities\Inventory.cs" />
     <Compile Include="Entities\Order.cs" />
@@ -51,15 +55,17 @@
     <Compile Include="Events\ItemOutOfStock.cs" />
     <Compile Include="Events\OrderAccepted.cs" />
     <Compile Include="Events\OrderCancelled.cs" />
-    <Compile Include="Events\OrderProductsAccepted.cs" />
+    <Compile Include="Events\OrderItemsNotYetAccountedFor.cs" />
     <Compile Include="Events\OrderShipped.cs" />
     <Compile Include="Events\PaymentAuthorised.cs" />
     <Compile Include="Events\PaymentFailed.cs" />
     <Compile Include="Exceptions\PaymentFailureException.cs" />
+    <Compile Include="ExternalSystems\FraudChecker.cs" />
     <Compile Include="ExternalSystems\PaymentGateway.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ICustomerRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="WorkflowState\ParkedOrderItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj">
@@ -67,6 +73,7 @@
       <Name>BeeHive</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
