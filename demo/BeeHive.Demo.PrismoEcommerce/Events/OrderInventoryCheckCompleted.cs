@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace BeeHive.Demo.PrismoEcommerce.Events
 {
-    public class ItemOutOfStock
+    public class OrderInventoryCheckCompleted
     {
-        public Guid ProductId { get; set; }
-
-        public int Quantity { get; set; }
+        public Guid OrderId { get; set; }
     }
 }

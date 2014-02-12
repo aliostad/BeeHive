@@ -11,6 +11,8 @@ namespace BeeHive.Demo.PrismoEcommerce.Events
 
         public Guid OrderId { get; set; }
 
-        public Dictionary<Guid, int> ProductQuantities { get; set; } 
+        public Dictionary<Guid, int> ProductQuantities { get; set; }
+
+        public bool AnyOutOfStock { get; set; }
     }
 }

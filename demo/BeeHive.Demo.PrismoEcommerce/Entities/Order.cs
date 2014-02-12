@@ -20,5 +20,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Entities
         public decimal TotalPrice { get; set; }
 
         public string PaymentMethod { get; set; }
+
+        public string ShippingAddress { get; set; }
     }
 }
