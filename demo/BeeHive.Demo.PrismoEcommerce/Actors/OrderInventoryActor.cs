@@ -13,9 +13,9 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     [ActorDescription("PaymentAuthorised-InventoryDecrement")]
     public class OrderInventoryActor : IProcessorActor
     {
-        private IRepository<Order> _orderRepository;
+        private ICollectionRepository<Order> _orderRepository;
 
-        public OrderInventoryActor(IRepository<Order> orderRepository)
+        public OrderInventoryActor(ICollectionRepository<Order> orderRepository)
         {
             _orderRepository = orderRepository;
         }

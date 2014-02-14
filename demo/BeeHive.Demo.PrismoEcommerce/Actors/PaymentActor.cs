@@ -17,12 +17,12 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     public class PaymentActor : IProcessorActor
     {
         private PaymentGateway _paymentGateway;
-        private IRepository<Payment> _paymentRepo;
-        private IRepository<Order> _orderRepo;
+        private ICollectionRepository<Payment> _paymentRepo;
+        private ICollectionRepository<Order> _orderRepo;
 
         public PaymentActor(
-            IRepository<Order> orderRepo,
-            IRepository<Payment> paymentRepo,
+            ICollectionRepository<Order> orderRepo,
+            ICollectionRepository<Payment> paymentRepo,
             PaymentGateway paymentGateway)
         {
             _orderRepo = orderRepo;

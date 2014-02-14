@@ -13,15 +13,15 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     [ActorDescription("PaymentAuthorised-FrauCheck")]
     public class FraudCheckActor : IProcessorActor
     {
-        private IRepository<Customer> _customeRepository;
-        private IRepository<Order> _ordeRepository;
-        private IRepository<Payment> _paymentRepository;
+        private ICollectionRepository<Customer> _customeRepository;
+        private ICollectionRepository<Order> _ordeRepository;
+        private ICollectionRepository<Payment> _paymentRepository;
         private Random _random = new Random();
         private FraudChecker _fraudChecker;
 
-        public FraudCheckActor(IRepository<Customer> customeRepository,
-            IRepository<Order> ordeRepository,
-            IRepository<Payment> paymentRepository,
+        public FraudCheckActor(ICollectionRepository<Customer> customeRepository,
+            ICollectionRepository<Order> ordeRepository,
+            ICollectionRepository<Payment> paymentRepository,
             FraudChecker fraudChecker)
         {
             _fraudChecker = fraudChecker;

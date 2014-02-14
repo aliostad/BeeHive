@@ -16,16 +16,16 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     public class FulfilmentActor : IProcessorActor
     {
 
-        public FulfilmentActor(IRepository<Order> orderRepository,
-            IRepository<Shipment> shipmentRepository)
+        public FulfilmentActor(ICollectionRepository<Order> orderRepository,
+            ICollectionRepository<Shipment> shipmentRepository)
         {
             _shipmentRepository = shipmentRepository;
             _orderRepository = orderRepository;
         }
 
         private Random _random = new Random();
-        private IRepository<Order> _orderRepository;
-        private IRepository<Shipment> _shipmentRepository;
+        private ICollectionRepository<Order> _orderRepository;
+        private ICollectionRepository<Shipment> _shipmentRepository;
 
 
         public void Dispose()

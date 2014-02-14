@@ -12,9 +12,9 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     [ActorDescription("FrauCheckFailed-CancelOrder")]
     public class FraudCancelOrderActor : IProcessorActor
     {
-        private IRepository<Order> _orderRepository;
+        private ICollectionRepository<Order> _orderRepository;
 
-        public FraudCancelOrderActor(IRepository<Order> orderRepository)
+        public FraudCancelOrderActor(ICollectionRepository<Order> orderRepository)
         {
             _orderRepository = orderRepository;
         }

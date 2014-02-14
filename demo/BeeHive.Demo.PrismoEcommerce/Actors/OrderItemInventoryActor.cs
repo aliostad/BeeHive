@@ -49,6 +49,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
                     QueueName = "ItemOutOfStock"
                 });
 
+
                 notYetAccountedFor.AnyOutOfStock = true;
             }
             else

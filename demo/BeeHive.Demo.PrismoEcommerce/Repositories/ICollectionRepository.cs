@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BeeHive.Demo.PrismoEcommerce.Repositories
 {
-    public interface IRepository<T>
+    public interface ICollectionRepository<T>
     {
 
         Task<T> GetAsync(Guid id);

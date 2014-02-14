@@ -14,14 +14,14 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     [ActorDescription("OrderShipped-Email")]
     public class OrderShippedEmailActor : IProcessorActor
     {
-        private IRepository<Order> _orderRepository;
-        private IRepository<Customer> _customerRepository;
+        private ICollectionRepository<Order> _orderRepository;
+        private ICollectionRepository<Customer> _customerRepository;
         private Emailer _emailer;
-        private IRepository<Shipment> _shipmentRepository;
+        private ICollectionRepository<Shipment> _shipmentRepository;
 
-        public OrderShippedEmailActor(IRepository<Order> orderRepository,
-            IRepository<Customer> customerRepository,
-            IRepository<Shipment> shipmentRepository,
+        public OrderShippedEmailActor(ICollectionRepository<Order> orderRepository,
+            ICollectionRepository<Customer> customerRepository,
+            ICollectionRepository<Shipment> shipmentRepository,
             Emailer emailer)
         {
             _shipmentRepository = shipmentRepository;
