@@ -50,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DummyActor.cs" />
+    <Compile Include="InMemoryImpl\InMemoryCollectionStore.cs" />
+    <Compile Include="InMemoryImpl\InMemoryCounterStore.cs" />
+    <Compile Include="InMemoryImpl\InMemoryKeyedListStore.cs" />
     <Compile Include="InMemoryServiceBus.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +62,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj">
+      <Project>{6ee378ae-c8c0-44b2-aa9a-711faada4e9c}</Project>
+      <Name>BeeHive.DataStructures</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj">
       <Project>{df541a72-6628-4926-80b9-7756e035f7ed}</Project>
       <Name>BeeHive.ServiceLocator.Windsor</Name>
@@ -72,6 +79,7 @@
       <Name>BeeHive.Demo.PrismoEcommerce</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

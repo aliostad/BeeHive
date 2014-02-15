@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Entities;
 using BeeHive.Demo.PrismoEcommerce.Events;
-using BeeHive.Demo.PrismoEcommerce.Repositories;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
@@ -13,11 +13,11 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     [ActorDescription("PaymentAuthorised-InventoryDecrement")]
     public class OrderInventoryActor : IProcessorActor
     {
-        private ICollectionRepository<Order> _orderRepository;
+        private ICollectionStore<Order> _orderStore;
 
-        public OrderInventoryActor(ICollectionRepository<Order> orderRepository)
+        public OrderInventoryActor(ICollectionStore<Order> orderStore)
         {
-            _orderRepository = orderRepository;
+            _orderStore = orderStore;
         }
 
         public void Dispose()
@@ -28,7 +28,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
             var paymentAuthorised = evnt.GetBody<PaymentAuthorised>();
-            var order = await _orderRepository.GetAsync(paymentAuthorised.OrderId);
+            var order = await _orderStore.GetAsync(paymentAuthorised.OrderId);
             
             var @event = new Event(new OrderItemsNotYetAccountedFor()
             {

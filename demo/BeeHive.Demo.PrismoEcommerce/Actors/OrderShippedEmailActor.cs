@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Entities;
 using BeeHive.Demo.PrismoEcommerce.Events;
 using BeeHive.Demo.PrismoEcommerce.ExternalSystems;
-using BeeHive.Demo.PrismoEcommerce.Repositories;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
@@ -14,20 +14,20 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     [ActorDescription("OrderShipped-Email")]
     public class OrderShippedEmailActor : IProcessorActor
     {
-        private ICollectionRepository<Order> _orderRepository;
-        private ICollectionRepository<Customer> _customerRepository;
+        private ICollectionStore<Order> _orderStore;
+        private ICollectionStore<Customer> _customerStore;
         private Emailer _emailer;
-        private ICollectionRepository<Shipment> _shipmentRepository;
+        private ICollectionStore<Shipment> _shipmentStore;
 
-        public OrderShippedEmailActor(ICollectionRepository<Order> orderRepository,
-            ICollectionRepository<Customer> customerRepository,
-            ICollectionRepository<Shipment> shipmentRepository,
+        public OrderShippedEmailActor(ICollectionStore<Order> orderStore,
+            ICollectionStore<Customer> customerStore,
+            ICollectionStore<Shipment> shipmentStore,
             Emailer emailer)
         {
-            _shipmentRepository = shipmentRepository;
+            _shipmentStore = shipmentStore;
             _emailer = emailer;
-            _customerRepository = customerRepository;
-            _orderRepository = orderRepository;
+            _customerStore = customerStore;
+            _orderStore = orderStore;
         }
 
         public void Dispose()
@@ -39,9 +39,9 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
             var orderShipped = evnt.GetBody<OrderShipped>();
-            var order = await _orderRepository.GetAsync(orderShipped.OrderId);
-            var shipment = await _shipmentRepository.GetAsync(orderShipped.ShipmentId);
-            var customer = await _customerRepository.GetAsync(order.CustomerId);
+            var order = await _orderStore.GetAsync(orderShipped.OrderId);
+            var shipment = await _shipmentStore.GetAsync(orderShipped.ShipmentId);
+            var customer = await _customerStore.GetAsync(order.CustomerId);
 
             _emailer.Send(
                 customer.Email,

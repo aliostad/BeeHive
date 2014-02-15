@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using BeeHive.Demo.PrismoEcommerce.Entities;
 
-namespace BeeHive.Demo.PrismoEcommerce.Repositories
+namespace BeeHive.DataStructures
 {
-    public interface ICounterRepository
+    public interface ICounterStore
     {
-        Task<ICounter> GetAsync(Guid id);
+        Task<long> GetAsync(Guid id);
 
         /// <summary>
         /// Use it for decrement as well

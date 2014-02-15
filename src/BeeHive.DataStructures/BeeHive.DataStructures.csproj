@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3A33ACB5-6752-4429-88FC-C15D245EC79E}</ProjectGuid>
+    <ProjectGuid>{6EE378AE-C8C0-44B2-AA9A-711FAADA4E9C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BeeHive.Demo.PrismoEcommerce</RootNamespace>
-    <AssemblyName>BeeHive.Demo.PrismoEcommerce</AssemblyName>
+    <RootNamespace>BeeHive.DataStructures</RootNamespace>
+    <AssemblyName>BeeHive.DataStructures</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,50 +39,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actors\FraudCancelOrderActor.cs" />
-    <Compile Include="Actors\FraudCheckActor.cs" />
-    <Compile Include="Actors\FulfilmentActor.cs" />
-    <Compile Include="Actors\ItemOutOfStockForOrderWorkflowActor.cs" />
-    <Compile Include="Actors\OrderInventoryActor.cs" />
-    <Compile Include="Actors\OrderItemInventoryActor.cs" />
-    <Compile Include="Actors\OrderShippedEmailActor.cs" />
-    <Compile Include="Actors\PaymentActor.cs" />
-    <Compile Include="Entities\Customer.cs" />
-    <Compile Include="Entities\Inventory.cs" />
-    <Compile Include="Entities\Order.cs" />
-    <Compile Include="Entities\Payment.cs" />
-    <Compile Include="Entities\Product.cs" />
-    <Compile Include="Entities\Shipment.cs" />
-    <Compile Include="Events\ConfirmationEmailSent.cs" />
-    <Compile Include="Events\FraudCheckFailed.cs" />
-    <Compile Include="Events\ItemBackInStock.cs" />
-    <Compile Include="Events\ItemOutOfStock.cs" />
-    <Compile Include="Events\ItemOutOfStockForOrder.cs" />
-    <Compile Include="Events\OrderAccepted.cs" />
-    <Compile Include="Events\OrderCancelled.cs" />
-    <Compile Include="Events\OrderInventoryCheckCompleted.cs" />
-    <Compile Include="Events\OrderItemsNotYetAccountedFor.cs" />
-    <Compile Include="Events\OrderShipped.cs" />
-    <Compile Include="Events\PaymentAuthorised.cs" />
-    <Compile Include="Events\PaymentFailed.cs" />
-    <Compile Include="Exceptions\PaymentFailureException.cs" />
-    <Compile Include="ExternalSystems\Emailer.cs" />
-    <Compile Include="ExternalSystems\FraudChecker.cs" />
-    <Compile Include="ExternalSystems\PaymentGateway.cs" />
+    <Compile Include="ICollectionStore.cs" />
+    <Compile Include="ICounterStore.cs" />
+    <Compile Include="IKeyedListStore.cs" />
+    <Compile Include="KeyAlreadyExistsException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorkflowState\ParkedOrderItem.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj">
-      <Project>{6ee378ae-c8c0-44b2-aa9a-711faada4e9c}</Project>
-      <Name>BeeHive.DataStructures</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj">
+    <ProjectReference Include="..\BeeHive\BeeHive.csproj">
       <Project>{3e0f3470-eae7-4a78-9822-52f57dcdde9b}</Project>
       <Name>BeeHive</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

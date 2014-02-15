@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{7FF948
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.ServiceLocator.Windsor", "src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj", "{DF541A72-6628-4926-80B9-7756E035F7ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.DataStructures", "src\BeeHive.DataStructures\BeeHive.DataStructures.csproj", "{6EE378AE-C8C0-44B2-AA9A-711FAADA4E9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{DF541A72-6628-4926-80B9-7756E035F7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF541A72-6628-4926-80B9-7756E035F7ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF541A72-6628-4926-80B9-7756E035F7ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EE378AE-C8C0-44B2-AA9A-711FAADA4E9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EE378AE-C8C0-44B2-AA9A-711FAADA4E9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE378AE-C8C0-44B2-AA9A-711FAADA4E9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EE378AE-C8C0-44B2-AA9A-711FAADA4E9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

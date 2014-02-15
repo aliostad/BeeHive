@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Entities;
 using BeeHive.Demo.PrismoEcommerce.Events;
 using BeeHive.Demo.PrismoEcommerce.Exceptions;
 using BeeHive.Demo.PrismoEcommerce.ExternalSystems;
-using BeeHive.Demo.PrismoEcommerce.Repositories;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
@@ -17,12 +17,12 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     public class PaymentActor : IProcessorActor
     {
         private PaymentGateway _paymentGateway;
-        private ICollectionRepository<Payment> _paymentRepo;
-        private ICollectionRepository<Order> _orderRepo;
+        private ICollectionStore<Payment> _paymentRepo;
+        private ICollectionStore<Order> _orderRepo;
 
         public PaymentActor(
-            ICollectionRepository<Order> orderRepo,
-            ICollectionRepository<Payment> paymentRepo,
+            ICollectionStore<Order> orderRepo,
+            ICollectionStore<Payment> paymentRepo,
             PaymentGateway paymentGateway)
         {
             _orderRepo = orderRepo;
@@ -55,7 +55,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             {
                 var transactionId = await _paymentGateway.Authorise(payment);
                 payment.TransactionId = transactionId;
-                await _paymentRepo.InsertAsync(payment);
+                await _paymentRepo.InsertAsync(payment.Id, payment);
                 return new[]
                 {
                     new Event(new PaymentAuthorised()

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Events;
-using BeeHive.Demo.PrismoEcommerce.Repositories;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
@@ -12,14 +12,14 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     [ActorDescription("ItemOutOfStockForOrder")]
     public class ItemOutOfStockForOrderWorkflowActor : IProcessorActor
     {
-        private ICounterRepository _counterRepository;
-        private ISimpleKeyedListRepository _productOrdeRepository;
+        private ICounterStore _counterStore;
+        private ISimpleKeyedListStore _productOrdeStore;
 
-        public ItemOutOfStockForOrderWorkflowActor(ISimpleKeyedListRepository productOrdeRepository,
-            ICounterRepository counterRepository)
+        public ItemOutOfStockForOrderWorkflowActor(ISimpleKeyedListStore productOrdeStore,
+            ICounterStore counterStore)
         {
-            _productOrdeRepository = productOrdeRepository;
-            _counterRepository = counterRepository;
+            _productOrdeStore = productOrdeStore;
+            _counterStore = counterStore;
         }
 
         public void Dispose()
@@ -43,7 +43,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             if (!outOfStockForOrder.ProductQueuedForOrder)
             {
 
-                await _productOrdeRepository.AddAsync(
+                await _productOrdeStore.AddAsync(
                     outOfStockForOrder.OrderId,
                     outOfStockForOrder.ProductId);
 
@@ -58,7 +58,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             if (!outOfStockForOrder.OrderQueuedForProduct)
             {
 
-                await _productOrdeRepository.AddAsync(
+                await _productOrdeStore.AddAsync(
                     outOfStockForOrder.ProductId,
                     outOfStockForOrder.OrderId
                     );

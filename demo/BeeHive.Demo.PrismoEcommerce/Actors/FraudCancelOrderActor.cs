@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Entities;
 using BeeHive.Demo.PrismoEcommerce.Events;
-using BeeHive.Demo.PrismoEcommerce.Repositories;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
     [ActorDescription("FrauCheckFailed-CancelOrder")]
     public class FraudCancelOrderActor : IProcessorActor
     {
-        private ICollectionRepository<Order> _orderRepository;
+        private ICollectionStore<Order> _orderStore;
 
-        public FraudCancelOrderActor(ICollectionRepository<Order> orderRepository)
+        public FraudCancelOrderActor(ICollectionStore<Order> orderStore)
         {
-            _orderRepository = orderRepository;
+            _orderStore = orderStore;
         }
 
         public void Dispose()
@@ -27,13 +27,13 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
             var fraudCheckFailed = evnt.GetBody<FraudCheckFailed>();
-            var order = await _orderRepository.GetAsync(fraudCheckFailed.OrderId);
+            var order = await _orderStore.GetAsync(fraudCheckFailed.OrderId);
 
             if (order.IsCancelled)
                 return new Event[0];
 
             order.IsCancelled = true;
-            await _orderRepository.UpsertAsync(order);
+            await _orderStore.UpsertAsync(order.Id, order);
             return new[]
             {
                 new Event(new OrderCancelled()

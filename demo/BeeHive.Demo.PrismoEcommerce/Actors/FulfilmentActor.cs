@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BeeHive;
+using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Entities;
 using BeeHive.Demo.PrismoEcommerce.Events;
-using BeeHive.Demo.PrismoEcommerce.Repositories;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
@@ -16,16 +16,16 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     public class FulfilmentActor : IProcessorActor
     {
 
-        public FulfilmentActor(ICollectionRepository<Order> orderRepository,
-            ICollectionRepository<Shipment> shipmentRepository)
+        public FulfilmentActor(ICollectionStore<Order> orderStore,
+            ICollectionStore<Shipment> shipmentStore)
         {
-            _shipmentRepository = shipmentRepository;
-            _orderRepository = orderRepository;
+            _shipmentStore = shipmentStore;
+            _orderStore = orderStore;
         }
 
         private Random _random = new Random();
-        private ICollectionRepository<Order> _orderRepository;
-        private ICollectionRepository<Shipment> _shipmentRepository;
+        private ICollectionStore<Order> _orderStore;
+        private ICollectionStore<Shipment> _shipmentStore;
 
 
         public void Dispose()
@@ -42,7 +42,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
             var orderInventoryCheckCompleted = evnt.GetBody<OrderInventoryCheckCompleted>();
-            var order = await _orderRepository.GetAsync(orderInventoryCheckCompleted.OrderId);
+            var order = await _orderStore.GetAsync(orderInventoryCheckCompleted.OrderId);
             if (order.IsCancelled)
             {
                 return new Event[0];
@@ -58,7 +58,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
                     Address = order.ShippingAddress,
                     DeliveryExpectedDate = DateTime.Now.AddDays(_random.Next(1,5))
                 };
-                await _shipmentRepository.InsertAsync(shipment);
+                await _shipmentStore.InsertAsync(shipment.Id, shipment);
 
                 return new[]
                 {

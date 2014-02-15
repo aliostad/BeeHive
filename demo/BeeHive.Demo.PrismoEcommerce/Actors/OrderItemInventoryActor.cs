@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Entities;
 using BeeHive.Demo.PrismoEcommerce.Events;
-using BeeHive.Demo.PrismoEcommerce.Repositories;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
@@ -13,11 +13,11 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     [ActorDescription("OrderItemsNotYetAccountedFor")]
     public class OrderItemInventoryActor : IProcessorActor
     {
-        private ICounterRepository _inventoryRepository;
+        private ICounterStore _inventoryStore;
 
-        public OrderItemInventoryActor(ICounterRepository inventoryRepository)
+        public OrderItemInventoryActor(ICounterStore inventoryStore)
         {
-            _inventoryRepository = inventoryRepository;
+            _inventoryStore = inventoryStore;
         }
 
         public void Dispose()
@@ -34,10 +34,10 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
 
             notYetAccountedFor.ProductQuantities.Remove(keyValue.Key);
 
-            var inventory = await _inventoryRepository.GetAsync(productId);
+            var inventory = await _inventoryStore.GetAsync(productId);
             var events = new List<Event>();
 
-            if (quantity > inventory.Value)
+            if (quantity > inventory)
             {
                 events.Add(new Event(new ItemOutOfStock()
                 {
@@ -55,7 +55,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             else
             {
                 // decrement repo
-                await _inventoryRepository.IncrementAsync(productId, -quantity);
+                await _inventoryStore.IncrementAsync(productId, -quantity);
             }
             if (notYetAccountedFor.ProductQuantities.Count == 0 &&
                 !notYetAccountedFor.AnyOutOfStock)

@@ -3,31 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Entities;
 using BeeHive.Demo.PrismoEcommerce.Events;
 using BeeHive.Demo.PrismoEcommerce.ExternalSystems;
-using BeeHive.Demo.PrismoEcommerce.Repositories;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
     [ActorDescription("PaymentAuthorised-FrauCheck")]
     public class FraudCheckActor : IProcessorActor
     {
-        private ICollectionRepository<Customer> _customeRepository;
-        private ICollectionRepository<Order> _ordeRepository;
-        private ICollectionRepository<Payment> _paymentRepository;
+        private ICollectionStore<Customer> _customeStore;
+        private ICollectionStore<Order> _ordeStore;
+        private ICollectionStore<Payment> _paymentStore;
         private Random _random = new Random();
         private FraudChecker _fraudChecker;
 
-        public FraudCheckActor(ICollectionRepository<Customer> customeRepository,
-            ICollectionRepository<Order> ordeRepository,
-            ICollectionRepository<Payment> paymentRepository,
+        public FraudCheckActor(ICollectionStore<Customer> customeStore,
+            ICollectionStore<Order> ordeStore,
+            ICollectionStore<Payment> paymentStore,
             FraudChecker fraudChecker)
         {
             _fraudChecker = fraudChecker;
-            _paymentRepository = paymentRepository;
-            _ordeRepository = ordeRepository;
-            _customeRepository = customeRepository;
+            _paymentStore = paymentStore;
+            _ordeStore = ordeStore;
+            _customeStore = customeStore;
         }
 
         public void Dispose()
@@ -38,12 +38,12 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
             var authorised = evnt.GetBody<PaymentAuthorised>();
-            var order = await _ordeRepository.GetAsync(authorised.OrderId);
+            var order = await _ordeStore.GetAsync(authorised.OrderId);
             if (order.IsCancelled)
                 return new Event[0];
 
-            var payment = await _paymentRepository.GetAsync(authorised.PaymentId);
-            var customer = await _customeRepository.GetAsync(order.CustomerId);
+            var payment = await _paymentStore.GetAsync(authorised.PaymentId);
+            var customer = await _customeStore.GetAsync(order.CustomerId);
             if (_fraudChecker.IsFradulent(payment, customer))
             {
                 return new[]
