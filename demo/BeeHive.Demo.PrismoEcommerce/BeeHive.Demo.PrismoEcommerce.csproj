@@ -71,6 +71,7 @@
     <Compile Include="ExternalSystems\PaymentGateway.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorkflowState\ParkedOrderItem.cs" />
+    <Compile Include="WorkflowState\OrderWaitingForProduct.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj">

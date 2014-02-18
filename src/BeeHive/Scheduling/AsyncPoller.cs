@@ -21,13 +21,18 @@ namespace BeeHive.Scheduling
             _interval = interval;
         }
 
+        /// <summary>
+        /// Note: RunAsync and Start ping-pong between each other.
+        /// </summary>
+        /// <returns></returns>
+
         private async Task RunAsync()
         {
             bool result = false;
             try
             {
                 _cancellationTokenSource = new CancellationTokenSource();
-                result = await _work(_cancellationTokenSource.Token).ConfigureAwait(false);
+                result = await _work(_cancellationTokenSource.Token);
 
             }
             catch (Exception exception)

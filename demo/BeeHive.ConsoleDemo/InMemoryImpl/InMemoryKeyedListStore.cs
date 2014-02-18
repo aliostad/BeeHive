@@ -9,33 +9,57 @@ using BeeHive.DataStructures;
 namespace BeeHive.ConsoleDemo
 {
     public class InMemoryKeyedListStore<T> : IKeyedListStore<T>
+        where T : IHaveIdentity
     {
         
-        private ConcurrentDictionary<Guid, ConcurrentBag<T>> _store = new ConcurrentDictionary<Guid, ConcurrentBag<T>>();  
+        private ConcurrentDictionary<string, ConcurrentBag<T>> _store = new ConcurrentDictionary<string, ConcurrentBag<T>>();  
 
-        public async Task AddAsync(Guid key, T t)
+        public async Task AddAsync(string listName, Guid key, T t)
         {
-            if(!_store.TryAdd(key, new ConcurrentBag<T>()))
-                throw new KeyAlreadyExistsException(key);
+            string k = GetKey(listName, key);
+            if (!_store.TryAdd(k, new ConcurrentBag<T>()))
+                throw new KeyAlreadyExistsException(k);
+ 
         }
 
-        public async Task<IEnumerable<T>> GetAsync(Guid key)
+        public async Task<IEnumerable<T>> GetAsync(string listName, Guid key)
         {
+            string k = GetKey(listName, key);
             ConcurrentBag<T> bag;
-            if(!_store.TryGetValue(key, out bag))
-                throw new KeyNotFoundException(key.ToString());
+            if (!_store.TryGetValue(k, out bag))
+                throw new KeyNotFoundException(k);
             return bag.ToArray();
+
         }
 
-        public async Task RemoveAsync(Guid key)
+        private string GetKey(string listName, Guid key)
+        {
+            return string.Format("{0}:{1}", listName, key);
+        }
+
+
+        public async Task RemoveAsync(string listName, Guid key)
         {
             ConcurrentBag<T> bag;
-            _store.TryRemove(key, out bag);
+            string k = GetKey(listName, key);
+            _store.TryRemove(k, out bag);
         }
 
-        public async Task<bool> ExistsAsync(Guid key)
+        public async Task<bool> ExistsAsync(string listName, Guid key)
         {
-            return _store.ContainsKey(key);
+            string k = GetKey(listName, key);
+            return _store.ContainsKey(k);
+        }
+
+        public Task UpdateAsync(string listName, Guid key, T t)
+        {
+            var concurrencyAware = t as IConcurrencyAware;
+            if (concurrencyAware != null)
+            {
+                
+            }
+
+            throw new NotImplementedException();
         }
     }
 }

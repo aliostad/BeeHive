@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Events;
+using BeeHive.Demo.PrismoEcommerce.WorkflowState;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
@@ -13,12 +14,16 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     public class ItemOutOfStockForOrderWorkflowActor : IProcessorActor
     {
         private ICounterStore _counterStore;
-        private ISimpleKeyedListStore _productOrdeStore;
+        private IKeyedListStore<ParkedOrderItem> _parkedOrderItemStore;
+        private IKeyedListStore<OrderWaitingForProduct> _orderWaitingForProductStore;
 
-        public ItemOutOfStockForOrderWorkflowActor(ISimpleKeyedListStore productOrdeStore,
+        public ItemOutOfStockForOrderWorkflowActor(
+            IKeyedListStore<ParkedOrderItem> parkedOrderItemStore,
+            IKeyedListStore<OrderWaitingForProduct> orderWaitingForProductStore,
             ICounterStore counterStore)
         {
-            _productOrdeStore = productOrdeStore;
+            _orderWaitingForProductStore = orderWaitingForProductStore;
+            _parkedOrderItemStore = parkedOrderItemStore;
             _counterStore = counterStore;
         }
 
@@ -43,9 +48,13 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             if (!outOfStockForOrder.ProductQueuedForOrder)
             {
 
-                await _productOrdeStore.AddAsync(
+                await _parkedOrderItemStore.AddAsync("ProductQueuedForOrder",
                     outOfStockForOrder.OrderId,
-                    outOfStockForOrder.ProductId);
+                    new ParkedOrderItem()
+                    {
+                        ProductId = outOfStockForOrder.ProductId
+                    });
+                    
 
                 outOfStockForOrder.ProductQueuedForOrder = true;
                 return new[] {new Event( outOfStockForOrder)
@@ -58,10 +67,13 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             if (!outOfStockForOrder.OrderQueuedForProduct)
             {
 
-                await _productOrdeStore.AddAsync(
+                await _orderWaitingForProductStore.AddAsync("OrderQueuedForProduct",
                     outOfStockForOrder.ProductId,
-                    outOfStockForOrder.OrderId
-                    );
+                    new OrderWaitingForProduct()
+                    {
+                        OrderId = outOfStockForOrder.OrderId,
+                        Quantity = outOfStockForOrder.Quantity
+                    });
 
             }
 

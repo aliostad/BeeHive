@@ -53,7 +53,7 @@
     <Compile Include="InMemoryImpl\InMemoryCollectionStore.cs" />
     <Compile Include="InMemoryImpl\InMemoryCounterStore.cs" />
     <Compile Include="InMemoryImpl\InMemoryKeyedListStore.cs" />
-    <Compile Include="InMemoryServiceBus.cs" />
+    <Compile Include="InMemoryImpl\InMemoryServiceBus.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

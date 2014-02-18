@@ -8,7 +8,7 @@ namespace BeeHive.DataStructures
 {
     public class KeyAlreadyExistsException : Exception
     {
-        public KeyAlreadyExistsException(Guid key)
+        public KeyAlreadyExistsException(object key)
             : base("Key exists " + key)
         {
             

@@ -11,7 +11,13 @@ namespace BeeHive.ConsoleDemo
 {
     public class InMemoryCollectionStore<T> : ICollectionStore<T>
     {
-        private ConcurrentDictionary<Guid, T> _store = new ConcurrentDictionary<Guid, T>(); 
+        private ConcurrentDictionary<Guid, T> _store = new ConcurrentDictionary<Guid, T>();
+
+        private bool _isConcurrencyAware = false;
+        public InMemoryCollectionStore()
+        {
+            _isConcurrencyAware = typeof(T) is IConcurrencyAware;
+        }
 
         public async Task<T> GetAsync(Guid id)
         {
@@ -29,7 +35,17 @@ namespace BeeHive.ConsoleDemo
 
         public async Task UpsertAsync(Guid id, T t)
         {
-            _store.AddOrUpdate(id, t, (g, old) => t);
+            _store.AddOrUpdate(id, t, (g, old) =>
+            {
+                if (_isConcurrencyAware)
+                {
+                    var oldcw = old as IConcurrencyAware;
+                    var tcw = t as IConcurrencyAware;
+                    tcw.AssertNoConflict(oldcw);
+                }
+
+                return t;
+            });
         }
 
         public async Task DeleteAsync(Guid id)

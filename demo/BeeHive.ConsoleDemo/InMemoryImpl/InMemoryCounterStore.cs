@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using BeeHive.DataStructures;
 
-namespace BeeHive.ConsoleDemo.InMemoryImpl
+namespace BeeHive.ConsoleDemo
 {
     public class InMemoryCounterStore : ICounterStore
     {

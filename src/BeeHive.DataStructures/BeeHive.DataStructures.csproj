@@ -39,8 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConcurrencyConflictException.cs" />
     <Compile Include="ICollectionStore.cs" />
+    <Compile Include="IConcurrencyAware.cs" />
+    <Compile Include="IConcurrencyAwareExtensions.cs" />
     <Compile Include="ICounterStore.cs" />
+    <Compile Include="IHaveIdentity.cs" />
     <Compile Include="IKeyedListStore.cs" />
     <Compile Include="KeyAlreadyExistsException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
