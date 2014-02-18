@@ -12,54 +12,74 @@ namespace BeeHive.ConsoleDemo
         where T : IHaveIdentity
     {
         
-        private ConcurrentDictionary<string, ConcurrentBag<T>> _store = new ConcurrentDictionary<string, ConcurrentBag<T>>();  
+        private ConcurrentDictionary<string, ConcurrentDictionary<Guid,T>> _store = new ConcurrentDictionary<string, ConcurrentDictionary<Guid, T>>();
+        private bool _isConcurrencyAware = false;
+
+        public InMemoryKeyedListStore()
+        {
+            _isConcurrencyAware = typeof (T) is IConcurrencyAware;
+        }
+
+        private ConcurrentDictionary<Guid, T> GetList(string listName)
+        {
+            return _store.GetOrAdd(listName, new ConcurrentDictionary<Guid, T>());
+        }
+
 
         public async Task AddAsync(string listName, Guid key, T t)
         {
-            string k = GetKey(listName, key);
-            if (!_store.TryAdd(k, new ConcurrentBag<T>()))
-                throw new KeyAlreadyExistsException(k);
+            var list = GetList(listName);
+
+            if (!list.TryAdd(key, t))
+                throw new KeyAlreadyExistsException(key);
  
         }
 
         public async Task<IEnumerable<T>> GetAsync(string listName, Guid key)
         {
-            string k = GetKey(listName, key);
-            ConcurrentBag<T> bag;
-            if (!_store.TryGetValue(k, out bag))
-                throw new KeyNotFoundException(k);
-            return bag.ToArray();
+            
+            ConcurrentDictionary<Guid,T> bag;
+            if (!_store.TryGetValue(listName, out bag))
+                throw new KeyNotFoundException(listName);
+            return bag.Values.ToArray();
 
-        }
-
-        private string GetKey(string listName, Guid key)
-        {
-            return string.Format("{0}:{1}", listName, key);
         }
 
 
         public async Task RemoveAsync(string listName, Guid key)
         {
-            ConcurrentBag<T> bag;
-            string k = GetKey(listName, key);
-            _store.TryRemove(k, out bag);
+            ConcurrentDictionary<Guid, T> bag;           
+            _store.TryRemove(listName, out bag);
         }
 
         public async Task<bool> ExistsAsync(string listName, Guid key)
         {
-            string k = GetKey(listName, key);
-            return _store.ContainsKey(k);
+            if (!_store.ContainsKey(listName))
+                return false;
+            var list = GetList(listName);
+            return list.ContainsKey(key);
         }
 
-        public Task UpdateAsync(string listName, Guid key, T t)
+        public async Task UpdateAsync(string listName, Guid key, T t)
         {
-            var concurrencyAware = t as IConcurrencyAware;
-            if (concurrencyAware != null)
-            {
-                
-            }
+            var list = GetList(listName);
+            
+            // first check if item exist
+            if(!list.ContainsKey(key))
+                throw new KeyNotFoundException(key.ToString());
 
-            throw new NotImplementedException();
+            // then do an update with concurrency check. Unfortunately does not allow for doing any other way
+            var result = list.AddOrUpdate(key, default(T), (k, old) =>
+            {
+                if (_isConcurrencyAware)
+                {
+                    var oldcw = old as IConcurrencyAware;
+                    var tcw = t as IConcurrencyAware;
+                    tcw.AssertNoConflict(oldcw);
+                }
+                return t;
+            });
+
         }
     }
 }

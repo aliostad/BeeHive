@@ -11,7 +11,7 @@ namespace BeeHive.ConsoleDemo
 {
     public class InMemoryCollectionStore<T> : ICollectionStore<T>
     {
-        private ConcurrentDictionary<Guid, T> _store = new ConcurrentDictionary<Guid, T>();
+        private ConcurrentDictionary<Type, ConcurrentDictionary<Guid, T>> _store = new ConcurrentDictionary<Type, ConcurrentDictionary<Guid, T>>();
 
         private bool _isConcurrencyAware = false;
         public InMemoryCollectionStore()
@@ -19,23 +19,32 @@ namespace BeeHive.ConsoleDemo
             _isConcurrencyAware = typeof(T) is IConcurrencyAware;
         }
 
+        private ConcurrentDictionary<Guid, T> GetList()
+        {
+            return _store.GetOrAdd(typeof (T), new ConcurrentDictionary<Guid, T>());
+        }
+
         public async Task<T> GetAsync(Guid id)
         {
+            var list = GetList();
             T t;
-            if(!_store.TryGetValue(id, out t))
+            if(!list.TryGetValue(id, out t))
                 throw new KeyNotFoundException(id.ToString());
             return t;
         }
 
         public async Task InsertAsync(Guid id, T t)
         {
-            if (_store.TryAdd(id, t))
+            var list = GetList();
+            if (list.TryAdd(id, t))
                 throw new KeyAlreadyExistsException(id);
         }
 
         public async Task UpsertAsync(Guid id, T t)
         {
-            _store.AddOrUpdate(id, t, (g, old) =>
+            var list = GetList();
+
+            list.AddOrUpdate(id, t, (g, old) =>
             {
                 if (_isConcurrencyAware)
                 {
@@ -51,12 +60,14 @@ namespace BeeHive.ConsoleDemo
         public async Task DeleteAsync(Guid id)
         {
             T t;
-            _store.TryRemove(id, out t);
+            var list = GetList();
+            list.TryRemove(id, out t);
         }
 
         public async Task<bool> ExistsAsync(Guid id)
         {
-            return _store.ContainsKey(id);
+            var list = GetList();
+            return list.ContainsKey(id);
         }
     }
 }
