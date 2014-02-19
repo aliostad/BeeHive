@@ -20,18 +20,22 @@ namespace BeeHive.ConsoleDemo
             _isConcurrencyAware = typeof (T) is IConcurrencyAware;
         }
 
-        private ConcurrentDictionary<Guid, T> GetList(string listName)
+        private ConcurrentDictionary<Guid, T> GetList(string listName, Guid key)
         {
-            return _store.GetOrAdd(listName, new ConcurrentDictionary<Guid, T>());
+            return _store.GetOrAdd(GetKey(listName, key), new ConcurrentDictionary<Guid, T>());
         }
 
+        private string GetKey(string listName, Guid key)
+        {
+            return listName + "-" + key.ToString("N");
+        }
 
         public async Task AddAsync(string listName, Guid key, T t)
         {
-            var list = GetList(listName);
+            var list = GetList(listName, key);
 
-            if (!list.TryAdd(key, t))
-                throw new KeyAlreadyExistsException(key);
+            if (!list.TryAdd(t.Id, t))
+                throw new KeyAlreadyExistsException(t.Id);
  
         }
 
@@ -39,7 +43,7 @@ namespace BeeHive.ConsoleDemo
         {
             
             ConcurrentDictionary<Guid,T> bag;
-            if (!_store.TryGetValue(listName, out bag))
+            if (!_store.TryGetValue(GetKey(listName, key), out bag))
                 throw new KeyNotFoundException(listName);
             return bag.Values.ToArray();
 
@@ -49,27 +53,33 @@ namespace BeeHive.ConsoleDemo
         public async Task RemoveAsync(string listName, Guid key)
         {
             ConcurrentDictionary<Guid, T> bag;           
-            _store.TryRemove(listName, out bag);
+            _store.TryRemove(GetKey(listName, key), out bag);
         }
 
-        public async Task<bool> ExistsAsync(string listName, Guid key)
+        public async Task<bool> ListExistsAsync(string listName, Guid key)
         {
-            if (!_store.ContainsKey(listName))
+            return _store.ContainsKey(GetKey(listName, key));
+        }
+
+        public async Task<bool> ExistsAsync(string listName, Guid key, Guid itemId)
+        {
+            if (!_store.ContainsKey(GetKey(listName, key)))
                 return false;
-            var list = GetList(listName);
-            return list.ContainsKey(key);
+            var list = GetList(listName, key);
+            return list.ContainsKey(itemId);
         }
 
         public async Task UpdateAsync(string listName, Guid key, T t)
         {
-            var list = GetList(listName);
+            var list = GetList(listName, key);
             
             // first check if item exist
-            if(!list.ContainsKey(key))
-                throw new KeyNotFoundException(key.ToString());
+
+            if(!list.ContainsKey(t.Id))
+                throw new KeyNotFoundException(t.Id.ToString());
 
             // then do an update with concurrency check. Unfortunately does not allow for doing any other way
-            var result = list.AddOrUpdate(key, default(T), (k, old) =>
+            var result = list.AddOrUpdate(t.Id, default(T), (k, old) =>
             {
                 if (_isConcurrencyAware)
                 {

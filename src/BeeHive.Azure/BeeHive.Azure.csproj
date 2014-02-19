@@ -73,6 +73,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BrokeredMessageExtensions.cs" />
+    <Compile Include="DataStructureImpl\AzureKeyedListStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceBusOperator.cs" />
   </ItemGroup>
@@ -81,6 +82,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BeeHive.DataStructures\BeeHive.DataStructures.csproj">
+      <Project>{6ee378ae-c8c0-44b2-aa9a-711faada4e9c}</Project>
+      <Name>BeeHive.DataStructures</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BeeHive\BeeHive.csproj">
       <Project>{3e0f3470-eae7-4a78-9822-52f57dcdde9b}</Project>
       <Name>BeeHive</Name>

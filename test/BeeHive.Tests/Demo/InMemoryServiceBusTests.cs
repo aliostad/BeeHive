@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BeeHive.ConsoleDemo;
+﻿using BeeHive.ConsoleDemo;
 using Xunit;
 
-namespace BeeHive.Tests
+namespace BeeHive.Tests.Demo
 {
     public class InMemoryServiceBusTests
     {

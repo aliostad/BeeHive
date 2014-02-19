@@ -39,6 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Common\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ConcurrencyConflictException.cs" />
     <Compile Include="ICollectionStore.cs" />
     <Compile Include="IConcurrencyAware.cs" />
