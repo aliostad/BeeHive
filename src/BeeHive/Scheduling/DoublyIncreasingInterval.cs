@@ -8,18 +8,20 @@ namespace BeeHive.Scheduling
 {
     public class DoublyIncreasingInterval : IntervalBase
     {
-        
-        private TimeSpan _firstIncrement;
+
+        private TimeSpan _increment;
+
 
         public DoublyIncreasingInterval(TimeSpan startInterval, TimeSpan maxInterval, int intervalCount) 
             : base(startInterval, maxInterval)
         {
+            _increment = new TimeSpan((maxInterval.Ticks - startInterval.Ticks) / intervalCount);
 
         }
 
         protected override TimeSpan CalculateNext(TimeSpan current)
         {
-            return current + _firstIncrement;
+            return current + _increment;
         }
     }
 }

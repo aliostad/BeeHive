@@ -14,8 +14,8 @@ namespace BeeHive
         {
             if(intervaCount<=0)
                 throw new ArgumentOutOfRangeException("intervaCount");
-
-            _increment = new TimeSpan((maxInterval.Ticks-startInterval.Ticks)/intervaCount);
+            var totalTicks = (maxInterval.Ticks-startInterval.Ticks) / (Math.Pow(2,intervaCount)-1);
+            _increment = new TimeSpan( (long) totalTicks);
         }
 
         protected override TimeSpan CalculateNext(TimeSpan current)
