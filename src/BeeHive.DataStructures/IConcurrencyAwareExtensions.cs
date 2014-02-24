@@ -10,28 +10,28 @@ namespace BeeHive.DataStructures
     {
         public static void AssertNoConflict(this IConcurrencyAware item, IConcurrencyAware against)
         {
+            if(ConflictsWith(item, against))
+                throw new ConcurrencyConflictException(item.ETag, against.ETag);
+        }
+
+        public static bool ConflictsWith(this IConcurrencyAware item, IConcurrencyAware against)
+        {
             if (item.ETag != null && against.ETag != null)
             {
-                if(item.ETag != against.ETag)
-                    throw new ConcurrencyConflictException(item.ETag, against.ETag);
-                else
-                {
-                    return;
-                }
-
+                return (item.ETag != against.ETag);
             }
 
             if (item.LastModofied.HasValue && against.LastModofied.HasValue)
             {
-                if (item.LastModofied.Value != against.LastModofied.Value)
-                    throw new ConcurrencyConflictException(item.LastModofied.Value, against.LastModofied.Value);
-                else
-                {
-                    return;
-                }
+                return (item.LastModofied.Value != against.LastModofied.Value);
             }
 
-            throw  new InvalidOperationException("Concurrency data not valid");
+            // if all values null it is OK
+            if (!item.LastModofied.HasValue && !against.LastModofied.HasValue &&
+                item.ETag == null && against.ETag == null)
+                return false;
+
+            throw new InvalidOperationException("Concurrency data not consistent");
 
         }
     }

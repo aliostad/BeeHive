@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDomainExplorerActorConfigurationTests.cs" />
+    <Compile Include="DataStructures\IConcurrencyAwareTests.cs" />
     <Compile Include="Data\DummyActor.cs" />
     <Compile Include="Demo\InMemoryKeyedListTests.cs" />
     <Compile Include="Demo\InMemoryServiceBusTests.cs" />

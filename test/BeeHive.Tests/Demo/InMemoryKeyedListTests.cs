@@ -55,5 +55,29 @@ namespace BeeHive.Tests.Demo
 
         }
 
+        [Fact]
+        public void ConcurrencyCheck_Fails_WhenDifferentETags()
+        {
+            var key = Guid.NewGuid();
+            var listName = "myList";
+            var itemId = Guid.NewGuid();
+            var inMemoryKeyedListStore = new InMemoryKeyedListStore<ParkedOrderItem>();
+            var item = new ParkedOrderItem()
+            {
+                ProductId = itemId,
+                ETag = "1234"
+            };
+            inMemoryKeyedListStore.AddAsync(listName, key, item).Wait();
+            var item2 = new ParkedOrderItem()
+            {
+                ProductId = itemId,
+                ETag = "5678"
+            };
+            Assert.Throws<AggregateException>(() => inMemoryKeyedListStore.UpdateAsync(listName, key, 
+                item2).Wait());
+
+
+        }
+
     }
 }

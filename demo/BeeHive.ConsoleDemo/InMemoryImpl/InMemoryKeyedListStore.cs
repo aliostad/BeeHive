@@ -17,7 +17,7 @@ namespace BeeHive.ConsoleDemo
 
         public InMemoryKeyedListStore()
         {
-            _isConcurrencyAware = typeof (T) is IConcurrencyAware;
+            _isConcurrencyAware = typeof(IConcurrencyAware).IsAssignableFrom(typeof(T));
         }
 
         private ConcurrentDictionary<Guid, T> GetList(string listName, Guid key)

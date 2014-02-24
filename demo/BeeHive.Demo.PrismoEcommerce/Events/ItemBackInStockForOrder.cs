@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BeeHive.Demo.PrismoEcommerce.Events
 {
-    public class ItemBackInStock
+    public class ItemBackInStockForOrder
     {
-        public Guid ProductId { get; set; }
+
     }
 }

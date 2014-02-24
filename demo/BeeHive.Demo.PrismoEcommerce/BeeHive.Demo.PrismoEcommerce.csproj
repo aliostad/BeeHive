@@ -47,6 +47,7 @@
     <Compile Include="Actors\OrderItemInventoryActor.cs" />
     <Compile Include="Actors\OrderShippedEmailActor.cs" />
     <Compile Include="Actors\PaymentActor.cs" />
+    <Compile Include="Actors\ProductBackInStockActor.cs" />
     <Compile Include="Entities\Customer.cs" />
     <Compile Include="Entities\Inventory.cs" />
     <Compile Include="Entities\Order.cs" />
@@ -55,7 +56,7 @@
     <Compile Include="Entities\Shipment.cs" />
     <Compile Include="Events\ConfirmationEmailSent.cs" />
     <Compile Include="Events\FraudCheckFailed.cs" />
-    <Compile Include="Events\ItemBackInStock.cs" />
+    <Compile Include="Events\ItemBackInStockForOrder.cs" />
     <Compile Include="Events\ItemOutOfStock.cs" />
     <Compile Include="Events\ItemOutOfStockForOrder.cs" />
     <Compile Include="Events\OrderAccepted.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Events\OrderShipped.cs" />
     <Compile Include="Events\PaymentAuthorised.cs" />
     <Compile Include="Events\PaymentFailed.cs" />
+    <Compile Include="Events\ProductArrivedBackInStock.cs" />
     <Compile Include="Exceptions\PaymentFailureException.cs" />
     <Compile Include="ExternalSystems\Emailer.cs" />
     <Compile Include="ExternalSystems\FraudChecker.cs" />
