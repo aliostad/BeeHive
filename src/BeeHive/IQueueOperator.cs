@@ -20,6 +20,9 @@ namespace BeeHive
     public interface ITopicOperator<T>
     {
         Task PushAsync(T message);
+
+        Task PushBatchAsync(IEnumerable<T> messages);
+
     }
 
 

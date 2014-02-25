@@ -36,6 +36,7 @@ namespace BeeHive.Actors
                 {
                     var evt = await actor.ProcessAsync(result.PollingResult);
                     await _queueOperator.CommitAsync(result.PollingResult);
+                    
                 }
                 catch (Exception exception)
                 {

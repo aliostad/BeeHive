@@ -25,6 +25,14 @@ namespace BeeHive.ConsoleDemo
             return q.PushAsync(message);
         }
 
+        public async Task PushBatchAsync(IEnumerable<Event> messages)
+        {
+            foreach (var message in messages)
+            {
+                await PushAsync(message);
+            }
+        }
+
         public Task<PollerResult<Event>> NextAsync(string queueName)
         {
             var name = new QueueName(queueName);
@@ -177,6 +185,14 @@ namespace BeeHive.ConsoleDemo
                 }
             });
 
+        }
+
+        public async Task PushBatchAsync(IEnumerable<T> messages)
+        {
+            foreach (var message in messages)
+            {
+                await PushAsync(message);
+            }
         }
     }
 

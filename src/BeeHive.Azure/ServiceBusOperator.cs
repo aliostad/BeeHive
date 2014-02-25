@@ -40,6 +40,28 @@ namespace BeeHive.Azure
 
         }
 
+        public async Task PushBatchAsync(IEnumerable<Event> messages)
+        {
+            if (!messages.Any())
+                return;
+
+            var message = messages.First();
+
+            if (await _namespaceManager.QueueExistsAsync(message.QueueName))
+            {
+                var client = QueueClient.CreateFromConnectionString(_connectionString, message.QueueName);
+                await client.SendBatchAsync(messages.Select(x => x.ToMessage()));
+            }
+            else
+            {
+                if (!await _namespaceManager.TopicExistsAsync(message.QueueName))
+                    throw new InvalidOperationException("Queue or topic does not exist.");
+
+                var client = TopicClient.CreateFromConnectionString(_connectionString, message.QueueName);
+                await client.SendBatchAsync(messages.Select(x => x.ToMessage()));
+            }
+        }
+
         public async Task<PollerResult<Event>> NextAsync(string queueName)
         {
             var name = new QueueName(queueName);

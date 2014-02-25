@@ -13,6 +13,8 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
     public class ProductBackInStockActor : IProcessorActor
     {
         private IKeyedListStore<OrderWaitingForProduct> _ordersWaitingProvider;
+        private ProductArrivedBackInStock _productArrivedBackInStock;
+
 
         public ProductBackInStockActor(IKeyedListStore<OrderWaitingForProduct> ordersWaitingProvider)
         {
@@ -21,15 +23,25 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
 
         public void Dispose()
         {
-            
+            _ordersWaitingProvider.RemoveAsync("OrderQueuedForProduct",
+                _productArrivedBackInStock.ProductId).Wait();
         }
 
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
-            var productArrivedBackInStock = evnt.GetBody<ProductArrivedBackInStock>();
+            _productArrivedBackInStock = evnt.GetBody<ProductArrivedBackInStock>();
             var orders = await _ordersWaitingProvider.GetAsync("OrderQueuedForProduct", 
-                productArrivedBackInStock.ProductId);
-            orders.Select(x => new Event(new Ite))
+                _productArrivedBackInStock.ProductId);            
+
+            return orders.Select(x => new Event(new ItemBackInStockForOrder()
+            {
+                ProductId = _productArrivedBackInStock.ProductId,
+                OrderId = x.OrderId
+            })
+            {
+                EventType = "ItemBackInStockForOrder",
+                QueueName = "ItemBackInStockForOrder"
+            });
         }
     }
 }
