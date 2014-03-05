@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BeeHive.Actors;
+using BeeHive.DataStructures;
 using BeeHive.ServiceLocator.Windsor;
 using Castle.MicroKernel.Lifestyle;
 using Castle.MicroKernel.Registration;
@@ -21,7 +23,7 @@ namespace BeeHive.ConsoleDemo
                 ConfigureDI(container);
 
                 var orchestrator = container.Resolve<Orchestrator>();
-                ConsoleWriteLine(ConsoleColor.Green, "Started the processing. ENter <n> to create a message or press <ENTER> to end");
+                ConsoleWriteLine(ConsoleColor.Green, "Started the processing. Enter <n> to create a message or press <ENTER> to end");
                 orchestrator.SetupAsync().Wait();
                 orchestrator.Start();
 
@@ -53,7 +55,7 @@ namespace BeeHive.ConsoleDemo
         }
 
    
-        private static void ConfigureDI(IWindsorContainer container)
+        public static void ConfigureDI(IWindsorContainer container)
         {
             var serviceLocator = new WindsorServiceLocator(container);
 
@@ -77,14 +79,25 @@ namespace BeeHive.ConsoleDemo
 
                 Component.For<IEventQueueOperator>()
                     .ImplementedBy<InMemoryServiceBus>()
-                    .LifestyleSingleton(),
+                    .LifestyleSingleton(),           
+
+                Component.For(typeof(ICollectionStore<>))
+                .ImplementedBy(typeof(InMemoryCollectionStore<>))
+                .LifestyleTransient(),
+
+                Component.For(typeof(ICounterStore))
+                .ImplementedBy(typeof(InMemoryCounterStore))
+                .LifestyleTransient(),
+
+                Component.For(typeof(IKeyedListStore<>))
+                .ImplementedBy(typeof(InMemoryKeyedListStore<>))
+                .LifestyleTransient(),
+
 
                 Component.For<DummyActor>()
-                    .ImplementedBy<DummyActor>()
-                    .LifestyleTransient()
-
-
-                );
+                .ImplementedBy<DummyActor>()
+                .LifestyleTransient()
+            );
         }
         private static void ConsoleWrite(ConsoleColor color, string value, params object[] args)
         {

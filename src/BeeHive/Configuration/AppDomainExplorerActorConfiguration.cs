@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.Actors;
+using BeeHive.Internal;
 
 namespace BeeHive
 {
@@ -18,26 +20,12 @@ namespace BeeHive
 
         public IEnumerable<ActorDescriptor> GetDescriptors()
         {
-            foreach (var type in AppDomain.CurrentDomain.GetAssemblies().
-                Where(x => x.FullName.StartsWith(_assemblyPrefix)).
-                SelectMany(y => y.ExportedTypes))
-            {
-                if (typeof (IProcessorActor).IsAssignableFrom(type))
-                {
-                    var attribute = type.GetCustomAttribute<ActorDescriptionAttribute>(true);
-                    if (attribute != null)
-                    {
-                        yield return new ActorDescriptor()
-                        {
-                            ActorType = type,
-                            DegreeOfParallelism = attribute.DegreeOfParallelism,
-                            Interval = new RegularlyIncreasingInterval(TimeSpan.Zero, 
-                                TimeSpan.FromSeconds(attribute.MaxIntervalSeconds), 10),
-                                SourceQueueName = attribute.Name                             
-                        };
-                    }
-                }
-            }
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .Where(x => x.FullName.StartsWith(_assemblyPrefix))
+                .SelectMany(y => y.ExportedTypes)
+                    .GetActorDescriptors();
+
         }
+        
     }
 }
