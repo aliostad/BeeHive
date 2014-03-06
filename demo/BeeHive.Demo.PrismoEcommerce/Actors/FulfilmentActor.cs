@@ -58,7 +58,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
                     Address = order.ShippingAddress,
                     DeliveryExpectedDate = DateTime.Now.AddDays(_random.Next(1,5))
                 };
-                await _shipmentStore.InsertAsync(shipment.Id, shipment);
+                await _shipmentStore.InsertAsync(shipment);
 
                 return new[]
                 {

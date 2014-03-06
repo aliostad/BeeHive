@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.DataStructures;
 
 namespace BeeHive.Demo.PrismoEcommerce.Entities
 {
-    public class Payment
+    public class Payment : IHaveIdentity
     {
         public Payment()
         {

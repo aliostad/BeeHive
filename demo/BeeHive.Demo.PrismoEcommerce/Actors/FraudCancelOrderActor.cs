@@ -33,7 +33,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
                 return new Event[0];
 
             order.IsCancelled = true;
-            await _orderStore.UpsertAsync(order.Id, order);
+            await _orderStore.UpsertAsync(order);
             return new[]
             {
                 new Event(new OrderCancelled()

@@ -10,6 +10,7 @@ using BeeHive.DataStructures;
 namespace BeeHive.ConsoleDemo
 {
     public class InMemoryCollectionStore<T> : ICollectionStore<T>
+        where T : IHaveIdentity
     {
         private ConcurrentDictionary<Type, ConcurrentDictionary<Guid, T>> _store = new ConcurrentDictionary<Type, ConcurrentDictionary<Guid, T>>();
 
@@ -33,17 +34,18 @@ namespace BeeHive.ConsoleDemo
             return t;
         }
 
-        public async Task InsertAsync(Guid id, T t)
+        public async Task InsertAsync(T t)
         {
+            var id = t.Id;
             var list = GetList();
-            if (list.TryAdd(id, t))
+            if (!list.TryAdd(id, t))
                 throw new KeyAlreadyExistsException(id);
         }
 
-        public async Task UpsertAsync(Guid id, T t)
+        public async Task UpsertAsync(T t)
         {
             var list = GetList();
-
+            var id = t.Id;
             list.AddOrUpdate(id, t, (g, old) =>
             {
                 if (_isConcurrencyAware)

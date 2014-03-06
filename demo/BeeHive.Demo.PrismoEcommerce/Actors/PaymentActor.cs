@@ -55,7 +55,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             {
                 var transactionId = await _paymentGateway.Authorise(payment);
                 payment.TransactionId = transactionId;
-                await _paymentRepo.InsertAsync(payment.Id, payment);
+                await _paymentRepo.InsertAsync( payment);
                 return new[]
                 {
                     new Event(new PaymentAuthorised()

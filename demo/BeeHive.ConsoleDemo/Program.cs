@@ -5,7 +5,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BeeHive.Actors;
+using BeeHive.Configuration;
 using BeeHive.DataStructures;
+using BeeHive.Demo.PrismoEcommerce.Entities;
+using BeeHive.Demo.PrismoEcommerce.Events;
 using BeeHive.ServiceLocator.Windsor;
 using Castle.MicroKernel.Lifestyle;
 using Castle.MicroKernel.Registration;
@@ -28,15 +31,37 @@ namespace BeeHive.ConsoleDemo
                 orchestrator.Start();
 
                 var queueOperator = container.Resolve<IEventQueueOperator>();
+                var orderStore = container.Resolve<ICollectionStore<Order>>();
 
                 while (true)
                 {
                     var line = Console.ReadLine();
                     if (line == "n")
-                        queueOperator.PushAsync(new Event("Helloooo!")
+                    {
+                        var order = new Order()
                         {
-                            EventType = "publish"
+                            CustomerId    = Guid.NewGuid(),
+                            Id = Guid.NewGuid(),
+                            PaymentMethod = "Card/Visa/4444333322221111/123",
+                            ShippingAddress = "Jabolsa",
+                            TotalPrice = 223,
+                            ProductQuantities = new Dictionary<Guid, int>()
+                            {
+                                {Guid.NewGuid(), 1},
+                                {Guid.NewGuid(), 2},
+                                {Guid.NewGuid(), 3},
+                            }
+                        };
+                        orderStore.InsertAsync(order).Wait();
+                        queueOperator.PushAsync(new Event(new OrderAccepted()
+                        {
+                            OrderId = order.Id
+                        })
+                        {
+                            EventType = "OrderAccepted"
                         }).Wait();
+                        
+                    }
                     else
                         break;
                 }
@@ -66,9 +91,9 @@ namespace BeeHive.ConsoleDemo
                 .LifestyleTransient(),
 
                 Component.For<IActorConfiguration>()
-                    .ImplementedBy<AppDomainExplorerActorConfiguration>()
-                    .LifestyleTransient()
-                    .DynamicParameters((kernel, dic) => dic.Add("assemblyPrefix", "BeeHive")),
+                    .Instance(
+                    ActorDescriptors.FromAssemblyContaining<OrderAccepted>()
+                    .ToConfiguration()),
 
                 Component.For<IServiceLocator>()
                     .Instance(serviceLocator),
@@ -83,20 +108,22 @@ namespace BeeHive.ConsoleDemo
 
                 Component.For(typeof(ICollectionStore<>))
                 .ImplementedBy(typeof(InMemoryCollectionStore<>))
-                .LifestyleTransient(),
+                .LifestyleSingleton(),
 
                 Component.For(typeof(ICounterStore))
                 .ImplementedBy(typeof(InMemoryCounterStore))
-                .LifestyleTransient(),
+                .LifestyleSingleton(),
 
                 Component.For(typeof(IKeyedListStore<>))
                 .ImplementedBy(typeof(InMemoryKeyedListStore<>))
-                .LifestyleTransient(),
-
+                .LifestyleSingleton(),
 
                 Component.For<DummyActor>()
                 .ImplementedBy<DummyActor>()
-                .LifestyleTransient()
+                .LifestyleTransient(),
+
+                Classes.FromAssemblyContaining<Order>()
+                    .Pick()
             );
         }
         private static void ConsoleWrite(ConsoleColor color, string value, params object[] args)
