@@ -62,7 +62,9 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
                 Trace.TraceInformation("Order transaction authorised: " + transactionId);
 
                 payment.TransactionId = transactionId;
-                await _paymentRepo.InsertAsync( payment);
+                await _paymentRepo.InsertAsync(payment);
+                Trace.TraceInformation("Payment success");
+
                 return new[]
                 {
                     new Event(new PaymentAuthorised()
@@ -70,26 +72,41 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
                         OrderId = order.Id,
                         PaymentId = payment.Id
                     })
-                    {
-                        QueueName = "PaymentAuthorised",
-                        EventType = "PaymentAuthorised"
-                    }
                 };
+            }
+            catch (AggregateException aggregateException)
+            {
+                var paymentFailureException = aggregateException.InnerExceptions.OfType<PaymentFailureException>()
+                    .FirstOrDefault();
+                if (paymentFailureException != null)
+                {
+                    Trace.TraceInformation("Payment failed");
+
+                    Trace.TraceWarning(paymentFailureException.ToString());
+                    return new[]
+                    {
+                        new Event(new PaymentFailed()
+                        {
+                            OrderId = order.Id
+                        })                                    
+                    };            
+                }
+                else
+                {
+                    throw;
+                }
+
             }
             catch (PaymentFailureException paymentFailureException)
             {
+                Trace.TraceInformation("Payment failed");
                 Trace.TraceWarning(paymentFailureException.ToString());
                 return new[]
                 {
                     new Event(new PaymentFailed()
                     {
                         OrderId = order.Id
-                    })
-                    {
-                        QueueName = "PaymentFailed",
-                        EventType = "PaymentFailed"
-                    }
-                    
+                    })                                    
                 };
 
             }

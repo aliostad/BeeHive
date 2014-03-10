@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BeeHive.Demo.PrismoEcommerce.Entities;
+using BeeHive.Demo.PrismoEcommerce.Exceptions;
 
 namespace BeeHive.Demo.PrismoEcommerce.ExternalSystems
 {
@@ -15,7 +16,11 @@ namespace BeeHive.Demo.PrismoEcommerce.ExternalSystems
         {
             // failure rate of 10%
             if (_random.NextDouble() < 0.1)
-                throw new ApplicationException("Payment failure");
+                throw new PaymentFailureException(string.Format("{0}\r\n{1}\r\n{2}",
+                    payment.PaymentMethod,
+                    payment.Id,
+                    payment.Amount
+            ));
 
             return Guid.NewGuid().ToString("N"); // returns transaction id
 

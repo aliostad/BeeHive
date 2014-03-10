@@ -42,11 +42,13 @@
     <Compile Include="Actors\FraudCancelOrderActor.cs" />
     <Compile Include="Actors\FraudCheckActor.cs" />
     <Compile Include="Actors\FulfilmentActor.cs" />
+    <Compile Include="Actors\ItemBackInStockForOrderActor.cs" />
     <Compile Include="Actors\ItemOutOfStockForOrderWorkflowActor.cs" />
     <Compile Include="Actors\OrderInventoryActor.cs" />
     <Compile Include="Actors\OrderItemInventoryActor.cs" />
     <Compile Include="Actors\OrderShippedEmailActor.cs" />
     <Compile Include="Actors\PaymentActor.cs" />
+    <Compile Include="Actors\PaymenyFailedActor.cs" />
     <Compile Include="Actors\ProductBackInStockActor.cs" />
     <Compile Include="Actors\ProductOutOfStockActor.cs" />
     <Compile Include="Entities\Customer.cs" />

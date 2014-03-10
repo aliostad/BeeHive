@@ -9,7 +9,7 @@ using BeeHive.Demo.PrismoEcommerce.WorkflowState;
 
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
-    [ActorDescription("ProductArrivedBackInStock")]
+    [ActorDescription("ProductArrivedBackInStock-ActionParkedOrders")]
     public class ProductBackInStockActor : IProcessorActor
     {
         private IKeyedListStore<OrderWaitingForProduct> _ordersWaitingProvider;
@@ -39,11 +39,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             {
                 ProductId = productArrivedBackInStock.ProductId,
                 OrderId = x.OrderId
-            })
-            {
-                EventType = "ItemBackInStockForOrder",
-                QueueName = "ItemBackInStockForOrder"
-            });
+            }));
         }
     }
 }

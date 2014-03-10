@@ -65,11 +65,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
                     
 
                 outOfStockForOrder.ProductQueuedForOrder = true;
-                return new[] {new Event( outOfStockForOrder)
-                {
-                    QueueName = "ItemOutOfStockForOrder",
-                    EventType = "ItemOutOfStockForOrder"
-                }};
+                return new[] {new Event( outOfStockForOrder)};
             }
 
             if (!outOfStockForOrder.OrderQueuedForProduct)
