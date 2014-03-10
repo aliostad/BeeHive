@@ -16,7 +16,8 @@ namespace BeeHive.Internal
                 try
                 {
                     var exception = t.Exception;
-                    Trace.TraceWarning(exception.ToString()); // probably wil never run
+                    if(exception!=null)
+                        Trace.TraceWarning(exception.ToString()); // probably wil never run
                 }
                 catch (Exception e)
                 {

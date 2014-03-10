@@ -40,9 +40,14 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             var orderAccepted = evnt.GetBody<OrderAccepted>();
             var order =  await _orderRepo.GetAsync(orderAccepted.OrderId);
 
+            Trace.TraceInformation("PaymentActor received OrderAccepted " + order.Id);
+
             // if order is cancelled no further processing
-            if (order.IsCancelled) 
-                return new Event[0];
+            if (order.IsCancelled)
+            {
+                Trace.TraceInformation("Order was cancelled.");
+                return new Event[0];                
+            }
 
             var payment = new Payment()
             {
@@ -54,6 +59,8 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             try
             {
                 var transactionId = await _paymentGateway.Authorise(payment);
+                Trace.TraceInformation("Order transaction authorised: " + transactionId);
+
                 payment.TransactionId = transactionId;
                 await _paymentRepo.InsertAsync( payment);
                 return new[]

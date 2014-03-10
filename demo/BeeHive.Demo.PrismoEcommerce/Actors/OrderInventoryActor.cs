@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,9 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
         {
             var paymentAuthorised = evnt.GetBody<PaymentAuthorised>();
             var order = await _orderStore.GetAsync(paymentAuthorised.OrderId);
-            
+
+            Trace.TraceInformation("OrderInventoryActor - ProductRequested");
+
             var @event = new Event(new OrderItemsNotYetAccountedFor()
             {
                 ProductQuantities = order.ProductQuantities,

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -50,6 +51,8 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             else
             {
                 await Task.Delay(_random.Next(1000, 5000));
+
+                Trace.TraceInformation("Fulfilment actor - fulfiling : " + order.Id);
 
                 var shipment = new Shipment()
                 {

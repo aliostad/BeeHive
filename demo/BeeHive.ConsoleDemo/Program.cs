@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -10,6 +11,7 @@ using BeeHive.DataStructures;
 using BeeHive.Demo.PrismoEcommerce.Entities;
 using BeeHive.Demo.PrismoEcommerce.Events;
 using BeeHive.ServiceLocator.Windsor;
+using BeeHive.Tools;
 using Castle.MicroKernel.Lifestyle;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
@@ -22,8 +24,12 @@ namespace BeeHive.ConsoleDemo
         {
             try
             {
+                Trace.Listeners.Clear();
+                Trace.Listeners.Add(new ColourfulConsoleTraceListener());
                 IWindsorContainer container = new WindsorContainer();
                 ConfigureDI(container);
+                
+                    
 
                 var orchestrator = container.Resolve<Orchestrator>();
                 ConsoleWriteLine(ConsoleColor.Green, "Started the processing. Enter <n> to create a message or press <ENTER> to end");
@@ -32,6 +38,7 @@ namespace BeeHive.ConsoleDemo
 
                 var queueOperator = container.Resolve<IEventQueueOperator>();
                 var orderStore = container.Resolve<ICollectionStore<Order>>();
+                var customerStore = container.Resolve<ICollectionStore<Customer>>();
 
                 while (true)
                 {
@@ -52,6 +59,17 @@ namespace BeeHive.ConsoleDemo
                                 {Guid.NewGuid(), 3},
                             }
                         };
+
+                        var customer = new Customer()
+                        {
+                            Address = "2, Korat Jingala",
+                            Email = "ostad@chopak.it",
+                            Id = order.CustomerId,
+                            Name = "Natsak Birat"
+                        };
+
+                        customerStore.InsertAsync(customer).Wait();
+
                         orderStore.InsertAsync(order).Wait();
                         queueOperator.PushAsync(new Event(new OrderAccepted()
                         {

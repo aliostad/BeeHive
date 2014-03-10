@@ -96,6 +96,7 @@
     <Compile Include="Internal\FuncExtensions.cs" />
     <Compile Include="Internal\OtherExtensions.cs" />
     <Compile Include="Internal\TaskExtensions.cs" />
+    <Compile Include="Internal\WhoCalledAMethod.cs" />
     <Compile Include="IQueueOperator.cs" />
     <Compile Include="ServiceLocator\IServiceLocatorExtensions.cs" />
     <Compile Include="QueueName.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Scheduling\PollerResult.cs" />
     <Compile Include="Scheduling\RegularlyIncreasingInterval.cs" />
     <Compile Include="ServiceLocator\IServiceLocator.cs" />
+    <Compile Include="Tools\ColourfulConsoleTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

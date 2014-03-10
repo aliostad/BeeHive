@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,9 +35,14 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
 
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
+
+            Trace.TraceInformation("ItemOutOfStockForOrderWorkflowActor");
+
             var outOfStockForOrder = evnt.GetBody<ItemOutOfStockForOrder>();
             if (!outOfStockForOrder.ProductRequested)
             {
+                Trace.TraceInformation("ItemOutOfStockForOrderWorkflowActor - ProductRequested");
+
                 outOfStockForOrder.ProductRequested = true;
                 return new[] {new Event( outOfStockForOrder)
                 {
@@ -47,6 +53,8 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
 
             if (!outOfStockForOrder.ProductQueuedForOrder)
             {
+
+                Trace.TraceInformation("ItemOutOfStockForOrderWorkflowActor - ProductQueued");
 
                 await _parkedOrderItemStore.AddAsync("ProductQueuedForOrder",
                     outOfStockForOrder.OrderId,
@@ -66,6 +74,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
 
             if (!outOfStockForOrder.OrderQueuedForProduct)
             {
+                Trace.TraceInformation("ItemOutOfStockForOrderWorkflowActor - OrderQueued");
 
                 await _orderWaitingForProductStore.AddAsync("OrderQueuedForProduct",
                     outOfStockForOrder.ProductId,

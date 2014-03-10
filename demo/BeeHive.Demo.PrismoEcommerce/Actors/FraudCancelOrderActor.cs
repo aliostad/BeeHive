@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,11 +30,15 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             var fraudCheckFailed = evnt.GetBody<FraudCheckFailed>();
             var order = await _orderStore.GetAsync(fraudCheckFailed.OrderId);
 
+            Trace.TraceInformation("FraudCancelOrderActor - This order must be cancelled: " + order.Id);
+
             if (order.IsCancelled)
                 return new Event[0];
 
             order.IsCancelled = true;
             await _orderStore.UpsertAsync(order);
+            Trace.TraceInformation("FraudCancelOrderActor - order cancelled: " + order.Id);
+
             return new[]
             {
                 new Event(new OrderCancelled()

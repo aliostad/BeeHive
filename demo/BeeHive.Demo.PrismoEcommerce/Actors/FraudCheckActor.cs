@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,8 +45,12 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
 
             var payment = await _paymentStore.GetAsync(authorised.PaymentId);
             var customer = await _customeStore.GetAsync(order.CustomerId);
+            Trace.TraceInformation("FraudCheckActor - checking order for fraud: " + order.Id);
+
             if (_fraudChecker.IsFradulent(payment, customer))
             {
+                Trace.TraceInformation("FraudCheckActor - !! IS fraud: " + order.Id);
+
                 return new[]
                 {
                     new Event( 
@@ -60,6 +65,8 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
                     }
                 };
             }
+
+            Trace.TraceInformation("FraudCheckActor - order not fraud: " + order.Id);
 
             return new Event[0];
         }

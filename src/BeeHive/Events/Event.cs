@@ -18,6 +18,10 @@ namespace BeeHive
 
             ContentType = string.Format(ContentTypeFormat, body.GetType().Name);
             Body = JsonConvert.SerializeObject(body);
+
+            // set default event type and queue name
+            QueueName = body.GetType().Name;
+            EventType = body.GetType().Name;
         }
 
 

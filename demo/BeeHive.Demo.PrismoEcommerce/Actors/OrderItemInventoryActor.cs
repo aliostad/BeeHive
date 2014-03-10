@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,42 +33,67 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             var productId = keyValue.Key;
             var quantity = keyValue.Value;
 
-            notYetAccountedFor.ProductQuantities.Remove(keyValue.Key);
 
             var inventory = await _inventoryStore.GetAsync(productId);
             var events = new List<Event>();
 
+            // remove item since it will be dealt with
+            notYetAccountedFor.ProductQuantities.Remove(keyValue.Key);
+
+          
+            // if out of stock, raise out of stock
             if (quantity > inventory)
             {
-                events.Add(new Event(new ItemOutOfStock()
+                Trace.TraceInformation("OrderItemInventoryActor - Item out of stock");
+                
+                events.Add(new Event(new ProductOutOfStock()
                 {
                     ProductId = productId,
                     Quantity = keyValue.Value
-                })
-                {
-                    EventType = "ItemOutOfStock",
-                    QueueName = "ItemOutOfStock"
-                });
+                }));
 
+                events.Add(new Event(new ItemOutOfStockForOrder()
+                {
+                    OrderId = notYetAccountedFor.OrderId,
+                    ProductId = productId,
+                    Quantity = quantity
+                }));
 
                 notYetAccountedFor.AnyOutOfStock = true;
             }
-            else
+            else 
             {
                 // decrement repo
                 await _inventoryStore.IncrementAsync(productId, -quantity);
+                Trace.TraceInformation("OrderItemInventoryActor - Item in stock");
             }
-            if (notYetAccountedFor.ProductQuantities.Count == 0 &&
-                !notYetAccountedFor.AnyOutOfStock)
+
+            if (notYetAccountedFor.ProductQuantities.Count > 0)
             {
-                events.Add(new Event(new OrderInventoryCheckCompleted()
+                // put back in the queue
+                events.Add(new Event(new OrderItemsNotYetAccountedFor()
                 {
-                    OrderId = notYetAccountedFor.OrderId
-                })
+                    OrderId = notYetAccountedFor.OrderId,
+                    AnyOutOfStock = notYetAccountedFor.AnyOutOfStock,
+                    ProductQuantities = notYetAccountedFor.ProductQuantities
+                }));
+            }
+
+
+            if (notYetAccountedFor.ProductQuantities.Count == 0)
+            {
+                if (notYetAccountedFor.AnyOutOfStock)
                 {
-                    QueueName = "OrderInventoryCheckCompleted",
-                    EventType = "OrderInventoryCheckCompleted"
-                });                
+                    // TODO: cant remember what needs to be done ;)
+                }
+                else
+                {
+                    events.Add(new Event(new OrderInventoryCheckCompleted()
+                    {
+                        OrderId = notYetAccountedFor.OrderId
+                    }));     
+                }
+                           
             }
 
             return events;
