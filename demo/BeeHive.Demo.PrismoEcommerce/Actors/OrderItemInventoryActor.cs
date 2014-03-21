@@ -34,7 +34,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             var quantity = keyValue.Value;
 
 
-            var inventory = await _inventoryStore.GetAsync(productId);
+            var inventory = await _inventoryStore.GetAsync(Constants.InventoryCounterName, productId);
             var events = new List<Event>();
 
             // remove item since it will be dealt with
@@ -64,7 +64,8 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
             else 
             {
                 // decrement repo
-                await _inventoryStore.IncrementAsync(productId, -quantity);
+                await _inventoryStore.IncrementAsync(Constants.InventoryCounterName,
+                    productId, -quantity);
                 Trace.TraceInformation("OrderItemInventoryActor - Item in stock");
             }
 

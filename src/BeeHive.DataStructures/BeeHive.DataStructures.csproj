@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Common\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ConcurrencyConflictException.cs" />
     <Compile Include="ICollectionStore.cs" />
@@ -49,7 +49,9 @@
     <Compile Include="ICounterStore.cs" />
     <Compile Include="IHaveIdentity.cs" />
     <Compile Include="IKeyedListStore.cs" />
+    <Compile Include="ILockStore.cs" />
     <Compile Include="KeyAlreadyExistsException.cs" />
+    <Compile Include="LockToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

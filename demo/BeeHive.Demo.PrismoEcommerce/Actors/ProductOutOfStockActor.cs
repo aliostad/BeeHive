@@ -36,7 +36,8 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
 
             Trace.TraceInformation("ProductOutOfStockActor - waiting to get orders from suppliers now back");
 
-            await _stockLevelStore.IncrementAsync(productOutOfStock.ProductId,
+            await _stockLevelStore.IncrementAsync(Constants.InventoryCounterName,
+                productOutOfStock.ProductId,
                 productOutOfStock.Quantity + 2);
 
             return new[] { new Event(new ProductArrivedBackInStock()

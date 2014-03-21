@@ -5,14 +5,14 @@ namespace BeeHive.DataStructures
 {
     public interface ICounterStore
     {
-        Task<long> GetAsync(Guid id);
+        Task<long> GetAsync(string counterName, Guid id);
 
         /// <summary>
         /// Use it for decrement as well
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        Task IncrementAsync(Guid id, long value);
+        Task IncrementAsync(string counterName, Guid id, long value);
     }
 }
 
