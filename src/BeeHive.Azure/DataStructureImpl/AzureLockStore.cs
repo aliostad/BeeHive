@@ -35,8 +35,8 @@ namespace BeeHive.Azure.DataStructureImpl
         public async Task<bool> TryLockAsync(
             LockToken token, 
             int tries = 16, // this is NOT retry - it is try
-            int retryTimeoutMilliseconds = 3000, 
-            int timeoutMilliseconds = 30000)
+            int retryTimeoutMilliseconds = 15000, 
+            int timeoutMilliseconds = 15000)
         {
             if (tries < 1)
                 tries = 1;
@@ -47,8 +47,8 @@ namespace BeeHive.Azure.DataStructureImpl
                 try
                 {
                     await blob.AcquireLeaseAsync(
-                    TimeSpan.FromMilliseconds(timeoutMilliseconds),
-                    token.TokenId.ToString());
+                        TimeSpan.FromMilliseconds(timeoutMilliseconds),
+                        token.TokenId.ToString("N"));
 
                     return true;
                 }
@@ -66,7 +66,7 @@ namespace BeeHive.Azure.DataStructureImpl
         public async Task ReleaseLockAsync(LockToken token)
         {
             var blob = await GetBlobAsync(token.ResourceId);
-            await blob.ReleaseLeaseAsync(AccessCondition.GenerateLeaseCondition(token.TokenId.ToString()));
+            await blob.ReleaseLeaseAsync(AccessCondition.GenerateLeaseCondition(token.TokenId.ToString("N")));
         }
 
         private async Task<CloudBlockBlob> GetBlobAsync(string key)

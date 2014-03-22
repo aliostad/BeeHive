@@ -82,7 +82,7 @@ namespace BeeHive.Azure.DataStructureImpl
                 throw new TimeoutException("Could not lock the resource");
             var blob = await GetBlobAsync(key);
             var text = await blob.DownloadTextAsync();
-            var current = long.Parse(text);
+            var current = long.Parse(string.IsNullOrEmpty(text) ? "0" : text);
             var newValue = current + value;
             if(newValue < 0)
                 throw new InvalidOperationException("Value cannot get below zero: " + newValue);
