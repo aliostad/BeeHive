@@ -33,7 +33,7 @@ namespace BeeHive.Tests.Demo
             {
                 OrderId = itemId
             }).Wait();
-            Assert.True(inMemoryKeyedListStore.ExistsAsync(listName, key, itemId).Result);
+            Assert.True(inMemoryKeyedListStore.ItemExistsAsync(listName, key, itemId).Result);
             
         }
 

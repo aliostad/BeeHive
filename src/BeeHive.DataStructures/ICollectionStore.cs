@@ -13,7 +13,7 @@ namespace BeeHive.DataStructures
 
         Task UpsertAsync(T t);
 
-        Task DeleteAsync(Guid id);
+        Task DeleteAsync(T t);
 
         Task<bool> ExistsAsync(Guid id);
 

@@ -11,7 +11,7 @@ using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
-namespace BeeHive.Azure.DataStructureImpl
+namespace BeeHive.Azure
 {
 
     /// <summary>
@@ -78,24 +78,43 @@ namespace BeeHive.Azure.DataStructureImpl
             var table = await GetTable(listName);
             foreach (var item in await GetAsync(listName, key))
             {
-                await table.ExecuteAsync(TableOperation.Delete(new TableEntity(key.ToString(), 
-                    item.Id.ToString())));
-            }
+                await table.ExecuteAsync(TableOperation.Delete(new TableEntity(key.ToString(),
+                    item.Id.ToString())
+                {
+                    ETag = "*"
+                }));
+            }            
         }
 
-        public async Task<bool> ListExistsAsync(string listName, Guid key)
+        public async Task<bool> ExistsAsync(string listName, Guid key)
         {
-            return (await GetAsync(listName, key)).Any();
+            var table = await GetTable(listName);
+
+            var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
+                QueryComparisons.Equal, key.ToString()); 
+
+            var query = new TableQuery<DynamicTableEntity>()
+                .Where(conditionPK);
+
+            return table.ExecuteQuery(query).Any();
         }
 
-        public async Task<bool> ExistsAsync(string listName, Guid key, Guid itemId)
+        public async Task<bool> ListExistsAsync(string listName)
+        {
+            var account = CloudStorageAccount.Parse(_connectionString);
+            var client = account.CreateCloudTableClient();
+            var table = client.GetTableReference(listName);
+            return table.Exists();
+        }
+
+        public async Task<bool> ItemExistsAsync(string listName, Guid key, Guid itemId)
         {
             var table = await GetTable(listName);
 
             var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
                 QueryComparisons.Equal, key.ToString());
             var conditionRK = TableQuery.GenerateFilterCondition("RowKey",
-                QueryComparisons.Equal, key.ToString());
+                QueryComparisons.Equal, itemId.ToString());
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));

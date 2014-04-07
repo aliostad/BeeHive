@@ -34,6 +34,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Castle.Core.3.2.2\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=3.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Castle.Windsor.3.2.1\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
     </Reference>
@@ -41,7 +49,7 @@
       <HintPath>..\packages\Microsoft.Data.OData.5.2.0\lib\net40\Microsoft.Data.OData.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.1.0\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Private>True</Private>
@@ -49,8 +57,9 @@
     <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Storage, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.Storage.2.1.0.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=2.1.0.4, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WindowsAzure.Storage.2.1.0.4\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,6 +85,22 @@
     <ProjectReference Include="..\demo\BeeHive.Demo.PrismoEcommerce\BeeHive.Demo.PrismoEcommerce.csproj">
       <Project>{3a33acb5-6752-4429-88fc-c15d245ec79e}</Project>
       <Name>BeeHive.Demo.PrismoEcommerce</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\BeeHive.Azure\BeeHive.Azure.csproj">
+      <Project>{22e3fc77-78cd-4910-9d27-7494a15a8916}</Project>
+      <Name>BeeHive.Azure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj">
+      <Project>{6ee378ae-c8c0-44b2-aa9a-711faada4e9c}</Project>
+      <Name>BeeHive.DataStructures</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj">
+      <Project>{df541a72-6628-4926-80b9-7756e035f7ed}</Project>
+      <Name>BeeHive.ServiceLocator.Windsor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\BeeHive\BeeHive.csproj">
+      <Project>{3e0f3470-eae7-4a78-9822-52f57dcdde9b}</Project>
+      <Name>BeeHive</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

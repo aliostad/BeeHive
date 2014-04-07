@@ -56,12 +56,22 @@ namespace BeeHive.ConsoleDemo
             _store.TryRemove(GetKey(listName, key), out bag);
         }
 
+        public async Task<bool> ListExistsAsync(string listName)
+        {
+            return _store.ContainsKey(listName);
+        }
+
+        public async Task<bool> ExistsAsync(string listName, Guid key)
+        {
+            return _store.ContainsKey(GetKey(listName, key));
+        }
+
         public async Task<bool> ListExistsAsync(string listName, Guid key)
         {
             return _store.ContainsKey(GetKey(listName, key));
         }
 
-        public async Task<bool> ExistsAsync(string listName, Guid key, Guid itemId)
+        public async Task<bool> ItemExistsAsync(string listName, Guid key, Guid itemId)
         {
             if (!_store.ContainsKey(GetKey(listName, key)))
                 return false;

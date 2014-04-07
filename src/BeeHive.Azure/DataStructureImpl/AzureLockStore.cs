@@ -9,7 +9,7 @@ using BeeHive.DataStructures;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace BeeHive.Azure.DataStructureImpl
+namespace BeeHive.Azure
 {
     public class AzureLockStore : ILockStore
     {

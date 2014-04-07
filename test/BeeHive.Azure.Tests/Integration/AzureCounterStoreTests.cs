@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using BeeHive.Azure.DataStructureImpl;
 using Xunit;
 
 namespace BeeHive.Azure.Tests.Integration
@@ -15,8 +14,6 @@ namespace BeeHive.Azure.Tests.Integration
 
         private const string ConnectionString = "UseDevelopmentStorage=true;";
 
-        private const string ConnectionString2 =
-            "DefaultEndpointsProtocol=http;AccountName=dataexchange;AccountKey=4WNLZg5b9oj049HBxOvVvlUZkKUWXYyt/c2BeGheXlNTWPp8Ev8mS3YRQiZc9dzFISq67meD5McECLEF7AnC/g==";
         private const string ContainerName = "band25";
 
 

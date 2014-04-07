@@ -23,7 +23,11 @@ namespace BeeHive.DataStructures
 
         Task RemoveAsync(string listName, Guid key);
 
-        Task<bool> ExistsAsync(string listName, Guid key, Guid itemId);
+        Task<bool> ListExistsAsync(string listName);
+
+        Task<bool> ExistsAsync(string listName, Guid key);
+
+        Task<bool> ItemExistsAsync(string listName, Guid key, Guid itemId);
 
         Task UpdateAsync(string listName, Guid key, T t);
 

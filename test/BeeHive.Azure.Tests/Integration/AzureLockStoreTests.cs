@@ -1,5 +1,4 @@
 ﻿using System;
-using BeeHive.Azure.DataStructureImpl;
 using BeeHive.DataStructures;
 using Microsoft.WindowsAzure.Storage;
 using Xunit;

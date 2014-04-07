@@ -59,11 +59,22 @@ namespace BeeHive.ConsoleDemo
             });
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(T t)
         {
-            T t;
+
             var list = GetList();
-            list.TryRemove(id, out t);
+            if (_isConcurrencyAware)
+            {
+                var old = default(T);
+                if (list.TryGetValue(t.Id, out old))
+                {
+                    var oldcw = old as IConcurrencyAware;
+                    var tcw = t as IConcurrencyAware;
+                    tcw.AssertNoConflict(oldcw);
+                }
+            }
+
+            list.TryRemove(t.Id, out t);
         }
 
         public async Task<bool> ExistsAsync(Guid id)

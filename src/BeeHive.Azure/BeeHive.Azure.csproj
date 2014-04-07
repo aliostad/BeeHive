@@ -72,11 +72,14 @@
     <Compile Include="..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DataStructureImpl\AzureTableEntityStore.cs" />
     <Compile Include="BlobSource.cs" />
     <Compile Include="BrokeredMessageExtensions.cs" />
+    <Compile Include="DataStructureImpl\AzureCollectionStore.cs" />
     <Compile Include="DataStructureImpl\AzureCounterStore.cs" />
     <Compile Include="DataStructureImpl\AzureKeyedListStore.cs" />
     <Compile Include="DataStructureImpl\AzureLockStore.cs" />
+    <Compile Include="IPartitionedEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceBusOperator.cs" />
   </ItemGroup>

@@ -4,6 +4,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using BeeHive.Actors;
+using BeeHive.Azure;
+using BeeHive.Configuration;
+using BeeHive.DataStructures;
+using BeeHive.Demo.PrismoEcommerce.Entities;
+using BeeHive.Demo.PrismoEcommerce.Events;
+using BeeHive.ServiceLocator.Windsor;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
@@ -35,5 +44,49 @@ namespace BeeHive.Demo.Worker
 
             return base.OnStart();
         }
+
+        public static void ConfigureDI(IWindsorContainer container)
+        {
+            var serviceLocator = new WindsorServiceLocator(container);
+
+            container.Register(
+
+                Component.For<Orchestrator>()
+                .ImplementedBy<Orchestrator>()
+                .LifestyleTransient(),
+
+                Component.For<IActorConfiguration>()
+                    .Instance(
+                    ActorDescriptors.FromAssemblyContaining<OrderAccepted>()
+                    .ToConfiguration()),
+
+                Component.For<IServiceLocator>()
+                    .Instance(serviceLocator),
+
+                Component.For<IFactoryActor>()
+                    .ImplementedBy<FactoryActor>()
+                    .LifestyleTransient(),
+
+                Component.For<IEventQueueOperator>()
+                    .ImplementedBy<ServiceBusOperator>()
+                    .LifestyleSingleton(),
+
+                Component.For(typeof(ICollectionStore<>))
+                .ImplementedBy(typeof(AzureCollectionStore<>))
+                .LifestyleSingleton(),
+
+                Component.For(typeof(ICounterStore))
+                .ImplementedBy(typeof(AzureCounterStore))
+                .LifestyleSingleton(),
+
+                Component.For(typeof(IKeyedListStore<>))
+                .ImplementedBy(typeof(AzureKeyedListStore<>))
+                .LifestyleSingleton(),
+
+                Classes.FromAssemblyContaining<Order>()
+                    .Pick()
+            );
+        }
+
     }
 }
