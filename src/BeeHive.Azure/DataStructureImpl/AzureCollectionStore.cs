@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BeeHive.DataStructures;
 using Microsoft.WindowsAzure.Storage;
@@ -106,7 +107,8 @@ namespace BeeHive.Azure
             {
                 PartitionKey = GetPartitionKey(t.Id),
                 RowKey = t.Id.ToString(),
-                ETag = cwt == null ? "*" : cwt.ETag
+                ETag = cwt == null ? "*" : cwt.ETag,
+                Timestamp = cwt == null ? DateTimeOffset.UtcNow : cwt.LastModofied.Value
             };
             if (storeEntity)
                 tableEntity.Properties[EntityPropertyName] = new EntityProperty(JsonConvert.SerializeObject(t));
@@ -121,8 +123,20 @@ namespace BeeHive.Azure
 
         public async Task UpsertAsync(T t)
         {
+            var tcw = t as IConcurrencyAware;
+            OperationContext ctx = null;
+            if (tcw != null)
+                ctx = new OperationContext()
+                {
+                    UserHeaders =
+                    {
+                        {"If-Match", tcw.ETag}
+                    }
+                };
+            
             var table = await GetTable();
-            await table.ExecuteAsync(TableOperation.InsertOrReplace(GetEntity(t, true)));
+            await table.ExecuteAsync(TableOperation.InsertOrReplace(GetEntity(t, true)),
+                null, ctx);
         }
 
 
