@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,26 +65,36 @@ namespace BeeHive.Azure
 
         public async Task<PollerResult<Event>> NextAsync(string queueName)
         {
-            var name = new QueueName(queueName);
-            BrokeredMessage message = null;
-            if (name.IsSimpleQueue)
-            {
-                var client = QueueClient.CreateFromConnectionString(_connectionString, name.TopicName);
-                message = await client.ReceiveAsync();
-                
-            }
-            else
-            {
-                var client = SubscriptionClient.CreateFromConnectionString(_connectionString, 
-                    name.TopicName, name.SubscriptionName);
-                message = await client.ReceiveAsync(TimeSpan.FromSeconds(30)); // TODO: replace with param
-            }
 
-            return new PollerResult<Event>(message != null,
-                    message == null
-                        ? null
-                        : message.ToEvent(name)
-                    );
+            try
+            {
+                var name = new QueueName(queueName);
+                BrokeredMessage message = null;
+                if (name.IsSimpleQueue)
+                {
+                    var client = QueueClient.CreateFromConnectionString(_connectionString, name.TopicName);
+                    message = await client.ReceiveAsync();
+
+                }
+                else
+                {
+                    var client = SubscriptionClient.CreateFromConnectionString(_connectionString,
+                        name.TopicName, name.SubscriptionName);
+                    message = await client.ReceiveAsync(TimeSpan.FromSeconds(30)); // TODO: replace with param
+                }
+
+                return new PollerResult<Event>(message != null,
+                        message == null
+                            ? null
+                            : message.ToEvent(name)
+                        );
+            }
+            catch (Exception e)
+            {
+                Trace.TraceWarning(e.ToString());
+                return new PollerResult<Event>(false, null);
+            }
+            
         }
 
         public Task AbandonAsync(Event message)

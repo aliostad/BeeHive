@@ -22,6 +22,10 @@ namespace BeeHive.Demo.Worker
 {
     public class WorkerRole : RoleEntryPoint
     {
+        private Orchestrator _orchestrator;
+        private IConfigurationValueProvider _configurationValueProvider =
+            new AzureConfigurationValueProvider();
+
         public override void Run()
         {
             // This is a sample worker implementation. Replace with your logic.
@@ -37,15 +41,22 @@ namespace BeeHive.Demo.Worker
         public override bool OnStart()
         {
             // Set the maximum number of concurrent connections 
-            ServicePointManager.DefaultConnectionLimit = 12;
+            ServicePointManager.DefaultConnectionLimit = 1200;
 
             // For information on handling configuration changes
             // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
 
+            var container = new WindsorContainer();
+            ConfigureDI(container);
+
+            _orchestrator = container.Resolve<Orchestrator>();
+            _orchestrator.SetupAsync().Wait();
+            _orchestrator.Start();
+
             return base.OnStart();
         }
 
-        public static void ConfigureDI(IWindsorContainer container)
+        public void ConfigureDI(IWindsorContainer container)
         {
             var serviceLocator = new WindsorServiceLocator(container);
 
@@ -69,6 +80,11 @@ namespace BeeHive.Demo.Worker
 
                 Component.For<IEventQueueOperator>()
                     .ImplementedBy<ServiceBusOperator>()
+                    .DynamicParameters((k, dic)
+                        =>
+                    {
+                        dic["connectionString"] = _configurationValueProvider.GetValue("BusConnectionString");
+                    })
                     .LifestyleSingleton(),
 
                 Component.For(typeof(ICollectionStore<>))
@@ -88,5 +104,11 @@ namespace BeeHive.Demo.Worker
             );
         }
 
+        public override void OnStop()
+        {
+            _orchestrator.Stop();
+            _orchestrator.Dispose();
+            base.OnStop();
+        }
     }
 }

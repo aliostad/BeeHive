@@ -89,6 +89,7 @@
     <Compile Include="Actors\IService.cs" />
     <Compile Include="Actors\Orchestrator.cs" />
     <Compile Include="Actors\ActorDescriptionAttribute.cs" />
+    <Compile Include="Configuration\IConfigurationValueProvider.cs" />
     <Compile Include="Configuration\IEnumerableActorDescriptorExtensions.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventProperties.cs" />

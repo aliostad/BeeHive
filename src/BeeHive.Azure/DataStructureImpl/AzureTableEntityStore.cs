@@ -8,7 +8,12 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace BeeHive.Azure
 {
-    public class AzureTableEntityStore<T> : ICollectionStore<T>
+    /// <summary>
+    /// TODO: impl if need be
+    /// made internal for the purpose of not yet impl
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    internal class AzureTableEntityStore<T> : ICollectionStore<T>
         where T : TableEntity, IHaveIdentity
     {
         public Task<T> GetAsync(Guid id)

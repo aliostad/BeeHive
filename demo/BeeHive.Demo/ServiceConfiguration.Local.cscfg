@@ -4,6 +4,7 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="BusConnectionString" value="Endpoint=sb://win-b1nnu9snldf/ServiceBusDefaultNamespace;StsEndpoint=https://win-b1nnu9snldf:9355/ServiceBusDefaultNamespace;RuntimePort=9354;ManagementPort=9355" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>
