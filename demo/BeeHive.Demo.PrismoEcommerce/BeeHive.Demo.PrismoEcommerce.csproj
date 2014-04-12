@@ -51,6 +51,7 @@
     <Compile Include="Actors\PaymenyFailedActor.cs" />
     <Compile Include="Actors\ProductBackInStockActor.cs" />
     <Compile Include="Actors\ProductOutOfStockActor.cs" />
+    <Compile Include="Actors\TracingActor.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Entities\Customer.cs" />
     <Compile Include="Entities\Inventory.cs" />

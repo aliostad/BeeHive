@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BeeHive
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
     public class ActorDescriptionAttribute : Attribute
     {
         private readonly string _name;

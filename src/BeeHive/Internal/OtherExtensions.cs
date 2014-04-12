@@ -12,18 +12,11 @@ namespace BeeHive.Internal
     {
         public static IEnumerable<ActorDescriptor> GetActorDescriptors(this IEnumerable<Type> types)
         {
-            foreach (var type in types)
-            {
-                if (typeof(IProcessorActor).IsAssignableFrom(type))
-                {
-                    var attribute = type.GetCustomAttribute<ActorDescriptionAttribute>(true);
-                    if (attribute != null)
-                    {
-                        yield return attribute.ToDescriptor(type);
-                    }
-                }
-            }
-            
+
+            return types.Where(type => typeof (IProcessorActor).IsAssignableFrom(type))
+                .SelectMany(type => type.GetCustomAttributes<ActorDescriptionAttribute>(true)
+                    .Select(attribute => attribute.ToDescriptor(type)));
+
         }
     }
 }

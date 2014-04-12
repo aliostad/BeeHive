@@ -26,6 +26,10 @@ namespace BeeHive.Demo.Worker
         private IConfigurationValueProvider _configurationValueProvider =
             new AzureConfigurationValueProvider();
 
+        private IEventQueueOperator _queueOperator;
+        private ICollectionStore<Order> _orderStore;
+        private ICollectionStore<Customer> _customerStore;
+
         public override void Run()
         {
             // This is a sample worker implementation. Replace with your logic.
@@ -35,6 +39,41 @@ namespace BeeHive.Demo.Worker
             {
                 Thread.Sleep(10000);
                 Trace.TraceInformation("Working", "Information");
+                var order = new Order()
+                {
+                    CustomerId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    PaymentMethod = "Card/Visa/4444333322221111/123",
+                    ShippingAddress = "Jabolsa",
+                    TotalPrice = 223,
+                    ProductQuantities = new Dictionary<Guid, int>()
+                            {
+                                {Guid.NewGuid(), 1},
+                                {Guid.NewGuid(), 2},
+                                {Guid.NewGuid(), 3},
+                            }
+                };
+
+                var customer = new Customer()
+                {
+                    Address = "2, Korat Jingala",
+                    Email = "ostad@chopak.it",
+                    Id = order.CustomerId,
+                    Name = "Natsak Birat"
+                };
+
+                _customerStore.InsertAsync(customer).Wait();
+
+                _orderStore.InsertAsync(order).Wait();
+                var ev = new Event(new OrderAccepted()
+                {
+                    OrderId = order.Id
+                })
+                {
+                    EventType = "OrderAccepted"
+                };
+                _queueOperator.PushAsync(ev).Wait();
+
             }
         }
 
@@ -52,6 +91,11 @@ namespace BeeHive.Demo.Worker
             _orchestrator = container.Resolve<Orchestrator>();
             _orchestrator.SetupAsync().Wait();
             _orchestrator.Start();
+
+            _queueOperator = container.Resolve<IEventQueueOperator>();
+            _orderStore = container.Resolve<ICollectionStore<Order>>();
+            _customerStore = container.Resolve<ICollectionStore<Customer>>();
+
 
             return base.OnStart();
         }
@@ -89,14 +133,35 @@ namespace BeeHive.Demo.Worker
 
                 Component.For(typeof(ICollectionStore<>))
                 .ImplementedBy(typeof(AzureCollectionStore<>))
+                 .DynamicParameters((k, dic)
+                        =>
+                 {
+                     dic["connectionString"] = _configurationValueProvider.GetValue("StorageConnectionString");
+                 })
                 .LifestyleSingleton(),
 
                 Component.For(typeof(ICounterStore))
                 .ImplementedBy(typeof(AzureCounterStore))
+                 .DynamicParameters((k, dic)
+                        =>
+                 {
+                     dic["source"] = new BlobSource()
+                     {
+                         ConnectionString = _configurationValueProvider.GetValue("StorageConnectionString"),
+                         ContainerName = "locks",
+                         Path = "helloLocks/"
+                     };
+
+                 })
                 .LifestyleSingleton(),
 
                 Component.For(typeof(IKeyedListStore<>))
                 .ImplementedBy(typeof(AzureKeyedListStore<>))
+                 .DynamicParameters((k, dic)
+                        =>
+                 {
+                     dic["connectionString"] = _configurationValueProvider.GetValue("StorageConnectionString");
+                 })
                 .LifestyleSingleton(),
 
                 Classes.FromAssemblyContaining<Order>()

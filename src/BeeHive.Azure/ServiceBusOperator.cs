@@ -22,10 +22,34 @@ namespace BeeHive.Azure
             _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
         }
 
+        private async Task<bool> QueueExistsAsync(string name)
+        {
+            try
+            {
+                return await _namespaceManager.QueueExistsAsync(name);
+            }
+            catch (AggregateException e)
+            {
+                if (e.InnerException is MessagingException &&
+                    e.InnerException.Message.StartsWith("Cannot get entity"))
+                    return false;
+                throw e;
+            }
+            catch (MessagingException ex)
+            {
+                if (ex.Message.StartsWith("Cannot get entity"))
+                    return false;
+                else
+                    throw ex;
+
+            }
+            
+        }
+
         public async Task PushAsync(Event message)
         {
 
-            if (await _namespaceManager.QueueExistsAsync(message.QueueName))
+            if (await QueueExistsAsync(message.QueueName))
             {
                 var client = QueueClient.CreateFromConnectionString(_connectionString, message.QueueName);
                 await client.SendAsync(message.ToMessage());
@@ -48,7 +72,7 @@ namespace BeeHive.Azure
 
             var message = messages.First();
 
-            if (await _namespaceManager.QueueExistsAsync(message.QueueName))
+            if (await QueueExistsAsync(message.QueueName))
             {
                 var client = QueueClient.CreateFromConnectionString(_connectionString, message.QueueName);
                 await client.SendBatchAsync(messages.Select(x => x.ToMessage()));
@@ -113,7 +137,7 @@ namespace BeeHive.Azure
         {
             if (subscriptions.Length == 0)
             {
-                if (!await _namespaceManager.QueueExistsAsync(topicName))
+                if (!await QueueExistsAsync(topicName))
                     await _namespaceManager.CreateQueueAsync(topicName);
             }
             else
@@ -131,7 +155,7 @@ namespace BeeHive.Azure
 
         public async Task DeleteQueueAsync(string topicName)
         {
-            if (await _namespaceManager.QueueExistsAsync(topicName))
+            if (await QueueExistsAsync(topicName))
             {
                 await _namespaceManager.DeleteQueueAsync(topicName);
             }

@@ -45,7 +45,9 @@ namespace BeeHive.Azure
             var key = string.Format("____COUNTER____{0}-{1}", counterName, id);
             var blob = await GetBlobAsync(key);
             var text = await blob.DownloadTextAsync();
-            return long.Parse(text);
+            long v = 0;
+            long.TryParse(text, out v); // either valid or zero
+            return v;
         }
 
         private void GetClientAndReference()

@@ -22,11 +22,6 @@ namespace BeeHive.Azure
         private string _tableName;
         private bool _isConcurrencyAware = typeof(IConcurrencyAware).IsAssignableFrom(typeof(T));
 
-        public AzureCollectionStore()
-        {
-            
-        }
-
         private const string EntityPropertyName = "__Tee";
 
         private string _connectionString;

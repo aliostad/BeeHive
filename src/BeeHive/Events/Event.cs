@@ -12,6 +12,7 @@ namespace BeeHive
         private const string ContentTypeFormat = "application/{0}+json";
 
         public Event(object body)
+            : this()
         {
             if(body==null)
                 throw new ArgumentNullException("body");
@@ -22,6 +23,7 @@ namespace BeeHive
             // set default event type and queue name
             QueueName = body.GetType().Name;
             EventType = body.GetType().Name;
+
         }
 
 
