@@ -1,5 +1,7 @@
-BeeHive - No-non-sense Microservices Actor Framework for the cloud
+BeeHive
 =======
+
+## No-non-sense Microservices Actor Framework for the cloud
 
 An Actor Helper mini-Library for cloud - currently for Windows Azure only. Implementation is very simple - if you need a complex implementation of the Actor Model, you are probably doing it wrong.
 
