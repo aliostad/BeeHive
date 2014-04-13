@@ -1,3 +1,5 @@
+![BeeHive](https://raw.githubusercontent.com/aliostad/PublicImages/master/diagrams/BeeHive-164px.png)
+
 BeeHive
 =======
 
