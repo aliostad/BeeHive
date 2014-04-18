@@ -15,6 +15,7 @@ using BeeHive.Tools;
 using Castle.MicroKernel.Lifestyle;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Microsoft.Practices.Unity;
 
 namespace BeeHive.ConsoleDemo
 {
@@ -26,10 +27,10 @@ namespace BeeHive.ConsoleDemo
             {
                 Trace.Listeners.Clear();
                 Trace.Listeners.Add(new ColourfulConsoleTraceListener());
-                IWindsorContainer container = new WindsorContainer();
+                var container = new UnityContainer();
                 ConfigureDI(container);
-                
-                    
+
+
 
                 var orchestrator = container.Resolve<Orchestrator>();
                 ConsoleWriteLine(ConsoleColor.Green, "Started the processing. Enter <n> to create a message or press <ENTER> to end");
@@ -47,7 +48,7 @@ namespace BeeHive.ConsoleDemo
                     {
                         var order = new Order()
                         {
-                            CustomerId    = Guid.NewGuid(),
+                            CustomerId = Guid.NewGuid(),
                             Id = Guid.NewGuid(),
                             PaymentMethod = "Card/Visa/4444333322221111/123",
                             ShippingAddress = "Jabolsa",
@@ -78,7 +79,7 @@ namespace BeeHive.ConsoleDemo
                         {
                             EventType = "OrderAccepted"
                         }).Wait();
-                        
+
                     }
                     else
                         break;
@@ -88,20 +89,36 @@ namespace BeeHive.ConsoleDemo
             }
             catch (Exception e)
             {
-                
+
                 ConsoleWriteLine(ConsoleColor.Red, e.ToString());
                 Console.ReadLine();
             }
-        
+
 
 
         }
 
-   
+        public static void ConfigureDI(IUnityContainer container)
+        {
+            var serviceLocator = new BeeHive.ServiceLocator.Unity.UnityServiceLocator(container);
+            container.RegisterType<Orchestrator, Orchestrator>();
+            container.RegisterInstance<IActorConfiguration>(ActorDescriptors.FromAssemblyContaining<OrderAccepted>()
+                                                                            .ToConfiguration());
+            container.RegisterInstance<IServiceLocator>(serviceLocator);
+            container.RegisterType<IFactoryActor, FactoryActor>();
+            container.RegisterType<IEventQueueOperator, InMemoryServiceBus>(new ContainerControlledLifetimeManager());
+            container.RegisterType(typeof(ICollectionStore<>), typeof(InMemoryCollectionStore<>),
+                                   new ContainerControlledLifetimeManager());
+            container.RegisterType<ICounterStore, InMemoryCounterStore>(new ContainerControlledLifetimeManager());
+            container.RegisterType(typeof(IKeyedListStore<>), typeof(InMemoryKeyedListStore<>),
+                                   new ContainerControlledLifetimeManager());
+            container.RegisterType<DummyActor, DummyActor>();
+
+        }
+
         public static void ConfigureDI(IWindsorContainer container)
         {
             var serviceLocator = new WindsorServiceLocator(container);
-
             container.Register(
 
                 Component.For<Orchestrator>()
@@ -122,7 +139,7 @@ namespace BeeHive.ConsoleDemo
 
                 Component.For<IEventQueueOperator>()
                     .ImplementedBy<InMemoryServiceBus>()
-                    .LifestyleSingleton(),           
+                    .LifestyleSingleton(),
 
                 Component.For(typeof(ICollectionStore<>))
                 .ImplementedBy(typeof(InMemoryCollectionStore<>))
