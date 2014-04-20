@@ -32,6 +32,7 @@
   </Target>
   <Target Name="Package">
     <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive\BeeHive.csproj -Build -OutputDirectory ..\artifacts\packages" />
+    <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj -Build -OutputDirectory ..\artifacts\packages" />
     <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive.Azure\BeeHive.Azure.csproj -Build -OutputDirectory ..\artifacts\packages" />
     <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj -Build -OutputDirectory ..\artifacts\packages" />
   </Target>

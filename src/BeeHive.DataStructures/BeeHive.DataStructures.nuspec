@@ -10,10 +10,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <copyright>Copyright 2014</copyright>
-    <tags>actor model cloud azure amazon messaging event-driven event</tags>
+    <tags>actor model cloud messaging event-driven event</tags>
     <dependencies>
-      <dependency id="BeeHive-common" version="$version$" />
-      <dependency id="BeeHive.DataStructures" version="$version$" />
+      <dependency id="BeeHive-common" version="$version$" />	  
     </dependencies>
   </metadata>
 </package>
