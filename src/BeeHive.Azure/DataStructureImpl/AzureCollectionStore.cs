@@ -69,28 +69,28 @@ namespace BeeHive.Azure
             _table = client.GetTableReference(_tableName);
         }
 
-        private string GetPartitionKey(Guid id)
+        private string GetPartitionKey(string id)
         {
             return id.ToString().Split('-').First();
         }
 
-        public async Task<T> GetAsync(Guid id)
+        public async Task<T> GetAsync(string id)
         {
             var table =await  GetTable();
             var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
                 QueryComparisons.Equal, GetPartitionKey(id) );
             var conditionRK = TableQuery.GenerateFilterCondition("RowKey",
-                QueryComparisons.Equal, id.ToString());
+                QueryComparisons.Equal, id);
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
             return GetItem(table.ExecuteQuery(query).FirstOrDefault(), id);
         }
 
-        private T GetItem(DynamicTableEntity entity, Guid id)
+        private T GetItem(DynamicTableEntity entity, string id)
         {
             if(entity == null)
-                throw new KeyNotFoundException(id.ToString());
+                throw new KeyNotFoundException(id);
 
             return JsonConvert.DeserializeObject<T>(entity.Properties[EntityPropertyName].StringValue);
         }
@@ -101,7 +101,7 @@ namespace BeeHive.Azure
             var tableEntity = new DynamicTableEntity()
             {
                 PartitionKey = GetPartitionKey(t.Id),
-                RowKey = t.Id.ToString(),
+                RowKey = t.Id,
                 ETag = cwt == null ? "*" : cwt.ETag,
                 Timestamp = cwt == null ? DateTimeOffset.UtcNow : cwt.LastModofied.Value
             };
@@ -141,13 +141,13 @@ namespace BeeHive.Azure
             await table.ExecuteAsync(TableOperation.Delete(GetEntity(t)));
         }
 
-        public async Task<bool> ExistsAsync(Guid id)
+        public async Task<bool> ExistsAsync(string id)
         {
             var table = await GetTable();
             var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
                 QueryComparisons.Equal, GetPartitionKey(id));
             var conditionRK = TableQuery.GenerateFilterCondition("RowKey",
-                QueryComparisons.Equal, id.ToString());
+                QueryComparisons.Equal, id);
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));

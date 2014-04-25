@@ -11,8 +11,8 @@ namespace BeeHive.ConsoleDemo
     public class InMemoryKeyedListStore<T> : IKeyedListStore<T>
         where T : IHaveIdentity
     {
-        
-        private ConcurrentDictionary<string, ConcurrentDictionary<Guid,T>> _store = new ConcurrentDictionary<string, ConcurrentDictionary<Guid, T>>();
+
+        private ConcurrentDictionary<string, ConcurrentDictionary<string, T>> _store = new ConcurrentDictionary<string, ConcurrentDictionary<string, T>>();
         private bool _isConcurrencyAware = false;
 
         public InMemoryKeyedListStore()
@@ -20,17 +20,17 @@ namespace BeeHive.ConsoleDemo
             _isConcurrencyAware = typeof(IConcurrencyAware).IsAssignableFrom(typeof(T));
         }
 
-        private ConcurrentDictionary<Guid, T> GetList(string listName, Guid key)
+        private ConcurrentDictionary<string, T> GetList(string listName, string key)
         {
-            return _store.GetOrAdd(GetKey(listName, key), new ConcurrentDictionary<Guid, T>());
+            return _store.GetOrAdd(GetKey(listName, key), new ConcurrentDictionary<string, T>());
         }
 
-        private string GetKey(string listName, Guid key)
+        private string GetKey(string listName, string key)
         {
-            return listName + "-" + key.ToString("N");
+            return listName + "-" + key;
         }
 
-        public async Task AddAsync(string listName, Guid key, T t)
+        public async Task AddAsync(string listName, string key, T t)
         {
             var list = GetList(listName, key);
 
@@ -39,10 +39,10 @@ namespace BeeHive.ConsoleDemo
  
         }
 
-        public async Task<IEnumerable<T>> GetAsync(string listName, Guid key)
+        public async Task<IEnumerable<T>> GetAsync(string listName, string key)
         {
             
-            ConcurrentDictionary<Guid,T> bag;
+            ConcurrentDictionary<string,T> bag;
             if (!_store.TryGetValue(GetKey(listName, key), out bag))
                 throw new KeyNotFoundException(listName);
             return bag.Values.ToArray();
@@ -50,9 +50,9 @@ namespace BeeHive.ConsoleDemo
         }
 
 
-        public async Task RemoveAsync(string listName, Guid key)
+        public async Task RemoveAsync(string listName, string key)
         {
-            ConcurrentDictionary<Guid, T> bag;           
+            ConcurrentDictionary<string, T> bag;           
             _store.TryRemove(GetKey(listName, key), out bag);
         }
 
@@ -61,17 +61,17 @@ namespace BeeHive.ConsoleDemo
             return _store.ContainsKey(listName);
         }
 
-        public async Task<bool> ExistsAsync(string listName, Guid key)
+        public async Task<bool> ExistsAsync(string listName, string key)
         {
             return _store.ContainsKey(GetKey(listName, key));
         }
 
-        public async Task<bool> ListExistsAsync(string listName, Guid key)
+        public async Task<bool> ListExistsAsync(string listName, string key)
         {
             return _store.ContainsKey(GetKey(listName, key));
         }
 
-        public async Task<bool> ItemExistsAsync(string listName, Guid key, Guid itemId)
+        public async Task<bool> ItemExistsAsync(string listName, string key, string itemId)
         {
             if (!_store.ContainsKey(GetKey(listName, key)))
                 return false;
@@ -79,7 +79,7 @@ namespace BeeHive.ConsoleDemo
             return list.ContainsKey(itemId);
         }
 
-        public async Task UpdateAsync(string listName, Guid key, T t)
+        public async Task UpdateAsync(string listName, string key, T t)
         {
             var list = GetList(listName, key);
             

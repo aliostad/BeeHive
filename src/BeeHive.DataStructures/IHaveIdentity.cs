@@ -8,6 +8,6 @@ namespace BeeHive.DataStructures
 {
     public interface IHaveIdentity
     {
-        Guid Id { get; }
+        string Id { get; }
     }
 }

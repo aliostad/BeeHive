@@ -57,7 +57,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Actors
                 var shipment = new Shipment()
                 {
                     OrderId = order.Id,
-                    Id = Guid.NewGuid(),
+                    Id = Guid.NewGuid().ToString("N"),
                     Address = order.ShippingAddress,
                     DeliveryExpectedDate = DateTime.Now.AddDays(_random.Next(1,5))
                 };

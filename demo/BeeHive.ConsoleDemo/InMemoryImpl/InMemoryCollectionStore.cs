@@ -12,7 +12,7 @@ namespace BeeHive.ConsoleDemo
     public class InMemoryCollectionStore<T> : ICollectionStore<T>
         where T : IHaveIdentity
     {
-        private ConcurrentDictionary<Type, ConcurrentDictionary<Guid, T>> _store = new ConcurrentDictionary<Type, ConcurrentDictionary<Guid, T>>();
+        private ConcurrentDictionary<Type, ConcurrentDictionary<string, T>> _store = new ConcurrentDictionary<Type, ConcurrentDictionary<string, T>>();
 
         private bool _isConcurrencyAware = false;
         public InMemoryCollectionStore()
@@ -20,12 +20,12 @@ namespace BeeHive.ConsoleDemo
             _isConcurrencyAware = typeof(T) is IConcurrencyAware;
         }
 
-        private ConcurrentDictionary<Guid, T> GetList()
+        private ConcurrentDictionary<string, T> GetList()
         {
-            return _store.GetOrAdd(typeof (T), new ConcurrentDictionary<Guid, T>());
+            return _store.GetOrAdd(typeof (T), new ConcurrentDictionary<string, T>());
         }
 
-        public async Task<T> GetAsync(Guid id)
+        public async Task<T> GetAsync(string id)
         {
             var list = GetList();
             T t;
@@ -77,7 +77,7 @@ namespace BeeHive.ConsoleDemo
             list.TryRemove(t.Id, out t);
         }
 
-        public async Task<bool> ExistsAsync(Guid id)
+        public async Task<bool> ExistsAsync(string id)
         {
             var list = GetList();
             return list.ContainsKey(id);

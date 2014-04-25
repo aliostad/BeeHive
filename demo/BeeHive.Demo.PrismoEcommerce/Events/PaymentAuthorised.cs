@@ -8,8 +8,8 @@ namespace BeeHive.Demo.PrismoEcommerce.Events
 {
     public class PaymentAuthorised
     {
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; }
 
-        public Guid PaymentId { get; set; }
+        public string PaymentId { get; set; }
     }
 }

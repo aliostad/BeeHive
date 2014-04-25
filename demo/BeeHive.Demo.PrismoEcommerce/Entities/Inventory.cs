@@ -11,9 +11,11 @@ namespace BeeHive.Demo.PrismoEcommerce.Entities
 
     public class Inventory : IHaveIdentity
     {
-        public Guid ProductId { get; set; }
+
+        public string ProductId { get; set; }
 
         public int Quantity { get; set; }
-        public Guid Id { get { return ProductId; } }
+
+        public string Id { get { return ProductId; } }
     }
 }

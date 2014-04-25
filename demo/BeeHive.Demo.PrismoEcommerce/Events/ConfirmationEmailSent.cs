@@ -8,9 +8,9 @@ namespace BeeHive.Demo.PrismoEcommerce.Events
 {
     public class ConfirmationEmailSent
     {
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; }
 
-        public Guid EmailId { get; set; }
+        public string EmailId { get; set; }
 
     }
 }

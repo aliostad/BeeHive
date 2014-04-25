@@ -15,7 +15,7 @@ namespace BeeHive.Tests.Demo
         [Fact]
         public void TestAdd_CreatesList()
         {
-            var key = Guid.NewGuid();
+            var key = Guid.NewGuid().ToString("N");
             var listName = "myList";
             var inMemoryKeyedListStore = new InMemoryKeyedListStore<OrderWaitingForProduct>();
             inMemoryKeyedListStore.AddAsync(listName, key, new OrderWaitingForProduct()).Wait();
@@ -25,9 +25,9 @@ namespace BeeHive.Tests.Demo
         [Fact]
         public void TestAdd_ContainsItem()
         {
-            var key = Guid.NewGuid();
+            var key = Guid.NewGuid().ToString("N");
             var listName = "myList";
-            var itemId = Guid.NewGuid();
+            var itemId = Guid.NewGuid().ToString("N");
             var inMemoryKeyedListStore = new InMemoryKeyedListStore<OrderWaitingForProduct>();
             inMemoryKeyedListStore.AddAsync(listName, key, new OrderWaitingForProduct()
             {
@@ -40,9 +40,9 @@ namespace BeeHive.Tests.Demo
         [Fact]
         public void TestAdd_DuplicateFails()
         {
-            var key = Guid.NewGuid();
+            var key = Guid.NewGuid().ToString("N");
             var listName = "myList";
-            var itemId = Guid.NewGuid();
+            var itemId = Guid.NewGuid().ToString("N");
             var inMemoryKeyedListStore = new InMemoryKeyedListStore<OrderWaitingForProduct>();
             inMemoryKeyedListStore.AddAsync(listName, key, new OrderWaitingForProduct()
             {
@@ -58,9 +58,9 @@ namespace BeeHive.Tests.Demo
         [Fact]
         public void ConcurrencyCheck_Fails_WhenDifferentETags()
         {
-            var key = Guid.NewGuid();
+            var key = Guid.NewGuid().ToString("N");
             var listName = "myList";
-            var itemId = Guid.NewGuid();
+            var itemId = Guid.NewGuid().ToString("N");
             var inMemoryKeyedListStore = new InMemoryKeyedListStore<ParkedOrderItem>();
             var item = new ParkedOrderItem()
             {

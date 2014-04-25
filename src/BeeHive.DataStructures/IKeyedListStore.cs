@@ -17,19 +17,19 @@ namespace BeeHive.DataStructures
     public interface IKeyedListStore<T>
         where T : IHaveIdentity
     {
-        Task AddAsync(string listName, Guid key, T t);
+        Task AddAsync(string listName, string key, T t);
 
-        Task<IEnumerable<T>> GetAsync(string listName, Guid key);
+        Task<IEnumerable<T>> GetAsync(string listName, string key);
 
-        Task RemoveAsync(string listName, Guid key);
+        Task RemoveAsync(string listName, string key);
 
         Task<bool> ListExistsAsync(string listName);
 
-        Task<bool> ExistsAsync(string listName, Guid key);
+        Task<bool> ExistsAsync(string listName, string key);
 
-        Task<bool> ItemExistsAsync(string listName, Guid key, Guid itemId);
+        Task<bool> ItemExistsAsync(string listName, string key, string itemId);
 
-        Task UpdateAsync(string listName, Guid key, T t);
+        Task UpdateAsync(string listName, string key, T t);
 
     }
 

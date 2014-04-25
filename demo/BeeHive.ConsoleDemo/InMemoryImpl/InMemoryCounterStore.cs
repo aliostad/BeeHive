@@ -9,13 +9,13 @@ namespace BeeHive.ConsoleDemo
     {
         private ConcurrentDictionary<string, long> _store = new ConcurrentDictionary<string, long>();
 
-        public async Task<long> GetAsync(string counterName, Guid id)
+        public async Task<long> GetAsync(string counterName, string id)
         {
             string key = string.Format("{0}-{1}", counterName, id);
             return _store.GetOrAdd(key, 0);
         }
 
-        public async Task IncrementAsync(string counterName, Guid id, long value)
+        public async Task IncrementAsync(string counterName, string id, long value)
         {
             string key = string.Format("{0}-{1}", counterName, id);
             _store.AddOrUpdate(key, value, (g, v) => v + value);

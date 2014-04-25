@@ -40,7 +40,7 @@ namespace BeeHive.Azure
         }
 
 
-        public async Task<long> GetAsync(string counterName, Guid id)
+        public async Task<long> GetAsync(string counterName, string id)
         {
             var key = string.Format("____COUNTER____{0}-{1}", counterName, id);
             var blob = await GetBlobAsync(key);
@@ -75,7 +75,7 @@ namespace BeeHive.Azure
 
             return blob;
         }
-        public async Task IncrementAsync(string counterName, Guid id, long value)
+        public async Task IncrementAsync(string counterName, string id, long value)
         {
             var key = string.Format("____COUNTER____{0}-{1}", counterName, id);
             var token = new LockToken(key);

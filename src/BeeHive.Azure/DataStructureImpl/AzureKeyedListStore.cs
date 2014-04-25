@@ -52,46 +52,46 @@ namespace BeeHive.Azure
             _connectionString = connectionString;
         }
 
-        public async Task AddAsync(string listName, Guid key, T t)
+        public async Task AddAsync(string listName, string key, T t)
         {
             var table = await GetTable(listName);
-            var entity = new DynamicTableEntity(key.ToString(), t.Id.ToString());
+            var entity = new DynamicTableEntity(key, t.Id);
             entity.Properties[EntityPropertyName] = new EntityProperty(
                 JsonConvert.SerializeObject(t));
             await table.ExecuteAsync(TableOperation.Insert(entity));
         }
 
-        public async Task<IEnumerable<T>> GetAsync(string listName, Guid key)
+        public async Task<IEnumerable<T>> GetAsync(string listName, string key)
         {
             var table = await GetTable(listName);
 
             var condition = TableQuery.GenerateFilterCondition("PartitionKey",
-                QueryComparisons.Equal, key.ToString());
+                QueryComparisons.Equal, key);
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(condition);
             return table.ExecuteQuery(query)
                 .Select(x => JsonConvert.DeserializeObject<T>(x.Properties[EntityPropertyName].StringValue));
         }
 
-        public async Task RemoveAsync(string listName, Guid key)
+        public async Task RemoveAsync(string listName, string key)
         {
             var table = await GetTable(listName);
             foreach (var item in await GetAsync(listName, key))
             {
-                await table.ExecuteAsync(TableOperation.Delete(new TableEntity(key.ToString(),
-                    item.Id.ToString())
+                await table.ExecuteAsync(TableOperation.Delete(new TableEntity(key,
+                    item.Id)
                 {
                     ETag = "*"
                 }));
             }            
         }
 
-        public async Task<bool> ExistsAsync(string listName, Guid key)
+        public async Task<bool> ExistsAsync(string listName, string key)
         {
             var table = await GetTable(listName);
 
             var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
-                QueryComparisons.Equal, key.ToString()); 
+                QueryComparisons.Equal, key); 
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(conditionPK);
@@ -107,25 +107,25 @@ namespace BeeHive.Azure
             return table.Exists();
         }
 
-        public async Task<bool> ItemExistsAsync(string listName, Guid key, Guid itemId)
+        public async Task<bool> ItemExistsAsync(string listName, string key, string itemId)
         {
             var table = await GetTable(listName);
 
             var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
-                QueryComparisons.Equal, key.ToString());
+                QueryComparisons.Equal, key);
             var conditionRK = TableQuery.GenerateFilterCondition("RowKey",
-                QueryComparisons.Equal, itemId.ToString());
+                QueryComparisons.Equal, itemId);
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
             return table.ExecuteQuery(query).Any();
         }
 
-        public async Task UpdateAsync(string listName, Guid key, T t)
+        public async Task UpdateAsync(string listName, string key, T t)
         {
         
             var table = await GetTable(listName);
-            var entity = new DynamicTableEntity(key.ToString(), t.Id.ToString());
+            var entity = new DynamicTableEntity(key, t.Id);
             entity.Properties[EntityPropertyName] = new EntityProperty(
                 JsonConvert.SerializeObject(t));
             await table.ExecuteAsync(TableOperation.InsertOrReplace(entity));

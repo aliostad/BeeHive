@@ -8,6 +8,6 @@ namespace BeeHive.Demo.PrismoEcommerce.Events
 {
     public class ProductArrivedBackInStock
     {
-        public Guid ProductId { get; set; }
+        public string ProductId { get; set; }
     }
 }

@@ -11,12 +11,12 @@ namespace BeeHive.Demo.PrismoEcommerce.Entities
     {
         public Payment()
         {
-            Id = Guid.NewGuid();
+            Id = Guid.NewGuid().ToString("N");
         }
 
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; }
 
         public decimal Amount { get; set; }
 

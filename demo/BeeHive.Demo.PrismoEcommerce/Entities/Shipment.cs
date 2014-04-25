@@ -9,9 +9,15 @@ namespace BeeHive.Demo.PrismoEcommerce.Entities
 {
     public class Shipment : IHaveIdentity
     {
-        public Guid OrderId { get; set; }
 
-        public Guid Id { get; set; }
+        public Shipment()
+        {
+            Id = Guid.NewGuid().ToString("N");            
+        }
+
+        public string OrderId { get; set; }
+
+        public string Id { get; set; }
 
         public string Address { get; set; }
 

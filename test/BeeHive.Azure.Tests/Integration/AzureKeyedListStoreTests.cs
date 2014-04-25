@@ -20,7 +20,7 @@ namespace BeeHive.Azure.Tests.Integration
         {
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
             var entity = new TestEntity(){Name = "chipabla"};
-            var against = Guid.NewGuid();
+            var against = Guid.NewGuid().ToString("N");
             store.AddAsync(ListName, against , entity).Wait();
 
             var values = store.GetAsync(ListName, against).Result;
@@ -36,7 +36,7 @@ namespace BeeHive.Azure.Tests.Integration
         {
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
             var entity = new TestEntity(){Name = "chipabla"};
-            var against = Guid.NewGuid();
+            var against = Guid.NewGuid().ToString("N");
             store.AddAsync(ListName, against , entity).Wait();
             entity.Name = "chobandikola";
 
@@ -56,7 +56,7 @@ namespace BeeHive.Azure.Tests.Integration
         {
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
             var entity = new TestEntity() { Name = "chipabla" };
-            var against = Guid.NewGuid();
+            var against = Guid.NewGuid().ToString("N");
             store.AddAsync(ListName, against, entity).Wait();
             entity.Name = "chobandikola";
 
@@ -74,7 +74,7 @@ namespace BeeHive.Azure.Tests.Integration
             var newListName = "Table" + Guid.NewGuid().ToString("N").Substring(10);
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
             var entity = new TestEntity() { Name = "chipabla" };
-            var against = Guid.NewGuid();
+            var against = Guid.NewGuid().ToString("N");
             store.AddAsync(newListName, against, entity).Wait();
 
             Assert.True(store.ListExistsAsync(newListName).Result);
@@ -94,11 +94,11 @@ namespace BeeHive.Azure.Tests.Integration
     {
         public TestEntity()
         {
-            Id = Guid.NewGuid();
+            Id = Guid.NewGuid().ToString("N");
         }
 
         public string Name { get; set; }
 
-        public Guid Id { get; set; }
+        public string Id { get; set; }
     }
 }

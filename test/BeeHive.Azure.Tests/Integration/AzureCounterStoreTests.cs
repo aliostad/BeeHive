@@ -21,7 +21,7 @@ namespace BeeHive.Azure.Tests.Integration
         public void ConcurrentIncrementWorks()
         {
             ThreadPool.SetMinThreads(20, 20);
-            var key = Guid.NewGuid();
+            var key = Guid.NewGuid().ToString("N");
             const string CounterName = "TestCounter";
             const int Increment = 10;
             const int ParallelClients = 5;

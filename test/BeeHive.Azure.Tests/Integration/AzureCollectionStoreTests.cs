@@ -16,7 +16,7 @@ namespace BeeHive.Azure.Tests.Integration
         public void CanStoreAndRetrieve()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString("N");
             store.InsertAsync(new TestCollectionEntity()
             {
                 Id = id
@@ -32,7 +32,7 @@ namespace BeeHive.Azure.Tests.Integration
         public void CanStoreAndRemoved()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString("N");
             var t = new TestCollectionEntity()
             {
                 Id = id
@@ -49,7 +49,7 @@ namespace BeeHive.Azure.Tests.Integration
         public void CanBeUpdated()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString("N");
             var t = new TestCollectionEntity()
             {
                 Id = id,
@@ -67,7 +67,7 @@ namespace BeeHive.Azure.Tests.Integration
         public void CannotBeInsertedTwice()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString("N");
             var t = new TestCollectionEntity()
             {
                 Id = id,
@@ -81,7 +81,7 @@ namespace BeeHive.Azure.Tests.Integration
         public void CanBeUpdatedForConcurrencyAware()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString("N");
             var t = new TestCollectionEntityConcurrencyAware()
             {
                 Id = id,
@@ -101,7 +101,7 @@ namespace BeeHive.Azure.Tests.Integration
         public void ETagsProvidedWillBeUsedAndStored()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString("N");
             var t = new TestCollectionEntityConcurrencyAware()
             {
                 Id = id,
@@ -118,7 +118,7 @@ namespace BeeHive.Azure.Tests.Integration
         public void CannotBeUpdatedForConcurrencyAwareWhenETagInConflict()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString("N");
             var t = new TestCollectionEntityConcurrencyAware()
             {
                 Id = id,
@@ -139,7 +139,7 @@ namespace BeeHive.Azure.Tests.Integration
         public void CannotBeDeletedForConcurrencyAwareWhenETagInConflict()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString("N");
             var t = new TestCollectionEntityConcurrencyAware()
             {
                 Id = id,
@@ -160,13 +160,13 @@ namespace BeeHive.Azure.Tests.Integration
 
     public class TestCollectionEntity : IHaveIdentity
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 
     public class TestCollectionEntityConcurrencyAware : IHaveIdentity, IConcurrencyAware
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public DateTimeOffset? LastModofied { get; set; }
         public string ETag { get; set; }

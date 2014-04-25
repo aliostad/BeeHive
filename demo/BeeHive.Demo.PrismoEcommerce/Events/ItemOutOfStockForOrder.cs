@@ -8,9 +8,9 @@ namespace BeeHive.Demo.PrismoEcommerce.Events
 {
     public class ItemOutOfStockForOrder
     {
-        public Guid ProductId { get; set; }
+        public string ProductId { get; set; }
 
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; }
 
         public int Quantity { get; set; }
 

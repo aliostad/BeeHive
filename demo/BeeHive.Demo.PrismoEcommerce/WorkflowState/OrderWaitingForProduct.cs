@@ -9,10 +9,13 @@ namespace BeeHive.Demo.PrismoEcommerce.WorkflowState
 {
     public class OrderWaitingForProduct : IHaveIdentity
     {
-        public Guid OrderId { get; set; }
+
+       
+
+        public string OrderId { get; set; }
 
         public int Quantity { get; set; }
 
-        public Guid Id { get { return OrderId; } }
+        public string Id { get { return OrderId; } }
     }
 }

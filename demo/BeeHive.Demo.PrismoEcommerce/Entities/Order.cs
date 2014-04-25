@@ -10,11 +10,16 @@ namespace BeeHive.Demo.PrismoEcommerce.Entities
     public class Order : IHaveIdentity
     {
 
-        public Guid Id { get; set; }
+        public Order()
+        {
+            Id = Guid.NewGuid().ToString("N");            
+        }
 
-        public Guid CustomerId { get; set; }
+        public string Id { get; set; }
 
-        public Dictionary<Guid, int> ProductQuantities { get; set; }
+        public string CustomerId { get; set; }
+
+        public Dictionary<string, int> ProductQuantities { get; set; }
 
         public bool IsCancelled { get; set; }
 

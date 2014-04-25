@@ -16,7 +16,7 @@ namespace BeeHive.Azure
     internal class AzureTableEntityStore<T> : ICollectionStore<T>
         where T : TableEntity, IHaveIdentity
     {
-        public Task<T> GetAsync(Guid id)
+        public Task<T> GetAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -36,7 +36,7 @@ namespace BeeHive.Azure
             throw new NotImplementedException();
         }
 
-        public Task<bool> ExistsAsync(Guid id)
+        public Task<bool> ExistsAsync(string id)
         {
             throw new NotImplementedException();
         }

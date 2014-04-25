@@ -41,16 +41,16 @@ namespace BeeHive.Demo.Worker
                 Trace.TraceInformation("Working", "Information");
                 var order = new Order()
                 {
-                    CustomerId = Guid.NewGuid(),
-                    Id = Guid.NewGuid(),
+                    CustomerId = Guid.NewGuid().ToString("N"),
+                    Id = Guid.NewGuid().ToString("N"),
                     PaymentMethod = "Card/Visa/4444333322221111/123",
                     ShippingAddress = "Jabolsa",
                     TotalPrice = 223,
-                    ProductQuantities = new Dictionary<Guid, int>()
+                    ProductQuantities = new Dictionary<string, int>()
                             {
-                                {Guid.NewGuid(), 1},
-                                {Guid.NewGuid(), 2},
-                                {Guid.NewGuid(), 3},
+                                {Guid.NewGuid().ToString("N"), 1},
+                                {Guid.NewGuid().ToString("N"), 2},
+                                {Guid.NewGuid().ToString("N"), 3},
                             }
                 };
 

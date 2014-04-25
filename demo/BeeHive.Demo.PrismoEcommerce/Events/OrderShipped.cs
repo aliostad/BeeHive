@@ -8,9 +8,9 @@ namespace BeeHive.Demo.PrismoEcommerce.Events
 {
     public class OrderShipped
     {
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; }
 
-        public Guid ShipmentId { get; set; }
+        public string ShipmentId { get; set; }
 
     }
 }

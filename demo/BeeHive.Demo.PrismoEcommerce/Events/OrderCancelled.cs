@@ -8,7 +8,7 @@ namespace BeeHive.Demo.PrismoEcommerce.Events
 {
     class OrderCancelled
     {
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; }
 
         public string Reason { get; set; }
 

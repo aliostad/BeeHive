@@ -9,7 +9,13 @@ namespace BeeHive.Demo.PrismoEcommerce.Entities
 {
     public class Customer : IHaveIdentity
     {
-        public Guid Id { get; set; }
+
+        public Customer()
+        {
+            Id = Guid.NewGuid().ToString("N");            
+        }
+
+        public string Id { get; set; }
 
         public string Name { get; set; }
 

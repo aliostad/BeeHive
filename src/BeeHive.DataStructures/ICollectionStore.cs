@@ -7,7 +7,7 @@ namespace BeeHive.DataStructures
         where T : IHaveIdentity
     {
 
-        Task<T> GetAsync(Guid id);
+        Task<T> GetAsync(string id);
 
         Task InsertAsync(T t);
 
@@ -15,7 +15,7 @@ namespace BeeHive.DataStructures
 
         Task DeleteAsync(T t);
 
-        Task<bool> ExistsAsync(Guid id);
+        Task<bool> ExistsAsync(string id);
 
     }
 }
