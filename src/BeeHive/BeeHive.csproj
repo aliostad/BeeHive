@@ -79,6 +79,7 @@
     <Compile Include="Actors\ActorDescriptionAttribute.cs" />
     <Compile Include="Configuration\IConfigurationValueProvider.cs" />
     <Compile Include="Configuration\IEnumerableActorDescriptorExtensions.cs" />
+    <Compile Include="Configuration\Pulsers.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventProperties.cs" />
     <Compile Include="Configuration\IActorConfiguration.cs" />
@@ -87,6 +88,13 @@
     <Compile Include="Internal\TaskExtensions.cs" />
     <Compile Include="Internal\WhoCalledAMethod.cs" />
     <Compile Include="IQueueOperator.cs" />
+    <Compile Include="Scheduling\FixedInterval.cs" />
+    <Compile Include="Scheduling\SimpleAutoPulserDescriptionAttribute.cs" />
+    <Compile Include="Scheduling\IAsyncPulser.cs" />
+    <Compile Include="Scheduling\IPulser.cs" />
+    <Compile Include="Scheduling\PulserDescriptionAttribute.cs" />
+    <Compile Include="Scheduling\PulserDescription.cs" />
+    <Compile Include="Scheduling\SimpleAutoPulser.cs" />
     <Compile Include="ServiceLocator\IServiceLocatorExtensions.cs" />
     <Compile Include="QueueName.cs" />
     <Compile Include="Scheduling\AsyncPoller.cs" />

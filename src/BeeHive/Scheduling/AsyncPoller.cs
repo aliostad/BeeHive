@@ -8,16 +8,37 @@ using System.Threading.Tasks;
 
 namespace BeeHive.Scheduling
 {
-    public class AsyncPoller : IService
+    public class AsyncPoller : IService, IPulser
     {
         private readonly IInterval _interval;
         private Func<CancellationToken, Task<bool>> _work;
         private bool _isWorking = false;
         private CancellationTokenSource _cancellationTokenSource;
+        
+
 
         public AsyncPoller(IInterval interval, Func<CancellationToken, Task<bool>> work)
         {
             _work = work;
+            _interval = interval;
+        }
+
+        /// <summary>
+        /// If you want to use it as a pulser.
+        /// Use this constructor to raise events
+        /// </summary>
+        /// <param name="interval"></param>
+        /// <param name="work"></param>
+        public AsyncPoller(IInterval interval, Func<CancellationToken, Task<IEnumerable<Event>>> work)
+        {
+
+            _work = async (token) =>
+            {
+                var events = await work(token);
+                var any = events.Any();
+                PulseGenerated(this, events);
+                return any;
+            };
             _interval = interval;
         }
 
@@ -61,5 +82,6 @@ namespace BeeHive.Scheduling
             _cancellationTokenSource.Cancel();
         }
 
+        public event EventHandler<IEnumerable<Event>> PulseGenerated;
     }
 }

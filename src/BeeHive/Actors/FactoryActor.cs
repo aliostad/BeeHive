@@ -79,7 +79,7 @@ namespace BeeHive.Actors
                 throw new InvalidOperationException("Cannot call Setup twice.");
 
             _actorDescriptor = descriptor;
-            _poller = new AsyncPoller(descriptor.Interval, Process);
+            _poller = new AsyncPoller(descriptor.Interval, (Func<CancellationToken, Task<bool>>)Process);
         }
     }
 }
