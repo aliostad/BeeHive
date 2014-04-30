@@ -89,6 +89,9 @@
     <Compile Include="Internal\WhoCalledAMethod.cs" />
     <Compile Include="IQueueOperator.cs" />
     <Compile Include="Scheduling\FixedInterval.cs" />
+    <Compile Include="Scheduling\IAsyncPulserExtensions.cs" />
+    <Compile Include="Scheduling\PulserIntervalAttribute.cs" />
+    <Compile Include="Scheduling\PulserPublisher.cs" />
     <Compile Include="Scheduling\SimpleAutoPulserDescriptionAttribute.cs" />
     <Compile Include="Scheduling\IAsyncPulser.cs" />
     <Compile Include="Scheduling\IPulser.cs" />

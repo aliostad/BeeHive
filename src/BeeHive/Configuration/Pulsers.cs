@@ -10,13 +10,15 @@ namespace BeeHive.Configuration
 {
     public static class Pulsers
     {
-        public static IEnumerable<IPulser> GetSimplePulers(
-            this Assembly assembly)
+        public static IEnumerable<IPulser> FromAssembly(
+            Assembly assembly)
         {
+
             return assembly.GetCustomAttributes(typeof (SimpleAutoPulserDescriptionAttribute))
                 .Cast<SimpleAutoPulserDescriptionAttribute>()
                 .Select(x => new SimpleAutoPulser(TimeSpan.FromSeconds(x.IntervalSeconds), x.EventType));
         }
+
 
 
 

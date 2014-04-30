@@ -16,12 +16,16 @@ namespace BeeHive.Scheduling
                 throw new ArgumentOutOfRangeException("eventTypes", "At least one event type needs to be passed in.");
             _poller = new Poller(new FixedInterval(interval), () =>
             {
-                PulseGenerated(this,  eventTypes.Select(x => new Event(string.Empty)
+                if (PulseGenerated != null)
                 {
-                    EventType = x,
-                    QueueName = x
-                }).ToArray());
-                return true;
+                    PulseGenerated(this, eventTypes.Select(x => new Event(string.Empty)
+                    {
+                        EventType = x,
+                        QueueName = x
+                    }).ToArray());
+                }
+                    
+                return false;
             });
         }
 
