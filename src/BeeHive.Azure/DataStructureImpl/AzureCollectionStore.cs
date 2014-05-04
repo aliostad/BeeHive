@@ -20,7 +20,6 @@ namespace BeeHive.Azure
         where T : IHaveIdentity
     {
         private string _tableName;
-        private bool _isConcurrencyAware = typeof(IConcurrencyAware).IsAssignableFrom(typeof(T));
 
         private const string EntityPropertyName = "__Tee";
 
@@ -51,6 +50,16 @@ namespace BeeHive.Azure
         {
         }
 
+        public AzureCollectionStore(string connectionString, string tableName)
+        {
+            _connectionString = connectionString;
+            _tableName = tableName;
+            var account = CloudStorageAccount.Parse(_connectionString);
+            var client = account.CreateCloudTableClient();
+            _table = client.GetTableReference(_tableName);
+        }
+
+
         private static string GetDefaultTableName()
         {
             string tableName = typeof (T).Name;
@@ -60,14 +69,7 @@ namespace BeeHive.Azure
             return tableName;
         }
 
-        public AzureCollectionStore(string connectionString, string tableName)
-        {
-            _connectionString = connectionString;
-            _tableName = tableName;
-            var account = CloudStorageAccount.Parse(_connectionString);
-            var client = account.CreateCloudTableClient();
-            _table = client.GetTableReference(_tableName);
-        }
+     
 
         private string GetPartitionKey(string id)
         {

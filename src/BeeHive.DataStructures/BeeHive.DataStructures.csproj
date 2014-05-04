@@ -43,11 +43,13 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ConcurrencyConflictException.cs" />
+    <Compile Include="IBigTableStore.cs" />
     <Compile Include="ICollectionStore.cs" />
     <Compile Include="IConcurrencyAware.cs" />
     <Compile Include="IConcurrencyAwareExtensions.cs" />
     <Compile Include="ICounterStore.cs" />
     <Compile Include="IHaveIdentity.cs" />
+    <Compile Include="IHaveIdentityAndRange.cs" />
     <Compile Include="IKeyedListStore.cs" />
     <Compile Include="ILockStore.cs" />
     <Compile Include="KeyAlreadyExistsException.cs" />

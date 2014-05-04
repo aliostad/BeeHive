@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integration\AzureBigTableTests.cs" />
     <Compile Include="Integration\AzureCollectionStoreTests.cs" />
     <Compile Include="Integration\AzureCounterStoreTests.cs" />
     <Compile Include="Integration\AzureKeyedListStoreTests.cs" />
