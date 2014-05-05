@@ -44,6 +44,7 @@
     </Compile>
     <Compile Include="ConcurrencyConflictException.cs" />
     <Compile Include="IBigTableStore.cs" />
+    <Compile Include="IBlob.cs" />
     <Compile Include="ICollectionStore.cs" />
     <Compile Include="IConcurrencyAware.cs" />
     <Compile Include="IConcurrencyAwareExtensions.cs" />
@@ -51,10 +52,12 @@
     <Compile Include="IHaveIdentity.cs" />
     <Compile Include="IHaveIdentityAndRange.cs" />
     <Compile Include="IKeyedListStore.cs" />
+    <Compile Include="IKeyValueStore.cs" />
     <Compile Include="ILockStore.cs" />
     <Compile Include="KeyAlreadyExistsException.cs" />
     <Compile Include="LockToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleBlob.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BeeHive\BeeHive.csproj">
