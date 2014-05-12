@@ -8,9 +8,9 @@ namespace BeeHive.Scheduling
 {
     public class PulserPublisher
     {
-        private IQueueOperator<Event> _queueOperator;
+        private IEventQueueOperator _queueOperator;
 
-        public PulserPublisher(IQueueOperator<Event> queueOperator, params IPulser[] pulsers)
+        public PulserPublisher(IEventQueueOperator queueOperator, params IPulser[] pulsers)
         {
             _queueOperator = queueOperator;
             foreach (var pulser in pulsers)

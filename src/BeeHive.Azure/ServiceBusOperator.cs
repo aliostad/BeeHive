@@ -57,7 +57,7 @@ namespace BeeHive.Azure
             else
             {
                 if(!await _namespaceManager.TopicExistsAsync(message.QueueName))
-                    throw new InvalidOperationException("Queue or topic does not exist.");
+                    throw new InvalidOperationException("Queue or topic does not exist: " + message.QueueName);
 
                 var client = TopicClient.CreateFromConnectionString(_connectionString, message.QueueName);
                 await client.SendAsync(message.ToMessage());
@@ -80,7 +80,7 @@ namespace BeeHive.Azure
             else
             {
                 if (!await _namespaceManager.TopicExistsAsync(message.QueueName))
-                    throw new InvalidOperationException("Queue or topic does not exist.");
+                    throw new InvalidOperationException("Queue or topic does not exist: " + message.QueueName);
 
                 var client = TopicClient.CreateFromConnectionString(_connectionString, message.QueueName);
                 await client.SendBatchAsync(messages.Select(x => x.ToMessage()));
