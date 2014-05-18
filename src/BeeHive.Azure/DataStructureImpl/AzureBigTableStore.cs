@@ -84,7 +84,9 @@ namespace BeeHive.Azure
             if (entity == null)
                 throw new KeyNotFoundException(string.Format("PK: {0} - RK: {1}", id, rangeKey));
 
-            return JsonConvert.DeserializeObject<T>(entity.Properties[EntityPropertyName].StringValue);
+            var deserializedObject = JsonConvert.DeserializeObject<T>(
+                entity.Properties[EntityPropertyName].StringValue);
+            return deserializedObject;
         }
 
         public async Task<IEnumerable<T>> GetRangeAsync(string id, string rangeStart, string rangeEnd)
