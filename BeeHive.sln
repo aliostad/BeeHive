@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive", "src\BeeHive\BeeHive.csproj", "{3E0F3470-EAE7-4A78-9822-52F57DCDDE9B}"
 EndProject
@@ -34,6 +34,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.DataStructures", "src\BeeHive.DataStructures\BeeHive.DataStructures.csproj", "{6EE378AE-C8C0-44B2-AA9A-711FAADA4E9C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Azure.Tests", "test\BeeHive.Azure.Tests\BeeHive.Azure.Tests.csproj", "{2B8283D9-F03A-4531-AA64-285DFABAB786}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.ServiceLocator.Windsor.Tests", "test\BeeHive.ServiceLocator.Windsor.Tests\BeeHive.ServiceLocator.Windsor.Tests.csproj", "{8C8008E2-75CA-4F43-92A2-5F3DBA8082DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,10 @@ Global
 		{2B8283D9-F03A-4531-AA64-285DFABAB786}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B8283D9-F03A-4531-AA64-285DFABAB786}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B8283D9-F03A-4531-AA64-285DFABAB786}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C8008E2-75CA-4F43-92A2-5F3DBA8082DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C8008E2-75CA-4F43-92A2-5F3DBA8082DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C8008E2-75CA-4F43-92A2-5F3DBA8082DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C8008E2-75CA-4F43-92A2-5F3DBA8082DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

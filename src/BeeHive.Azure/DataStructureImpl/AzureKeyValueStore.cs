@@ -39,6 +39,7 @@ namespace BeeHive.Azure
             };
 
             await blobReference.DownloadToStreamAsync(blob.Body);
+            blob.Body.Position = 0;
 
             return blob;
 
