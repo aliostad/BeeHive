@@ -34,10 +34,15 @@ namespace BeeHive.Actors
                 var actor = (IProcessorActor)_serviceLocator.GetService(_actorDescriptor.ActorType);
                 try
                 {
-                    var events = await actor.ProcessAsync(result.PollingResult);
+                    var events = (await actor.ProcessAsync(result.PollingResult)).ToArray();
                     await _queueOperator.CommitAsync(result.PollingResult);
 
-                    await _queueOperator.PushBatchAsync(events);
+                    var groups = events.GroupBy(x=>x.QueueName);
+
+                    foreach (var gr in groups)
+                    {
+                        await _queueOperator.PushBatchAsync(gr);
+                    }
 
                 }
                 catch (Exception exception)
