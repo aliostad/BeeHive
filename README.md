@@ -12,3 +12,7 @@ Business process is broken down into a series/cascade/tree of events where each 
 Error handling and retry mechanism is under development.
 
 ### No-non-sense Microservices Actor Framework for the cloud
+
+BeeHive makes it rediculously easy to build highly decoupled and evolvable event-based cloud systems.
+
+For theoretical discussions, please refer to the [infoq article](http://www.infoq.com/articles/reactive-cloud-actors).
