@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.ConsoleDemo", "demo
 EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "BeeHive.Sample.NewsFeedKeywordNotification", "sample\BeeHive.Sample.NewsFeedKeywordNotification\BeeHive.Sample.NewsFeedKeywordNotification.ccproj", "{1DA2D0EF-7311-4F2E-8232-AAEAB1DA0891}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Sample.NewsFeedKeywordNotification.Worker", "BeeHive.Sample.NewsFeedKeywordNotification.Worker\BeeHive.Sample.NewsFeedKeywordNotification.Worker.csproj", "{0B54ECA8-E90A-4F6F-B75D-775591466E0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Sample.NewsFeedKeywordNotification.Worker", "sample\BeeHive.Sample.NewsFeedKeywordNotification.Worker\BeeHive.Sample.NewsFeedKeywordNotification.Worker.csproj", "{0B54ECA8-E90A-4F6F-B75D-775591466E0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
