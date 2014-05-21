@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using BeeHive.Actors;
 using BeeHive.Azure;
@@ -41,6 +43,16 @@ namespace BeeHive.Sample.NewsFeedKeywordNotification.Worker
             SetupDi(container, _configurationValueProvider, _pulsers.ToArray());
             _pulserPublisher = container.Resolve<PulserPublisher>();
             _orchestrator = container.Resolve<Orchestrator>();
+
+            // insert the list here
+            var keyValueStore = container.Resolve<IKeyValueStore>();
+            var blob = new SimpleBlob()
+            {
+                Body = new MemoryStream(Encoding.UTF8.GetBytes("http://feeds.bbci.co.uk/news/rss.xml")),
+                Id = "newsFeeds.txt",
+                LastModofied = DateTimeOffset.Now
+            };
+            keyValueStore.UpsertAsync(blob);
 
         }
 

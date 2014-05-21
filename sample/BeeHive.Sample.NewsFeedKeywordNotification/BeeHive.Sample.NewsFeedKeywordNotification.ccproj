@@ -49,7 +49,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BeeHive.Sample.NewsFeedKeywordNotification.Worker\BeeHive.Sample.NewsFeedKeywordNotification.Worker.csproj">
+    <ProjectReference Include="..\..\sample\BeeHive.Sample.NewsFeedKeywordNotification.Worker\BeeHive.Sample.NewsFeedKeywordNotification.Worker.csproj">
       <Name>BeeHive.Sample.NewsFeedKeywordNotification.Worker</Name>
       <Project>{0b54eca8-e90a-4f6f-b75d-775591466e0c}</Project>
       <Private>True</Private>

@@ -15,7 +15,7 @@ namespace BeeHive.Sample.NewsFeedKeywordNotification.Impl.Actors
         private IKeyValueStore _keyValueStore;
         public NewsPulseActor(IKeyValueStore keyValueStore)
         {
-            _keyValueStore = _keyValueStore;
+            _keyValueStore = keyValueStore;
         }
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
