@@ -21,7 +21,7 @@ namespace BeeHive.Sample.NewsFeedKeywordNotification.Impl.Actors
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         { 
             var newsItemCaptured = evnt.GetBody<NewsItemCaptured>();
-            if (newsItemCaptured.Item.Title.Text.ToLower()
+            if (newsItemCaptured.Item.Title.ToLower()
                 .IndexOf(Keyword.ToLower()) >= 0)
             {
                 return new Event[]

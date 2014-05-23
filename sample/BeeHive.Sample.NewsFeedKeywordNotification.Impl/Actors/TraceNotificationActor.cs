@@ -21,7 +21,7 @@ namespace BeeHive.Sample.NewsFeedKeywordNotification.Impl.Actors
         {
             var keywordIentified = evnt.GetBody<NewsItemContainingKeywordIentified>();
             Trace.TraceInformation("Found {0} in {1}",
-                keywordIentified.Keyword, keywordIentified.Item.Links[0].Uri);
+                keywordIentified.Keyword, keywordIentified.Item.Url);
             return new Event[0];
         }
     }

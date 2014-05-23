@@ -4,9 +4,5 @@
     <Imports>
       <Import moduleName="Diagnostics" />
     </Imports>
-    <ConfigurationSettings>
-      <Setting name="BusConnectionString" />
-      <Setting name="StorageConnectionString" />
-    </ConfigurationSettings>
   </WorkerRole>
 </ServiceDefinition>

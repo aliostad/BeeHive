@@ -40,7 +40,7 @@ namespace BeeHive.Sample.NewsFeedKeywordNotification.Impl.Actors
              await _channelStore.UpsertAsync(feedChannel);
             return feed.Items.OrderByDescending(x => x.PublishDate)
                 .TakeWhile(y => offset < y.PublishDate)
-                .Select(z => new Event(new NewsItemCaptured(){Item = z}));
+                .Select(z => new Event(new NewsItemCaptured(){Item = z.ToFeedItem()}));
 
         }
 

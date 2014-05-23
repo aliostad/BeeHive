@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>2.3</ProductVersion>
+    <ProductVersion>2.2</ProductVersion>
     <ProjectGuid>1da2d0ef-7311-4f2e-8232-aaeab1da0891</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -49,9 +49,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\sample\BeeHive.Sample.NewsFeedKeywordNotification.Worker\BeeHive.Sample.NewsFeedKeywordNotification.Worker.csproj">
+    <ProjectReference Include="..\BeeHive.Sample.NewsFeedKeywordNotification.Worker\BeeHive.Sample.NewsFeedKeywordNotification.Worker.csproj">
       <Name>BeeHive.Sample.NewsFeedKeywordNotification.Worker</Name>
-      <Project>{0b54eca8-e90a-4f6f-b75d-775591466e0c}</Project>
+      <Project>{d378e138-d2a6-4dea-b6fd-54dc4e858c3e}</Project>
       <Private>True</Private>
       <RoleType>Worker</RoleType>
       <RoleName>BeeHive.Sample.NewsFeedKeywordNotification.Worker</RoleName>
@@ -61,7 +61,7 @@
   <!-- Import the target files for this project template -->
   <PropertyGroup>
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
-    <CloudExtensionsDir Condition=" '$(CloudExtensionsDir)' == '' ">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Windows Azure Tools\2.3\</CloudExtensionsDir>
+    <CloudExtensionsDir Condition=" '$(CloudExtensionsDir)' == '' ">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Windows Azure Tools\2.2\</CloudExtensionsDir>
   </PropertyGroup>
   <Import Project="$(CloudExtensionsDir)Microsoft.WindowsAzure.targets" />
 </Project>

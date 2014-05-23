@@ -16,10 +16,7 @@ using BeeHive.Scheduling;
 using BeeHive.ServiceLocator.Windsor;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
-using Microsoft.WindowsAzure.Storage;
 
 namespace BeeHive.Sample.NewsFeedKeywordNotification.Worker
 {
@@ -33,7 +30,7 @@ namespace BeeHive.Sample.NewsFeedKeywordNotification.Worker
 
         public WorkerRole()
         {
-            _pulsers = Pulsers.FromAssembly(Assembly.GetExecutingAssembly())
+            _pulsers = Pulsers.FromAssembly(Assembly.GetAssembly(typeof(NewsFeedPulsed)))
                 .ToList();
 
 

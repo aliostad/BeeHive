@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BeeHive.Configuration;
-using BeeHive.Demo.PrismoEcommerce;
 using BeeHive.Scheduling;
 using Xunit;
 
