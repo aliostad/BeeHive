@@ -3,7 +3,7 @@
 BeeHive
 =======
 
-An Actor Helper mini-Library for cloud - currently for Windows Azure only. Implementation is very simple - if you need a complex implementation of the Actor Model, you are probably doing it wrong.
+A **Zero Friction** mini-Framework for cloud Actors - currently for Windows Azure only. Implementation is very simple - if you need a complex implementation of the Actor Model, you are probably doing it wrong.
 
 This library helps implementing purely the business logic and the rest is taken care of.
 
