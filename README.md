@@ -176,3 +176,9 @@ Also we need to create an `Orchestartor` to set up factory actors. We need to ca
 Also we need to register our classes against Dependency Injection framework.
 
 Now we are ready!
+
+After running the application in debug mode, here is what you see in the output window:
+
+![Found Ukraine](https://raw.githubusercontent.com/aliostad/BeeHive/master/assets/NewsFeedOutput.png)
+
+Obviously, we can add another actor to subscribe to this event to send email, SMS messages, you name it. Point being, it is a piece of cake.
