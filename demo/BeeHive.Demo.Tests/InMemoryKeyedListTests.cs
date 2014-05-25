@@ -18,7 +18,10 @@ namespace BeeHive.Tests.Demo
             var key = Guid.NewGuid().ToString("N");
             var listName = "myList";
             var inMemoryKeyedListStore = new InMemoryKeyedListStore<OrderWaitingForProduct>();
-            inMemoryKeyedListStore.AddAsync(listName, key, new OrderWaitingForProduct()).Wait();
+            inMemoryKeyedListStore.AddAsync(listName, key, new OrderWaitingForProduct()
+            {
+                OrderId = Guid.NewGuid().ToString("N")
+            }).Wait();
             Assert.True(inMemoryKeyedListStore.ListExistsAsync(listName, key).Result);
         }
 
