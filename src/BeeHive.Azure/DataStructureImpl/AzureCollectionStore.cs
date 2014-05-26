@@ -123,13 +123,15 @@ namespace BeeHive.Azure
             var tcw = t as IConcurrencyAware;
             OperationContext ctx = null;
             if (tcw != null)
+            {
                 ctx = new OperationContext()
                 {
-                    UserHeaders =
-                    {
-                        {"If-Match", tcw.ETag}
-                    }
+                    UserHeaders = new Dictionary<string, string>()
                 };
+                ctx.UserHeaders.Add("ETag", tcw.ETag);
+            }
+               
+
             
             var table = await GetTable();
             await table.ExecuteAsync(TableOperation.InsertOrReplace(GetEntity(t, true)),
