@@ -10,8 +10,6 @@ namespace BeeHive.DataStructures
     {
         Task<IBlob> GetAsync(string id);
 
-        Task<Dictionary<string, string>> GetMetadataAsync(string id);
-
         Task InsertAsync(IBlob t);
 
         Task UpsertAsync(IBlob t);
@@ -19,15 +17,6 @@ namespace BeeHive.DataStructures
         Task DeleteAsync(IBlob t);
 
         Task<bool> ExistsAsync(string id);
-
-        /// <summary>
-        /// This is optional.
-        /// Implementations can throw NotSuportedException.
-        /// </summary>
-        /// <param name="startIdPrefix">Usually start path</param>
-        /// <param name="endIdPrefix">End path</param>
-        /// <returns></returns>
-        Task<IEnumerable<string>> GetRangeAsync(string startIdPrefix, string endIdPrefix);
 
     }
 }

@@ -23,5 +23,8 @@ namespace BeeHive.DataStructures
         public DateTimeOffset? LastModofied { get; set; }
 
         public string ETag { get; set; }
+
+        public bool IsVirtualFolder { get; set; }
+
     }
 }

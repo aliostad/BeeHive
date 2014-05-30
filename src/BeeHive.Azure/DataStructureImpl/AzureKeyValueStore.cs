@@ -11,7 +11,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace BeeHive.Azure
 {
-    public class AzureKeyValueStore : IKeyValueStore
+    public class AzureKeyValueStore : IDynamoStore
     {
         private CloudBlobContainer _container;
 
@@ -43,6 +43,12 @@ namespace BeeHive.Azure
 
             return blob;
 
+        }
+
+        public async Task<IEnumerable<IBlob>> ListAsync(string path, bool flatSearch = false)
+        {
+            return _container.ListBlobs(path, flatSearch)
+                .Select(x => x.ToBlob());
         }
 
         public async Task<Dictionary<string, string>> GetMetadataAsync(string id)
@@ -124,9 +130,6 @@ namespace BeeHive.Azure
             return await blobReference.ExistsAsync();
         }
 
-        public Task<IEnumerable<string>> GetRangeAsync(string startIdPrefix, string endIdPrefix)
-        {
-            throw new NotImplementedException();
-        }
+     
     }
 }

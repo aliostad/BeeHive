@@ -25,5 +25,7 @@ namespace BeeHive.DataStructures
         /// </summary>
         object UnderlyingBlob { get; set; }
 
+        bool IsVirtualFolder { get; }
+
     }
 }
