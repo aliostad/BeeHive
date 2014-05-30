@@ -32,12 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BeeHive">
-      <HintPath>..\..\packages\BeeHive-common.0.3.8\lib\net45\BeeHive.dll</HintPath>
-    </Reference>
-    <Reference Include="BeeHive.DataStructures, Version=0.3.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BeeHive, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\BeeHive.DataStructures.0.3.8\lib\net45\BeeHive.DataStructures.dll</HintPath>
+      <HintPath>..\..\packages\BeeHive-common.0.4.0\lib\net45\BeeHive.dll</HintPath>
+    </Reference>
+    <Reference Include="BeeHive.DataStructures, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\BeeHive.DataStructures.0.4.0\lib\net45\BeeHive.DataStructures.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -63,12 +64,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\FileSplitterActor.cs" />
+    <Compile Include="Actors\SweeperActor.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Events\NewFileArrived.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pulsers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Actors\" />
-    <Folder Include="Events\" />
+    <Content Include="Data\SampleData.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

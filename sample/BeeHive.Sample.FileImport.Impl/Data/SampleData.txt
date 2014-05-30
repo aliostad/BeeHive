@@ -1,0 +1,14 @@
+1,A,Under the hood, more_like_this simply creates multiple should 
+2,A,clauses in a bool query of interesting terms extracted from some provided text. 
+3,B,The interesting terms are selected with respect to their tf-idf scores. 
+4,D,These are controlled by min_term_freq, min_doc_freq, and max_doc_freq. 
+5,D,The number of interesting terms is controlled by max_query_terms. 
+6,D,While the minimum number of clauses that must be satisfied is 
+7,D,controlled by percent_terms_to_match. The terms are extracted from like_text 
+8,D,which is analyzed by the analyzer associated with the field, unless specified by analyzer. 
+9,E,There are other parameters such as min_word_length
+10,E,max_word_length or stop_words to control what terms should be considered as interesting. 
+11,E,In order to give more weight to more interesting terms
+12,F,each boolean clause associated with a term could be boosted by 
+13,G,the term tf-idf 
+14,H,score times some boosting factor boost_terms.

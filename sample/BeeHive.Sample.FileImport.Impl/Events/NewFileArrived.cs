@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BeeHive.Sample.FileImport.Impl.Actors
+namespace BeeHive.Sample.FileImport.Impl.Events
 {
-    class SweepActor
+    public class NewFileArrived
     {
+        public string FileId { get; set; }
     }
 }

@@ -34,17 +34,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BeeHive, Version=0.3.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BeeHive, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\BeeHive-common.0.3.8\lib\net45\BeeHive.dll</HintPath>
+      <HintPath>..\..\packages\BeeHive-common.0.4.0\lib\net45\BeeHive.dll</HintPath>
     </Reference>
-    <Reference Include="BeeHive.Azure, Version=0.3.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BeeHive.Azure, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\BeeHive.Azure.0.3.8\lib\net45\BeeHive.Azure.dll</HintPath>
+      <HintPath>..\..\packages\BeeHive.Azure.0.4.0\lib\net45\BeeHive.Azure.dll</HintPath>
     </Reference>
-    <Reference Include="BeeHive.DataStructures, Version=0.3.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BeeHive.DataStructures, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\BeeHive.DataStructures.0.3.8\lib\net45\BeeHive.DataStructures.dll</HintPath>
+      <HintPath>..\..\packages\BeeHive.DataStructures.0.4.0\lib\net45\BeeHive.DataStructures.dll</HintPath>
     </Reference>
     <Reference Include="BeeHive.ServiceLocator.Windsor, Version=0.3.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
