@@ -79,6 +79,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AzureConfigurationValueProvider.cs" />
+    <Compile Include="IListBlobItemExtensions.cs" />
     <Compile Include="DataStructureImpl\AzureBigTableStore.cs" />
     <Compile Include="DataStructureImpl\AzureKeyValueStore.cs" />
     <Compile Include="DataStructureImpl\AzureTableEntityStore.cs" />

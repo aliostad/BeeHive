@@ -79,6 +79,7 @@
     <Compile Include="Integration\AzureBigTableTests.cs" />
     <Compile Include="Integration\AzureCollectionStoreTests.cs" />
     <Compile Include="Integration\AzureCounterStoreTests.cs" />
+    <Compile Include="Integration\AzureDynamoStoreTests.cs" />
     <Compile Include="Integration\AzureKeyedListStoreTests.cs" />
     <Compile Include="Integration\AzureKeyValueStoreTests.cs" />
     <Compile Include="Integration\AzureLockStoreTests.cs" />

@@ -49,6 +49,7 @@
     <Compile Include="IConcurrencyAware.cs" />
     <Compile Include="IConcurrencyAwareExtensions.cs" />
     <Compile Include="ICounterStore.cs" />
+    <Compile Include="IDynamoStore.cs" />
     <Compile Include="IHaveIdentity.cs" />
     <Compile Include="IHaveIdentityAndRange.cs" />
     <Compile Include="IKeyedListStore.cs" />

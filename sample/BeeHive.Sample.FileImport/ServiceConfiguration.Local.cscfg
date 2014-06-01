@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="BeeHive.Sample.FileImport" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="3" osVersion="*" schemaVersion="2013-10.2.2">
+  <Role name="BeeHive.Sample.FileImport.Worker">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="StorageConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="BusConnectionString" value="Endpoint=sb://aliostadwindaz/ServiceBusDefaultNamespace;StsEndpoint=https://aliostadwindaz:9355/ServiceBusDefaultNamespace;RuntimePort=9354;ManagementPort=9355" />
+      <Setting name="ElasticSearchUrl" value="http://localhost:9200" />
+      <Setting name="SweepRootPath" value="FileDrop/ImportFiles/" />
+    </ConfigurationSettings>
+  </Role>
+</ServiceConfiguration>

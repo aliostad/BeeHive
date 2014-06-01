@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceDefinition name="BeeHive.Sample.FileImport" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2013-10.2.2">
+  <WorkerRole name="BeeHive.Sample.FileImport.Worker" vmsize="ExtraSmall">
+    <Imports>
+      <Import moduleName="Diagnostics" />
+    </Imports>
+    <ConfigurationSettings>
+      <Setting name="StorageConnectionString" />
+      <Setting name="BusConnectionString" />
+      <Setting name="ElasticSearchUrl" />
+      <Setting name="SweepRootPath" />
+    </ConfigurationSettings>
+  </WorkerRole>
+</ServiceDefinition>
