@@ -37,6 +37,7 @@
     <Reference Include="BeeHive">
       <HintPath>..\..\packages\BeeHive-common.0.4.0\lib\net45\BeeHive.dll</HintPath>
       <Private>True</Private>
+    </Reference>
     <Reference Include="BeeHive, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\BeeHive-common.0.4.0\lib\net45\BeeHive.dll</HintPath>
@@ -48,6 +49,7 @@
     <Reference Include="BeeHive.DataStructures">
       <HintPath>..\..\packages\BeeHive.DataStructures.0.4.0\lib\net45\BeeHive.DataStructures.dll</HintPath>
       <Private>True</Private>
+    </Reference>
     <Reference Include="BeeHive.DataStructures, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\BeeHive.DataStructures.0.4.0\lib\net45\BeeHive.DataStructures.dll</HintPath>
