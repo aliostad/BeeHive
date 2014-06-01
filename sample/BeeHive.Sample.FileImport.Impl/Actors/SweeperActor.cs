@@ -4,18 +4,23 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BeeHive.Configuration;
 using BeeHive.DataStructures;
 using BeeHive.Sample.FileImport.Impl.Events;
 
 namespace BeeHive.Sample.FileImport.Impl.Actors
 {
+
+    [ActorDescription("OneMinutePassed-FileImportSweep")]
     public class SweeperActor : IProcessorActor
     {
         private IDynamoStore _dynamoStore;
-        private const string RootPath = "DropFolders/FileImport/";
+        private IConfigurationValueProvider _configurationValueProvider;
 
-        public SweeperActor(IDynamoStore dynamoStore)
+        public SweeperActor(IDynamoStore dynamoStore, 
+            IConfigurationValueProvider configurationValueProvider)
         {
+            _configurationValueProvider = configurationValueProvider;
             _dynamoStore = dynamoStore;
         }
 
@@ -27,7 +32,10 @@ namespace BeeHive.Sample.FileImport.Impl.Actors
         public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
         {
             var events = new List<Event>();
-            var items = (await _dynamoStore.ListAsync(RootPath)).ToArray();
+            var items = (await _dynamoStore.ListAsync(
+                _configurationValueProvider.GetValue(Constants.SweepRootPathKey)))
+                .ToArray();
+
             var notProcessed = items.Where(x => !x.IsVirtualFolder)
                 .GroupBy(z => z.Id.Replace(Constants.StatusPostfix, ""))
                 .Where(f => f.Count() == 1)
@@ -42,7 +50,7 @@ namespace BeeHive.Sample.FileImport.Impl.Actors
                 await _dynamoStore.InsertAsync(new SimpleBlob()
                 {
                     Id = blob.Id + Constants.StatusPostfix,
-                    Body = new MemoryStream(BitConverter.GetBytes(1))
+                    Body = new MemoryStream(BitConverter.GetBytes(1)) // status 1
                 });
             }
 
