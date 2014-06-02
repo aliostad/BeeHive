@@ -11,33 +11,45 @@
   <ItemGroup>
     <BuildArtifactsDir Include=".\..\artifacts\" />
     <PackageOutputDir Include=".\..\artifacts\packages" />
-    <Solutionfile Include=".\..\CacheCow.sln" />
+    <SolutionFile Include=".\..\BeeHive.sln" />
+    <SampleSolutionFile Include=".\..\BeeHive.Samples.sln" />
     <AppProjFiles Include=".\..\src\**\*.csproj" />
     <TestProjFiles Include=".\..\test\**\*.csproj" />
     <ScriptsDir Include=".\" />
-    <NugetExeDir Include=".\..\.nuget\" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <NuGetCommandLinePath>$(SolutionDir)NuGet\NuGet.exe</NuGetCommandLinePath>
+  </PropertyGroup>
 
   <Target Name="Default" DependsOnTargets="Compile; Package" />
   <Target Name="DefaultCI" DependsOnTargets="Compile; Package; Publish" />
-  
+
   <Target Name="Clean">
     <RemoveDir Directories="@(BuildArtifactsDir)" />
   </Target>
+
   <Target Name="Init" DependsOnTargets="Clean">
     <MakeDir Directories="@(BuildArtifactsDir);@(PackageOutputDir)" />
   </Target>
-  <Target Name="Compile" DependsOnTargets="Init">
+
+  <Target Name="Restore" DependsOnTargets="Init">
+    <Exec Command="&quot;$(NuGetCommandLinePath)&quot; restore &quot;%(SolutionFile.FullPath)&quot;" />
+    <Exec Command="&quot;$(NuGetCommandLinePath)&quot; restore &quot;%(SampleSolutionFile.FullPath)&quot;" />
+  </Target>
+
+  <Target Name="Compile" DependsOnTargets="Restore">
     <MSBuild Projects="@(AppProjFiles)" Targets="Rebuild" Properties="OutDir=%(BuildArtifactsDir.FullPath);Configuration=$(Configuration);SolutionDir=$(SolutionDir)" />
   </Target>
+
   <Target Name="Package">
-    <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive\BeeHive.csproj -Build -OutputDirectory ..\artifacts\packages" />
-    <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj -Build -OutputDirectory ..\artifacts\packages" />
-    <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive.Azure\BeeHive.Azure.csproj -Build -OutputDirectory ..\artifacts\packages" />
-    <Exec WorkingDirectory="%(NugetExeDir.FullPath)" Command="nuget.exe pack ..\src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj -Build -OutputDirectory ..\artifacts\packages" />
+    <Exec Command="&quot;$(NuGetCommandLinePath)&quot; pack ..\src\BeeHive\BeeHive.csproj -Build -OutputDirectory ..\artifacts\packages" />
+    <Exec Command="&quot;$(NuGetCommandLinePath)&quot; pack ..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj -Build -OutputDirectory ..\artifacts\packages" />
+    <Exec Command="&quot;$(NuGetCommandLinePath)&quot; pack ..\src\BeeHive.Azure\BeeHive.Azure.csproj -Build -OutputDirectory ..\artifacts\packages" />
+    <Exec Command="&quot;$(NuGetCommandLinePath)&quot; pack ..\src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj -Build -OutputDirectory ..\artifacts\packages" />
   </Target>
+
   <Target Name="Publish">
     <Exec WorkingDirectory="%(ScriptsDir.FullPath)" Command="powershell -file .\publish.ps1" />
   </Target>
-
 </Project>
