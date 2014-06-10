@@ -16,7 +16,7 @@ namespace BeeHive
     {
         private string _queueName;
 
-        private const string QueueNamePattern = @"^(\w+)(?:\-(\w+))?$";
+        private const string QueueNamePattern = @"^(\w+)(?:\-(\w*))?$";
         public QueueName(string queueName)
         {
             _queueName = queueName;
@@ -43,9 +43,32 @@ namespace BeeHive
             }
         }
 
+        public bool IsTopic
+        {
+            get { return !IsSimpleQueue && string.IsNullOrEmpty(SubscriptionName); }
+        }
+
         public override string ToString()
         {
             return _queueName;
         }
+
+        public static QueueName FromSimpleQueueName(string name)
+        {
+            return new QueueName(name + "-" + name);
+        }
+
+        public static QueueName FromTopicName(string name)
+        {
+            return new QueueName(name + "-");
+        }
+
+        public static QueueName FromTopicAndSubscriptionName(string topicName, 
+            string subscriptionName)
+        {
+            return new QueueName(topicName + "-" + subscriptionName);
+        }
+
+       
     }
 }

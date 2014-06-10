@@ -89,6 +89,7 @@
     <Compile Include="Internal\TaskExtensions.cs" />
     <Compile Include="Internal\WhoCalledAMethod.cs" />
     <Compile Include="IQueueOperator.cs" />
+    <Compile Include="IQueueOperatorExtensions.cs" />
     <Compile Include="Scheduling\FixedInterval.cs" />
     <Compile Include="Scheduling\IAsyncPulserExtensions.cs" />
     <Compile Include="Scheduling\PulserIntervalAttribute.cs" />

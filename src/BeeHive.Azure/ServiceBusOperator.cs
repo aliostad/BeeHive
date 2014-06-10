@@ -14,14 +14,22 @@ namespace BeeHive.Azure
     {
         private string _connectionString;
         private NamespaceManager _namespaceManager;
-
+        private TimeSpan _longPollingTimeout;
 
         public ServiceBusOperator(string connectionString)
+            : this(connectionString, TimeSpan.FromSeconds(30))
         {
+
+        }
+
+        public ServiceBusOperator(string connectionString, TimeSpan longPollingTimeout)
+        {
+            _longPollingTimeout = longPollingTimeout;
             _connectionString = connectionString;
             _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
         }
 
+       
         private async Task<bool> QueueExistsAsync(string name)
         {
             try
@@ -87,12 +95,13 @@ namespace BeeHive.Azure
             }
         }
 
-        public async Task<PollerResult<Event>> NextAsync(string queueName)
-        {
+   
 
+        public async Task<PollerResult<Event>> NextAsync(QueueName name)
+        {
             try
             {
-                var name = new QueueName(queueName);
+
                 BrokeredMessage message = null;
                 if (name.IsSimpleQueue)
                 {
@@ -104,7 +113,7 @@ namespace BeeHive.Azure
                 {
                     var client = SubscriptionClient.CreateFromConnectionString(_connectionString,
                         name.TopicName, name.SubscriptionName);
-                    message = await client.ReceiveAsync(TimeSpan.FromSeconds(30)); // TODO: replace with param
+                    message = await client.ReceiveAsync(_longPollingTimeout); 
                 }
 
                 return new PollerResult<Event>(message != null,
@@ -118,7 +127,6 @@ namespace BeeHive.Azure
                 Trace.TraceWarning(e.ToString());
                 return new PollerResult<Event>(false, null);
             }
-            
         }
 
         public Task AbandonAsync(Event message)
@@ -133,63 +141,53 @@ namespace BeeHive.Azure
             return brokeredMessage.CompleteAsync();
         }
 
-        public async Task CreateQueueAsync(string topicName, params string[] subscriptions)
+        public Task DeferAsync(Event message, TimeSpan howLong)
         {
-            if (subscriptions.Length == 0)
-            {
-                if (!await QueueExistsAsync(topicName))
-                    await _namespaceManager.CreateQueueAsync(topicName);
-            }
-            else
-            {
-                if(! await _namespaceManager.TopicExistsAsync(topicName))
-                    await _namespaceManager.CreateTopicAsync(topicName);
-
-                foreach (var subscription in subscriptions)
-                {
-                    if(! await _namespaceManager.SubscriptionExistsAsync(topicName, subscription))
-                        await _namespaceManager.CreateSubscriptionAsync(topicName, subscription);
-                }
-            }
+            var brokeredMessage = (BrokeredMessage)message.UnderlyingMessage;
+            return brokeredMessage.DeferAsync() ; // TODO: use howLong
         }
 
-        public async Task DeleteQueueAsync(string topicName)
-        {
-            if (await QueueExistsAsync(topicName))
-            {
-                await _namespaceManager.DeleteQueueAsync(topicName);
-            }
-            else
-            {
-                if (await _namespaceManager.TopicExistsAsync(topicName))
-                    await _namespaceManager.DeleteTopicAsync(topicName);
-            }
 
-        }
-
-        public Task AddSubscriptionAsync(string topicName, string subscriptionName)
-        {
-            return _namespaceManager.CreateSubscriptionAsync(topicName, subscriptionName); 
-        }
-
-        public Task RemoveSubscriptionAsync(string topicName, string subscriptionName)
-        {
-            return _namespaceManager.DeleteSubscriptionAsync(topicName, subscriptionName);
-        }
-
-        public Task SetupQueueAsync(QueueName name)
+        public Task CreateQueueAsync(QueueName name)
         {
             if (name.IsSimpleQueue)
-            {
-               
-                return this.CreateQueueAsync(name.TopicName);
-            }
+                return _namespaceManager.CreateQueueAsync(name.TopicName);
             else
             {
-                return this.CreateQueueAsync(name.TopicName, name.SubscriptionName);
+                if (name.IsTopic)
+                    return _namespaceManager.CreateTopicAsync(name.TopicName);
+                else
+                    return _namespaceManager.CreateSubscriptionAsync(name.TopicName,
+                        name.SubscriptionName);
             }
         }
 
-        
+        public Task DeleteQueueAsync(QueueName name)
+        {
+            if (name.IsSimpleQueue)
+                return _namespaceManager.DeleteQueueAsync(name.TopicName);
+            else
+            {
+                if (name.IsTopic)
+                    return _namespaceManager.DeleteTopicAsync(name.TopicName);
+                else
+                    return _namespaceManager.DeleteSubscriptionAsync(name.TopicName,
+                        name.SubscriptionName);
+            }
+        }
+
+        public Task<bool> QueueExists(QueueName name)
+        {
+            if (name.IsSimpleQueue)
+                return _namespaceManager.QueueExistsAsync(name.TopicName);
+            else
+            {
+                if (name.IsTopic)
+                    return _namespaceManager.TopicExistsAsync(name.TopicName);
+                else
+                    return _namespaceManager.SubscriptionExistsAsync(name.TopicName,
+                        name.SubscriptionName);
+            }
+        }
     }
 }

@@ -28,7 +28,8 @@ namespace BeeHive.Actors
 
         private async Task<bool> Process(CancellationToken cancellationToken)
         {
-            var result = await _queueOperator.NextAsync(_actorDescriptor.SourceQueueName);
+            var result = await _queueOperator.NextAsync(
+                new QueueName(_actorDescriptor.SourceQueueName));
             if (result.IsSuccessful)
             {
                 var actor = (IProcessorActor)_serviceLocator.GetService(_actorDescriptor.ActorType);
