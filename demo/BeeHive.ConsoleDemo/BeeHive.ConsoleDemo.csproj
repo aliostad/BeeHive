@@ -34,14 +34,44 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BeeHive, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\BeeHive-common.0.4.0\lib\net45\BeeHive.dll</HintPath>
+    </Reference>
+    <Reference Include="BeeHive.DataStructures, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\BeeHive.DataStructures.0.4.0\lib\net45\BeeHive.DataStructures.dll</HintPath>
+    </Reference>
+    <Reference Include="BeeHive.ServiceLocator.Windsor, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\BeeHive.ServiceLocator.Windsor.0.4.0\lib\net45\BeeHive.ServiceLocator.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core">
       <HintPath>..\..\packages\Castle.Core.3.2.2\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor">
       <HintPath>..\..\packages\Castle.Windsor.3.2.1\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Reactive.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Rx-Core.2.2.2\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Rx-Interfaces.2.2.2\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Rx-Linq.2.2.2\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\..\packages\Rx-PlatformServices.2.2.2\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,18 +92,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj">
-      <Project>{6ee378ae-c8c0-44b2-aa9a-711faada4e9c}</Project>
-      <Name>BeeHive.DataStructures</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj">
-      <Project>{df541a72-6628-4926-80b9-7756e035f7ed}</Project>
-      <Name>BeeHive.ServiceLocator.Windsor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj">
-      <Project>{3e0f3470-eae7-4a78-9822-52f57dcdde9b}</Project>
-      <Name>BeeHive</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BeeHive.Demo.PrismoEcommerce\BeeHive.Demo.PrismoEcommerce.csproj">
       <Project>{3a33acb5-6752-4429-88fc-c15d245ec79e}</Project>
       <Name>BeeHive.Demo.PrismoEcommerce</Name>
