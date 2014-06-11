@@ -12,6 +12,11 @@ namespace BeeHive
         private const string ContentTypeFormat = "application/{0}+json";
 
         public Event(object body)
+            : this(body, true)
+        {
+            
+        }
+        public Event(object body, bool forTopic)
             : this()
         {
             if(body==null)
@@ -21,7 +26,9 @@ namespace BeeHive
             Body = JsonConvert.SerializeObject(body);
 
             // set default event type and queue name
-            QueueName = body.GetType().Name;
+            QueueName = forTopic ? 
+                BeeHive.QueueName.FromTopicName(body.GetType().Name).ToString() : 
+                body.GetType().Name;
             EventType = body.GetType().Name;
 
         }
