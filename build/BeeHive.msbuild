@@ -47,6 +47,7 @@
     <Exec Command="&quot;$(NuGetCommandLinePath)&quot; pack ..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj -Build -OutputDirectory ..\artifacts\packages" />
     <Exec Command="&quot;$(NuGetCommandLinePath)&quot; pack ..\src\BeeHive.Azure\BeeHive.Azure.csproj -Build -OutputDirectory ..\artifacts\packages" />
     <Exec Command="&quot;$(NuGetCommandLinePath)&quot; pack ..\src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj -Build -OutputDirectory ..\artifacts\packages" />
+    <Exec Command="&quot;$(NuGetCommandLinePath)&quot; pack ..\src\BeeHive.RabbitMQ\BeeHive.RabbitMQ.csproj -Build -OutputDirectory ..\artifacts\packages" />
   </Target>
 
   <Target Name="Publish">
