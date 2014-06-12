@@ -19,7 +19,8 @@ namespace BeeHive.RabbitMQ.Tests
             string content = "shaki";
             var queueName = QueueName.FromSimpleQueueName(q);
             var operat = new RabbitMqOperator(
-                new ConnectionProvider(new ConnectionFactory()));
+                new ConnectionProvider(new ConnectionFactoryWrapper(
+                    new ConnectionFactory())));
             operat.DeleteQueueAsync(queueName).Wait();
             
             
@@ -45,7 +46,7 @@ namespace BeeHive.RabbitMQ.Tests
             string content = "shaki";
             var queueName = new QueueName(q);
             var operat = new RabbitMqOperator(
-                new ConnectionProvider(new ConnectionFactory()));
+                new ConnectionProvider(new ConnectionFactoryWrapper(new ConnectionFactory())));
             operat.DeleteQueueAsync(queueName).Wait();
 
 
