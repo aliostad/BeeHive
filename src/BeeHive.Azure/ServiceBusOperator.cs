@@ -30,7 +30,7 @@ namespace BeeHive.Azure
         }
 
        
-        private async Task<bool> QueueExistsAsync(string name)
+        private async Task<bool> QueueExistsAsync_OLD(string name)
         {
             try
             {
@@ -56,18 +56,15 @@ namespace BeeHive.Azure
 
         public async Task PushAsync(Event message)
         {
-
-            if (await QueueExistsAsync(message.QueueName))
+            var queueName = new QueueName(message.QueueName);
+            if (queueName.IsSimpleQueue)
             {
-                var client = QueueClient.CreateFromConnectionString(_connectionString, message.QueueName);
+                var client = QueueClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
                 await client.SendAsync(message.ToMessage());
             }
             else
             {
-                if(!await _namespaceManager.TopicExistsAsync(message.QueueName))
-                    throw new InvalidOperationException("Queue or topic does not exist: " + message.QueueName);
-
-                var client = TopicClient.CreateFromConnectionString(_connectionString, message.QueueName);
+                var client = TopicClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
                 await client.SendAsync(message.ToMessage());
             }
 
@@ -75,22 +72,21 @@ namespace BeeHive.Azure
 
         public async Task PushBatchAsync(IEnumerable<Event> messages)
         {
+            messages = messages.ToArray();
             if (!messages.Any())
                 return;
 
             var message = messages.First();
+            var queueName = new QueueName(message.QueueName);
 
-            if (await QueueExistsAsync(message.QueueName))
+            if (queueName.IsSimpleQueue)
             {
-                var client = QueueClient.CreateFromConnectionString(_connectionString, message.QueueName);
+                var client = QueueClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
                 await client.SendBatchAsync(messages.Select(x => x.ToMessage()));
             }
             else
             {
-                if (!await _namespaceManager.TopicExistsAsync(message.QueueName))
-                    throw new InvalidOperationException("Queue or topic does not exist: " + message.QueueName);
-
-                var client = TopicClient.CreateFromConnectionString(_connectionString, message.QueueName);
+                var client = TopicClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
                 await client.SendBatchAsync(messages.Select(x => x.ToMessage()));
             }
         }
@@ -176,16 +172,18 @@ namespace BeeHive.Azure
             }
         }
 
-        public Task<bool> QueueExistsAsync(QueueName name)
+        public async Task<bool> QueueExistsAsync(QueueName name)
         {
             if (name.IsSimpleQueue)
-                return _namespaceManager.QueueExistsAsync(name.TopicName);
+                return await _namespaceManager.QueueExistsAsync(name.TopicName);
             else
             {
                 if (name.IsTopic)
-                    return _namespaceManager.TopicExistsAsync(name.TopicName);
+                    return await _namespaceManager.TopicExistsAsync(name.TopicName);
                 else
-                    return _namespaceManager.SubscriptionExistsAsync(name.TopicName,
+                    return
+                        await _namespaceManager.TopicExistsAsync(name.TopicName) &&
+                        await _namespaceManager.SubscriptionExistsAsync(name.TopicName,
                         name.SubscriptionName);
             }
         }

@@ -33,5 +33,21 @@ namespace BeeHive.Tests
                        " " + exception.ToString());
             }
         }
+
+        [Fact]
+        public void FromTopicName()
+        {
+            var name = QueueName.FromTopicName("Ali");
+            Assert.True(name.IsTopic);
+            Assert.False(name.IsSimpleQueue);
+        }
+
+        [Fact]
+        public void FromSimpleQueueName()
+        {
+            var name = QueueName.FromSimpleQueueName("Ali");
+            Assert.True(name.IsSimpleQueue);
+            Assert.False(name.IsTopic);
+        }
     }
 }

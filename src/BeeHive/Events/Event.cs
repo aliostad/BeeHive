@@ -26,9 +26,9 @@ namespace BeeHive
             Body = JsonConvert.SerializeObject(body);
 
             // set default event type and queue name
-            QueueName = forTopic ? 
-                BeeHive.QueueName.FromTopicName(body.GetType().Name).ToString() : 
-                body.GetType().Name;
+            QueueName = forTopic
+                ? BeeHive.QueueName.FromTopicName(body.GetType().Name).ToString()
+                : BeeHive.QueueName.FromSimpleQueueName(body.GetType().Name).ToString();
             EventType = body.GetType().Name;
 
         }

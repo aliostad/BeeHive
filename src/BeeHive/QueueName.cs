@@ -16,7 +16,7 @@ namespace BeeHive
     {
         private string _queueName;
 
-        private const string QueueNamePattern = @"^(\w+)(?:\-(\w*))?$";
+        private const string QueueNamePattern = @"^(\w+)-(\w*)?$";
         public QueueName(string queueName)
         {
             _queueName = queueName;
@@ -25,9 +25,6 @@ namespace BeeHive
                 throw new ArgumentException("Queue name does not follow correct pattern", "queueName");
             TopicName = match.Groups[1].Value;
             SubscriptionName = match.Groups[2].Value;
-
-            if (string.IsNullOrEmpty(SubscriptionName))
-                SubscriptionName = TopicName;
 
         }
 
