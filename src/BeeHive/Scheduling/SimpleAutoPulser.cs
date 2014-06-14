@@ -20,8 +20,8 @@ namespace BeeHive.Scheduling
                 {
                     PulseGenerated(this, eventTypes.Select(x => new Event(string.Empty)
                     {
-                        EventType = x,
-                        QueueName = x
+                        EventType = QueueName.FromTopicName(x).ToString(),
+                        QueueName = QueueName.FromTopicName(x).ToString()
                     }).ToArray());
                 }
                     
