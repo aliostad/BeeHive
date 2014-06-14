@@ -80,7 +80,9 @@
     <Compile Include="Actors\ActorDescriptionAttribute.cs" />
     <Compile Include="Configuration\IConfigurationValueProvider.cs" />
     <Compile Include="Configuration\IEnumerableActorDescriptorExtensions.cs" />
+    <Compile Include="Configuration\IStartup.cs" />
     <Compile Include="Configuration\Pulsers.cs" />
+    <Compile Include="Configuration\StartupSetup.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventProperties.cs" />
     <Compile Include="Configuration\IActorConfiguration.cs" />

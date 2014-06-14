@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="AppDomainExplorerActorConfigurationTests.cs" />
     <Compile Include="Configuration\FluentTests.cs" />
+    <Compile Include="Configuration\StartupSetupTests.cs" />
     <Compile Include="DataStructures\IConcurrencyAwareTests.cs" />
     <Compile Include="Data\DummyActor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
