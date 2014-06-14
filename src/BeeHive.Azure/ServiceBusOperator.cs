@@ -176,7 +176,7 @@ namespace BeeHive.Azure
             }
         }
 
-        public Task<bool> QueueExists(QueueName name)
+        public Task<bool> QueueExistsAsync(QueueName name)
         {
             if (name.IsSimpleQueue)
                 return _namespaceManager.QueueExistsAsync(name.TopicName);

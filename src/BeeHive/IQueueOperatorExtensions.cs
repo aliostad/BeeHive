@@ -10,7 +10,7 @@ namespace BeeHive
     {
         public async static Task SetupQueueAsync<T>(this IQueueOperator<T> op, QueueName name)
         {
-            if (! (await op.QueueExists(name)))
+            if (! (await op.QueueExistsAsync(name)))
             {
                 await op.CreateQueueAsync(name);
             }

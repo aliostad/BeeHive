@@ -35,7 +35,7 @@ namespace BeeHive
 
         Task DeleteQueueAsync(QueueName name);
 
-        Task<bool> QueueExists(QueueName name);
+        Task<bool> QueueExistsAsync(QueueName name);
 
     }
 

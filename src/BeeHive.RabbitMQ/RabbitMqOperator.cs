@@ -188,7 +188,7 @@ namespace BeeHive.RabbitMQ
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Task<bool> QueueExists(QueueName name)
+        public Task<bool> QueueExistsAsync(QueueName name)
         {
             return Task.FromResult(false);
         }
