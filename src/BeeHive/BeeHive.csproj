@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="Actors\ActorDescriptionAttributeExtensions.cs" />
     <Compile Include="Actors\ActorDescriptor.cs" />
+    <Compile Include="Actors\ParallelFactoryActor.cs" />
     <Compile Include="Actors\IOrchestrator.cs" />
     <Compile Include="Actors\IDelayedProcessorActor.cs" />
     <Compile Include="Configuration\AggregateActorConfiguration.cs" />
