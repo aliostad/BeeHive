@@ -87,7 +87,7 @@ namespace BeeHive.Azure.Tests.Integration
                 Id = id,
                 Name = "Tommy Shooter",
                 ETag = "\"1234\"",
-                LastModofied = DateTimeOffset.UtcNow 
+                LastModified = DateTimeOffset.UtcNow 
             };
             store.InsertAsync(t).Wait();
             t.Name = "The Fall";
@@ -107,7 +107,7 @@ namespace BeeHive.Azure.Tests.Integration
                 Id = id,
                 Name = "Tommy Shooter",
                 ETag = "\"1234\"",
-                LastModofied = DateTimeOffset.UtcNow.AddHours(1)
+                LastModified = DateTimeOffset.UtcNow.AddHours(1)
             };
             store.InsertAsync(t).Wait();
             var entity = store.GetAsync(id).Result;
@@ -124,7 +124,7 @@ namespace BeeHive.Azure.Tests.Integration
                 Id = id,
                 Name = "Tommy Shooter",
                 ETag = "\"1234\"",
-                LastModofied = DateTimeOffset.UtcNow
+                LastModified = DateTimeOffset.UtcNow
                 
             };
             store.InsertAsync(t).Wait();
@@ -145,7 +145,7 @@ namespace BeeHive.Azure.Tests.Integration
                 Id = id,
                 Name = "Tommy Shooter",
                 ETag = "1234",
-                LastModofied = DateTimeOffset.UtcNow
+                LastModified = DateTimeOffset.UtcNow
             };
             store.InsertAsync(t).Wait();
 
@@ -168,7 +168,7 @@ namespace BeeHive.Azure.Tests.Integration
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public DateTimeOffset? LastModofied { get; set; }
+        public DateTimeOffset? LastModified { get; set; }
         public string ETag { get; set; }
     }
 

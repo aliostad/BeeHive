@@ -21,13 +21,13 @@ namespace BeeHive.DataStructures
                 return (item.ETag != against.ETag);
             }
 
-            if (item.LastModofied.HasValue && against.LastModofied.HasValue)
+            if (item.LastModified.HasValue && against.LastModified.HasValue)
             {
-                return (item.LastModofied.Value != against.LastModofied.Value);
+                return (item.LastModified.Value != against.LastModified.Value);
             }
 
             // if all values null it is OK
-            if (!item.LastModofied.HasValue && !against.LastModofied.HasValue &&
+            if (!item.LastModified.HasValue && !against.LastModified.HasValue &&
                 item.ETag == null && against.ETag == null)
                 return false;
 

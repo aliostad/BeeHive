@@ -45,11 +45,11 @@ namespace BeeHive.Tests.DataStructures
             var lastMod = DateTimeOffset.Now;
             var concurrencyAware = new DummyConcurrencyAware()
             {
-                LastModofied = lastMod
+                LastModified = lastMod
             };
             var concurrencyAware2 = new DummyConcurrencyAware()
             {
-                LastModofied = lastMod
+                LastModified = lastMod
             };
 
             
@@ -63,11 +63,11 @@ namespace BeeHive.Tests.DataStructures
             var lastMod = DateTimeOffset.Now;
             var concurrencyAware = new DummyConcurrencyAware()
             {
-                LastModofied = lastMod
+                LastModified = lastMod
             };
             var concurrencyAware2 = new DummyConcurrencyAware()
             {
-                LastModofied = lastMod.AddMilliseconds(1)
+                LastModified = lastMod.AddMilliseconds(1)
             };
 
             Assert.Throws<ConcurrencyConflictException>(() => concurrencyAware.AssertNoConflict(concurrencyAware2));
@@ -101,7 +101,7 @@ namespace BeeHive.Tests.DataStructures
             };
             var concurrencyAware2 = new DummyConcurrencyAware()
             {
-                LastModofied = DateTimeOffset.Now
+                LastModified = DateTimeOffset.Now
             };
 
             Assert.Throws<InvalidOperationException>(() => concurrencyAware.AssertNoConflict(concurrencyAware2));
@@ -116,7 +116,7 @@ namespace BeeHive.Tests.DataStructures
 
     internal class DummyConcurrencyAware : IConcurrencyAware
     {
-        public DateTimeOffset? LastModofied { get; set; }
+        public DateTimeOffset? LastModified { get; set; }
         public string ETag { get; set; }
     }
 }

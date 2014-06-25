@@ -20,7 +20,7 @@ namespace BeeHive.DataStructures
         /// </summary>
         public string Id { get; set; }
 
-        public DateTimeOffset? LastModofied { get; set; }
+        public DateTimeOffset? LastModified { get; set; }
 
         public string ETag { get; set; }
 

@@ -8,7 +8,7 @@ namespace BeeHive.DataStructures
 {
     public interface IConcurrencyAware
     {
-        DateTimeOffset? LastModofied { get; }
+        DateTimeOffset? LastModified { get; }
 
         string ETag { get; }
     }

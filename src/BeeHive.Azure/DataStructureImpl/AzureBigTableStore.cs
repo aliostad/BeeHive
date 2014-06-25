@@ -159,7 +159,7 @@ namespace BeeHive.Azure
                 PartitionKey = t.Id,
                 RowKey = t.RangeKey,
                 ETag = cwt == null ? "*" : cwt.ETag,
-                Timestamp = cwt == null ? DateTimeOffset.UtcNow : cwt.LastModofied.Value
+                Timestamp = cwt == null ? DateTimeOffset.UtcNow : cwt.LastModified.Value
             };
             if (storeEntity)
                 tableEntity.Properties[EntityPropertyName] = new EntityProperty(JsonConvert.SerializeObject(t));

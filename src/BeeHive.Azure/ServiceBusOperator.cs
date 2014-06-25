@@ -72,22 +72,37 @@ namespace BeeHive.Azure
 
         public async Task PushBatchAsync(IEnumerable<Event> messages)
         {
-            messages = messages.ToArray();
+
+            const int BatchSize = 50;
+            
+            var msgs = messages.ToArray();
             if (!messages.Any())
                 return;
 
-            var message = messages.First();
+            var message = msgs.First();
             var queueName = new QueueName(message.QueueName);
+            int i = 0;
 
             if (queueName.IsSimpleQueue)
             {
                 var client = QueueClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
-                await client.SendBatchAsync(messages.Select(x => x.ToMessage()));
+                while (i < msgs.Length)
+                {
+                    await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
+                    i += BatchSize;
+                }
+
             }
             else
             {
                 var client = TopicClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
-                await client.SendBatchAsync(messages.Select(x => x.ToMessage()));
+
+                while (i < msgs.Length)
+                {
+                    await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
+                    i += BatchSize;
+                }
+                
             }
         }
 
@@ -144,17 +159,21 @@ namespace BeeHive.Azure
         }
 
 
-        public Task CreateQueueAsync(QueueName name)
+        public async Task CreateQueueAsync(QueueName name)
         {
             if (name.IsSimpleQueue)
-                return _namespaceManager.CreateQueueAsync(name.TopicName);
+                await _namespaceManager.CreateQueueAsync(name.TopicName);
             else
             {
                 if (name.IsTopic)
-                    return _namespaceManager.CreateTopicAsync(name.TopicName);
+                    await _namespaceManager.CreateTopicAsync(name.TopicName);
                 else
-                    return _namespaceManager.CreateSubscriptionAsync(name.TopicName,
+                {
+                    await this.SetupQueueAsync(QueueName.FromTopicName(name.TopicName));
+                    await _namespaceManager.CreateSubscriptionAsync(name.TopicName,
                         name.SubscriptionName);
+                }
+                    
             }
         }
 

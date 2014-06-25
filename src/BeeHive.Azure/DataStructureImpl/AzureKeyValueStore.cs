@@ -33,7 +33,7 @@ namespace BeeHive.Azure
                 Body = new MemoryStream(),
                 Metadata = new Dictionary<string, string>(blobReference.Metadata),
                 ETag = blobReference.Properties.ETag,
-                LastModofied = blobReference.Properties.LastModified,
+                LastModified = blobReference.Properties.LastModified,
                 Id = id,
                 UnderlyingBlob = blobReference
             };
@@ -102,11 +102,11 @@ namespace BeeHive.Azure
                         blobReference.Properties.ETag);
                 }
 
-                if (concurrencyAware.LastModofied != null &&
+                if (concurrencyAware.LastModified != null &&
                     blobReference.Properties.LastModified != null &&
-                   blobReference.Properties.LastModified != concurrencyAware.LastModofied)
+                   blobReference.Properties.LastModified != concurrencyAware.LastModified)
                 {
-                    throw new ConcurrencyConflictException(concurrencyAware.LastModofied.Value,
+                    throw new ConcurrencyConflictException(concurrencyAware.LastModified.Value,
                         blobReference.Properties.LastModified.Value);
                 }
             }

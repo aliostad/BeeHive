@@ -23,7 +23,7 @@ namespace BeeHive.Azure
                     IsVirtualFolder = false,
                     Body = null,
                     ETag = blockBlob.Properties.ETag,
-                    LastModofied = blockBlob.Properties.LastModified,
+                    LastModified = blockBlob.Properties.LastModified,
                     UnderlyingBlob = blockBlob,
                     Metadata = null
                 };
@@ -36,7 +36,7 @@ namespace BeeHive.Azure
                     Id = directoryBlob.Prefix,
                     Body = new MemoryStream(),
                     ETag = null,
-                    LastModofied = null,
+                    LastModified = null,
                     Metadata = new Dictionary<string, string>(),
                     UnderlyingBlob = directoryBlob
                 };
