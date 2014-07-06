@@ -118,7 +118,9 @@ namespace BeeHive.Azure
         {
             var tcw = t as IConcurrencyAware;
             OperationContext ctx = null;
-            if (tcw != null)
+            if (tcw != null && tcw.ETag == null)
+            {
+              
                 ctx = new OperationContext()
                 {
                     UserHeaders =
@@ -126,6 +128,8 @@ namespace BeeHive.Azure
                         {"If-Match", tcw.ETag}
                     }
                 };
+            }
+                
 
             var table = await GetTable();
             await table.ExecuteAsync(TableOperation.InsertOrReplace(GetEntity(t, true)),
