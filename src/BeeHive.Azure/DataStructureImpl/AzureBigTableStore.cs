@@ -118,7 +118,7 @@ namespace BeeHive.Azure
         {
             var tcw = t as IConcurrencyAware;
             OperationContext ctx = null;
-            if (tcw != null && tcw.ETag == null)
+            if (tcw != null && tcw.ETag != null)
             {
               
                 ctx = new OperationContext()
@@ -162,8 +162,8 @@ namespace BeeHive.Azure
             {
                 PartitionKey = t.Id,
                 RowKey = t.RangeKey,
-                ETag = cwt == null ? "*" : cwt.ETag,
-                Timestamp = cwt == null ? DateTimeOffset.UtcNow : cwt.LastModified.Value
+                ETag = cwt == null || cwt.ETag == null ? "*" : cwt.ETag,
+                Timestamp = cwt == null || cwt.LastModified == null ? DateTimeOffset.UtcNow : cwt.LastModified.Value
             };
             if (storeEntity)
                 tableEntity.Properties[EntityPropertyName] = new EntityProperty(JsonConvert.SerializeObject(t));
