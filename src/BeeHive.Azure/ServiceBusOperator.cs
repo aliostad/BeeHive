@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,56 +16,44 @@ namespace BeeHive.Azure
         private string _connectionString;
         private NamespaceManager _namespaceManager;
         private TimeSpan _longPollingTimeout;
-
+        private ClientProvider _clientProvider;
         public ServiceBusOperator(string connectionString)
             : this(connectionString, TimeSpan.FromSeconds(30))
         {
 
         }
 
-        public ServiceBusOperator(string connectionString, TimeSpan longPollingTimeout)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <param name="longPollingTimeout"></param>
+        /// <param name="cacheClients">False by default to prevent hitting the 100 limit.
+        /// Turn it on if you know the limit will not be reached</param>
+        public ServiceBusOperator(string connectionString, 
+            TimeSpan longPollingTimeout,
+            bool cacheClients = false)
         {
             _longPollingTimeout = longPollingTimeout;
             _connectionString = connectionString;
             _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
+            _clientProvider = new ClientProvider(connectionString, cacheClients);
         }
 
        
-        private async Task<bool> QueueExistsAsync_OLD(string name)
-        {
-            try
-            {
-                return await _namespaceManager.QueueExistsAsync(name);
-            }
-            catch (AggregateException e)
-            {
-                if (e.InnerException is MessagingException &&
-                    e.InnerException.Message.StartsWith("Cannot get entity"))
-                    return false;
-                throw e;
-            }
-            catch (MessagingException ex)
-            {
-                if (ex.Message.StartsWith("Cannot get entity"))
-                    return false;
-                else
-                    throw ex;
-
-            }
-            
-        }
+     
 
         public async Task PushAsync(Event message)
         {
             var queueName = new QueueName(message.QueueName);
             if (queueName.IsSimpleQueue)
             {
-                var client = QueueClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
+                var client = _clientProvider.GetQueueClient(queueName);
                 await client.SendAsync(message.ToMessage());
             }
             else
             {
-                var client = TopicClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
+                var client = _clientProvider.GetTopicClient(queueName);
                 await client.SendAsync(message.ToMessage());
             }
 
@@ -85,7 +74,7 @@ namespace BeeHive.Azure
 
             if (queueName.IsSimpleQueue)
             {
-                var client = QueueClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
+                var client = _clientProvider.GetQueueClient(queueName);
                 while (i < msgs.Length)
                 {
                     await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
@@ -95,8 +84,7 @@ namespace BeeHive.Azure
             }
             else
             {
-                var client = TopicClient.CreateFromConnectionString(_connectionString, queueName.TopicName);
-
+                var client = _clientProvider.GetTopicClient(queueName);
                 while (i < msgs.Length)
                 {
                     await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
@@ -116,14 +104,13 @@ namespace BeeHive.Azure
                 BrokeredMessage message = null;
                 if (name.IsSimpleQueue)
                 {
-                    var client = QueueClient.CreateFromConnectionString(_connectionString, name.TopicName);
+                    var client = _clientProvider.GetQueueClient(name);
                     message = await client.ReceiveAsync();
 
                 }
                 else
                 {
-                    var client = SubscriptionClient.CreateFromConnectionString(_connectionString,
-                        name.TopicName, name.SubscriptionName);
+                    var client = _clientProvider.GetSubscriptionClient(name);
                     message = await client.ReceiveAsync(_longPollingTimeout); 
                 }
 
@@ -205,6 +192,102 @@ namespace BeeHive.Azure
                         await _namespaceManager.SubscriptionExistsAsync(name.TopicName,
                         name.SubscriptionName);
             }
+        }
+
+        class ClientProvider
+        {
+
+            /// <summary>
+            /// All this lazy stuff is to get around issue reported by Ayende
+            /// with concurrent collections
+            /// </summary>
+            ConcurrentDictionary<string, Lazy<object>> _cachedClients =
+                new ConcurrentDictionary<string, Lazy<object>>();
+
+
+            private bool _cache;
+            private string _connectionString;
+
+
+            public ClientProvider(string connectionString, bool cache)
+            {
+                _connectionString = connectionString;
+                _cache = cache;
+            }
+
+            public SubscriptionClient GetSubscriptionClient(QueueName queueName)
+            {
+
+                Func<object> factory = () =>
+                    SubscriptionClient.CreateFromConnectionString(_connectionString,
+                        queueName.TopicName,
+                        queueName.SubscriptionName);
+
+                if (_cache)
+                {
+                     
+                    var lazy =
+                    _cachedClients.GetOrAdd(
+                        queueName.ToString(),
+                        (name) =>
+
+                            new Lazy<object>(factory));
+
+                    return (SubscriptionClient) lazy.Value;
+
+                }
+
+                return (SubscriptionClient) factory();
+            }
+
+            public TopicClient GetTopicClient(QueueName queueName)
+            {
+
+                Func<object> factory = () =>
+                    TopicClient.CreateFromConnectionString(_connectionString,
+                        queueName.TopicName);
+
+                if (_cache)
+                {
+
+                    var lazy =
+                    _cachedClients.GetOrAdd(
+                        queueName.ToString(),
+                        (name) =>
+
+                            new Lazy<object>(factory));
+
+                    return (TopicClient)lazy.Value;
+
+                }
+
+                return (TopicClient)factory();
+            }
+
+            public QueueClient GetQueueClient(QueueName queueName)
+            {
+
+                Func<object> factory = () =>
+                    QueueClient.CreateFromConnectionString(_connectionString,
+                        queueName.TopicName);
+
+                if (_cache)
+                {
+
+                    var lazy =
+                    _cachedClients.GetOrAdd(
+                        queueName.ToString(),
+                        (name) =>
+
+                            new Lazy<object>(factory));
+
+                    return (QueueClient)lazy.Value;
+
+                }
+
+                return (QueueClient)factory();
+            }
+
         }
     }
 }
