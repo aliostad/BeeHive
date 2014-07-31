@@ -17,8 +17,11 @@ namespace BeeHive.Azure
         private NamespaceManager _namespaceManager;
         private TimeSpan _longPollingTimeout;
         private ClientProvider _clientProvider;
-        public ServiceBusOperator(string connectionString)
-            : this(connectionString, TimeSpan.FromSeconds(30))
+        public ServiceBusOperator(string connectionString,
+            bool cacheClients = false)
+            : this(connectionString, 
+            TimeSpan.FromSeconds(30),
+            cacheClients)
         {
 
         }
@@ -194,7 +197,7 @@ namespace BeeHive.Azure
             }
         }
 
-        class ClientProvider
+        internal class ClientProvider
         {
 
             /// <summary>
