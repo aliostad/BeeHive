@@ -32,6 +32,7 @@ namespace BeeHive.Actors
                 new QueueName(_actorDescriptor.SourceQueueName));
             if (result.IsSuccessful)
             {
+                Trace.TraceInformation("Receieved a message. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
                 var actor = (IProcessorActor)_serviceLocator.GetService(_actorDescriptor.ActorType);
                 try
                 {
@@ -45,9 +46,12 @@ namespace BeeHive.Actors
                         await _queueOperator.PushBatchAsync(gr);
                     }
 
+                    Trace.TraceInformation("Processing succeeded. Id: {0} Queue: {1} " , result.PollingResult.Id, _actorDescriptor.SourceQueueName);
+
                 }
                 catch (Exception exception)
                 {
+                    Trace.TraceInformation("Processing failed. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
                     Trace.TraceWarning(exception.ToString());
                     _queueOperator.AbandonAsync(result.PollingResult).SafeObserve();
 
