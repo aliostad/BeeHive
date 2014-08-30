@@ -82,6 +82,15 @@ namespace BeeHive.Azure
             {
                 foreach (var kv in t.Metadata)
                 {
+                    if (kv.Key.Equals("content-type", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        blobReference.Properties.ContentType = kv.Value;
+                        continue;
+                    }
+                  
+                    // TODO: do the rest of properties
+
+
                     blobReference.Metadata[kv.Key] = kv.Value;
                 }
                 await blobReference.SetMetadataAsync();
