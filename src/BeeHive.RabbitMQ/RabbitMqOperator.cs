@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BeeHive.Scheduling;
 using RabbitMQ.Client;
@@ -123,6 +124,11 @@ namespace BeeHive.RabbitMQ
         public Task DeferAsync(Event message, TimeSpan howLong)
         {
             throw new NotSupportedException(); // TODO: investigate
+        }
+
+        public async Task KeepExtendingLeaseAsync(Event message, TimeSpan howLong, CancellationToken cancellationToken)
+        {
+            // TODO: implement
         }
 
         public Task CreateQueueAsync(QueueName name)

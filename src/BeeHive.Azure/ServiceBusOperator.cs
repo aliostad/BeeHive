@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BeeHive.Scheduling;
 using Microsoft.ServiceBus;
@@ -108,7 +109,7 @@ namespace BeeHive.Azure
                 if (name.IsSimpleQueue)
                 {
                     var client = _clientProvider.GetQueueClient(name);
-                    message = await client.ReceiveAsync();
+                    message = await client.ReceiveAsync(_longPollingTimeout);
 
                 }
                 else
@@ -146,6 +147,30 @@ namespace BeeHive.Azure
         {
             var brokeredMessage = (BrokeredMessage)message.UnderlyingMessage;
             return brokeredMessage.DeferAsync() ; // TODO: use howLong
+        }
+
+        public async Task KeepExtendingLeaseAsync(Event message, TimeSpan howLong, CancellationToken cancellationToken)
+        {
+
+            await Task.Delay(new TimeSpan(2 * howLong.Ticks / 3), cancellationToken);
+
+            while (true)
+            {
+                try
+                {
+                    if(cancellationToken.IsCancellationRequested)
+                        break;
+
+                    var underlyingMessage = (BrokeredMessage) message.UnderlyingMessage;
+                    await underlyingMessage.RenewLockAsync();
+                    await Task.Delay(new TimeSpan(2*howLong.Ticks/3), cancellationToken);
+                }
+                catch (Exception exception)
+                {
+                    Trace.TraceError(exception.ToString());
+                    break;
+                }
+            }
         }
 
 

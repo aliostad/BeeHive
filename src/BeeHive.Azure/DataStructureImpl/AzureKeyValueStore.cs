@@ -76,7 +76,6 @@ namespace BeeHive.Azure
             var concurrencyAware = t as IConcurrencyAware;
             CheckConcurrency(concurrencyAware, blobReference);
 
-            await blobReference.UploadFromStreamAsync(t.Body);
 
             if (t.Metadata != null)
             {
@@ -87,14 +86,20 @@ namespace BeeHive.Azure
                         blobReference.Properties.ContentType = kv.Value;
                         continue;
                     }
-                  
+
                     // TODO: do the rest of properties
 
 
                     blobReference.Metadata[kv.Key] = kv.Value;
                 }
+
+            }
+            await blobReference.UploadFromStreamAsync(t.Body);
+            if (t.Metadata != null)
+            {
                 await blobReference.SetMetadataAsync();
             }
+
             t.UnderlyingBlob = blobReference;
 
         }

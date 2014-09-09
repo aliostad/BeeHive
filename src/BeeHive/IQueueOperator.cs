@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BeeHive.Scheduling;
 
@@ -17,6 +18,8 @@ namespace BeeHive
         Task CommitAsync(T message);
 
         Task DeferAsync(T message, TimeSpan howLong);
+
+        Task KeepExtendingLeaseAsync(T message, TimeSpan howLong, CancellationToken cancellationToken);
     }
 
     public interface ITopicOperator<T>

@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.RabbitMQ", "src\Bee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.RabbitMQ.Tests", "test\BeeHive.RabbitMQ.Tests\BeeHive.RabbitMQ.Tests.csproj", "{E1761ECB-32FA-4BB7-8B7A-56B9ACB15854}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Visualiser", "src\BeeHive.Visualiser\BeeHive.Visualiser.csproj", "{0D760819-F033-4917-94B5-4C71EBEECCF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Vizualiser.Tests", "test\BeeHive.Vizualiser.Tests\BeeHive.Vizualiser.Tests.csproj", "{B508BFAD-3D41-454A-B0A8-A4F105D23401}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,14 @@ Global
 		{E1761ECB-32FA-4BB7-8B7A-56B9ACB15854}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1761ECB-32FA-4BB7-8B7A-56B9ACB15854}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1761ECB-32FA-4BB7-8B7A-56B9ACB15854}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D760819-F033-4917-94B5-4C71EBEECCF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D760819-F033-4917-94B5-4C71EBEECCF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D760819-F033-4917-94B5-4C71EBEECCF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D760819-F033-4917-94B5-4C71EBEECCF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B508BFAD-3D41-454A-B0A8-A4F105D23401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B508BFAD-3D41-454A-B0A8-A4F105D23401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B508BFAD-3D41-454A-B0A8-A4F105D23401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B508BFAD-3D41-454A-B0A8-A4F105D23401}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,5 +103,7 @@ Global
 		{8C8008E2-75CA-4F43-92A2-5F3DBA8082DA} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
 		{B7A9BD3B-D01D-4E64-A5ED-FFED9D8C607F} = {8241C829-3DB9-4BDD-9679-CA3CBE02AD88}
 		{E1761ECB-32FA-4BB7-8B7A-56B9ACB15854} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
+		{0D760819-F033-4917-94B5-4C71EBEECCF0} = {8241C829-3DB9-4BDD-9679-CA3CBE02AD88}
+		{B508BFAD-3D41-454A-B0A8-A4F105D23401} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
 	EndGlobalSection
 EndGlobal

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BeeHive.DataStructures;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Xunit;
 
 namespace BeeHive.Azure.Tests.Integration
@@ -48,14 +49,18 @@ namespace BeeHive.Azure.Tests.Integration
                 Metadata = new Dictionary<string, string>()
                 {
                     {"a", "b"},
-                    {"c", "d"}
+                    {"c", "d"},
+                    {"Content-Type", "image/png"}
                 }
             };
             store.InsertAsync(simpleBlob).Wait();
             var metadata = store.GetMetadataAsync(simpleBlob.Id).Result;
+            var blob2 = store.GetAsync(simpleBlob.Id).Result;
 
+            var blockBlob = (CloudBlockBlob) blob2.UnderlyingBlob;
             Assert.Equal("b", metadata["a"]);
             Assert.Equal("d", metadata["c"]);
+            Assert.Equal("image/png", blockBlob.Properties.ContentType);
         }
     }
 }

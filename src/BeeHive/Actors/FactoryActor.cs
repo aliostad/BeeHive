@@ -26,17 +26,27 @@ namespace BeeHive.Actors
 
         }
 
+
         private async Task<bool> Process(CancellationToken cancellationToken)
         {
             var result = await _queueOperator.NextAsync(
                 new QueueName(_actorDescriptor.SourceQueueName));
+
+            var cancellationTokenSource = new CancellationTokenSource();
+
             if (result.IsSuccessful)
             {
                 Trace.TraceInformation("Receieved a message. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
                 var actor = (IProcessorActor)_serviceLocator.GetService(_actorDescriptor.ActorType);
                 try
                 {
+
+                    _queueOperator.KeepExtendingLeaseAsync(result.PollingResult, TimeSpan.FromSeconds(30),
+                        cancellationTokenSource.Token).SafeObserve();
+
                     var events = (await actor.ProcessAsync(result.PollingResult)).ToArray();
+                    cancellationTokenSource.Cancel();
+
                     await _queueOperator.CommitAsync(result.PollingResult);
 
                     var groups = events.GroupBy(x=>x.QueueName);
@@ -53,6 +63,7 @@ namespace BeeHive.Actors
                 {
                     Trace.TraceInformation("Processing failed. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
                     Trace.TraceWarning(exception.ToString());
+                    cancellationTokenSource.Cancel();
                     _queueOperator.AbandonAsync(result.PollingResult).SafeObserve();
 
                 }

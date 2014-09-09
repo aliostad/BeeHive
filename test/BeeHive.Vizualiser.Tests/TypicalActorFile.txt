@@ -1,0 +1,102 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BeeHive;
+using BeeHive.DataStructures;
+using NuzInsight.Capture.Impl.Entities;
+using NuzInsight.Capture.Impl.Events;
+using NuzInsight.Common.Capture;
+using NuzInsight.Common.Internal;
+using NuzInsight.Common.Syndication;
+
+namespace NuzInsight.Capture.Impl.Actors
+{
+
+    [ActorDescription("FeedCaptureSignalled-FeedCapture")]
+    public class FeedChannelCaptureActor : IProcessorActor
+    {
+        private IBigTableStore<FeedChannelEntity> _channelStore;
+        private ICapturer _capturer;
+
+        public FeedChannelCaptureActor(IBigTableStore<FeedChannelEntity> channelStore,
+            ICapturer capturer)
+        {
+            _capturer = capturer;
+            _channelStore = channelStore;
+        }
+
+        public void Dispose()
+        {
+
+        }
+
+        public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
+        {
+            
+            var ev = evnt.GetBody<FeedCaptureSignalled>();
+
+            try
+            {
+                var channel = await _channelStore.GetAsync(FeedChannelEntity.UniversalId, ev.FeedChannelRangeKey);
+
+                var blob = await _capturer.CaptureAsync(channel.GetUrl());
+                var content = new StreamReader(blob.Content).ReadToEnd();
+                var parser = channel.SyndicationProtocol == SyndicationProtocols.Rss
+                    ? (IFeedParser)new RssParser()
+                    : new AtomParser();
+
+                var result = parser.Parse(content);
+
+
+                var feedItems = result.Items;
+                var validPubDate = feedItems.Any() && feedItems[0].HasOriginalPubDate;
+                if (validPubDate) // re-order only if has valid date otherwise maintain original 
+                    feedItems = result.Items.OrderByDescending(x => x.PubDate.Ticks).ToList();
+                
+                feedItems.ForEach(x => x.ParentChannelUrl = channel.Url);
+                var events = new List<Event>();
+                string newOffset = null;
+                foreach (var feedItem in feedItems)
+                {
+                   
+                    if (channel.AlreadyCaptured(feedItem))
+                        break;
+
+                    if (validPubDate)
+                        newOffset = newOffset ?? feedItem.PubDate.ToString("u");
+                    else
+                        newOffset = newOffset ?? feedItem.Link;
+
+                    feedItem.ChannelCategory = channel.Category;
+                    events.Add(new Event(new FeedItemIdentified()
+                    {
+                        Item = feedItem
+                    }));
+                }
+
+                if (newOffset == null)
+                    return events;
+
+                events.Add(new Event(new FeedChannelCaptured()
+                {
+                    NewOffset = newOffset,
+                    FeedChannelId = ev.FeedChannelRangeKey
+                }));
+
+                return events;
+            }
+            catch (Exception exception)
+            {
+                Trace.TraceError(exception.ToString());
+                Trace.TraceError("This was the event {1}", ev.FeedChannelRangeKey);
+
+                throw;
+            }
+           
+        }
+    }
+}
