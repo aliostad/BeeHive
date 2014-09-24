@@ -92,17 +92,26 @@ namespace BeeHive.Azure
         public async Task<IEnumerable<T>> GetRangeAsync(string id, string rangeStart, string rangeEnd)
         {
             var table = await GetTable();
-            var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
-                QueryComparisons.Equal, id);
-            var conditionRKgt = TableQuery.GenerateFilterCondition("RowKey",
-                QueryComparisons.GreaterThanOrEqual, rangeStart);
-            var conditionRKlt = TableQuery.GenerateFilterCondition("RowKey",
-                QueryComparisons.LessThanOrEqual, rangeEnd);
+            TableQuery<DynamicTableEntity> query = null;
 
-            var conditionRK = TableQuery.CombineFilters(conditionRKgt, "and", conditionRKlt);
+            if (id == null)
+            {
+                query = new TableQuery<DynamicTableEntity>();
+            }
+            else
+            {
+                var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
+               QueryComparisons.Equal, id);
+                var conditionRKgt = TableQuery.GenerateFilterCondition("RowKey",
+                    QueryComparisons.GreaterThanOrEqual, rangeStart);
+                var conditionRKlt = TableQuery.GenerateFilterCondition("RowKey",
+                    QueryComparisons.LessThanOrEqual, rangeEnd);
 
-            var query = new TableQuery<DynamicTableEntity>()
-                .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
+                var conditionRK = TableQuery.CombineFilters(conditionRKgt, "and", conditionRKlt);
+                query = new TableQuery<DynamicTableEntity>()
+                    .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
+            }
+                      
             return
                 table.ExecuteQuery(query).Select(x => GetItem(x, x.PartitionKey,x.RowKey));
                 
