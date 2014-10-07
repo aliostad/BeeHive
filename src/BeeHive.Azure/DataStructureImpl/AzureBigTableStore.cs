@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BeeHive.DataStructures;
@@ -12,17 +13,53 @@ using Newtonsoft.Json;
 namespace BeeHive.Azure
 {
 
+    internal class TableConstants
+    {
+        public const string PartitionKey = "PartitionKey";
+        public const string RowKey = "RowKey";
+        public const string EntityPropertyName = "__Tee";
+        public const string And = "and";
+        public const string Id = "Id";
+        public const string RangeKey = "RangeKey";
+        public const string LastModified = "LastModified";
+        public const string ETag = "ETag";
+        
+
+    }
+
     /// <summary>
     /// Azure implementation of Big Table on top of Azure Table STorage
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class AzureBigTableStore<T> : IBigTableStore<T>
-        where T : IHaveIdentityAndRange
+        where T : IHaveIdentityAndRange, new()
     {
+
+        private static Type[] SimpleTypes =
+        {
+            typeof (bool),
+            typeof (int),
+            typeof (long),
+            typeof (double),
+            typeof (DateTime),
+            typeof (DateTimeOffset),
+            typeof (string),
+            typeof(Guid),
+            typeof(byte[]),
+            typeof (bool?),
+            typeof (int?),
+            typeof (long?),
+            typeof (double?),
+            typeof (DateTime?),
+            typeof (DateTimeOffset?),
+            typeof(Guid?)
+
+        };
 
         private string _connectionString;
         private CloudTable _table;
-        private const string EntityPropertyName = "__Tee";
+        private Dictionary<string, PropertyInfo> _simpleProperties;
+        private Dictionary<string, PropertyInfo> _complexProperties;
 
         public AzureBigTableStore(string connectionString)
             : this(connectionString, GetDefaultTableName())
@@ -36,6 +73,27 @@ namespace BeeHive.Azure
             var account = CloudStorageAccount.Parse(_connectionString);
             var client = account.CreateCloudTableClient();
             _table = client.GetTableReference(tableName);
+
+            ProcessType();
+        }
+
+        private void ProcessType()
+        {
+            var props = typeof (T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            _simpleProperties = props
+                .Where(x => SimpleTypes.Contains(x.PropertyType)).ToDictionary(x => x.Name);
+            _complexProperties = props.Except(_simpleProperties.Values).ToDictionary(x => x.Name);
+ 
+            _simpleProperties.Remove(TableConstants.Id);
+            _simpleProperties.Remove(TableConstants.RangeKey);
+
+            if (_simpleProperties.ContainsKey(TableConstants.ETag))
+                _simpleProperties.Remove(TableConstants.ETag);
+
+            if (_simpleProperties.ContainsKey(TableConstants.LastModified))
+                _simpleProperties.Remove(TableConstants.LastModified);
+
+
         }
 
         private static string GetDefaultTableName()
@@ -69,13 +127,13 @@ namespace BeeHive.Azure
         public async Task<T> GetAsync(string id, string rangeKey)
         {
             var table = await GetTable();
-            var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
+            var conditionPK = TableQuery.GenerateFilterCondition(TableConstants.PartitionKey,
                 QueryComparisons.Equal, id);
-            var conditionRK = TableQuery.GenerateFilterCondition("RowKey",
+            var conditionRK = TableQuery.GenerateFilterCondition(TableConstants.RowKey,
                 QueryComparisons.Equal, rangeKey);
 
             var query = new TableQuery<DynamicTableEntity>()
-                .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
+                .Where(TableQuery.CombineFilters(conditionPK, TableConstants.And, conditionRK));
             return GetItem(table.ExecuteQuery(query).FirstOrDefault(), id, rangeKey);
         }
 
@@ -84,9 +142,30 @@ namespace BeeHive.Azure
             if (entity == null)
                 throw new KeyNotFoundException(string.Format("PK: {0} - RK: {1}", id, rangeKey));
 
-            var deserializedObject = JsonConvert.DeserializeObject<T>(
-                entity.Properties[EntityPropertyName].StringValue);
-            return deserializedObject;
+            if (entity.Properties.ContainsKey(TableConstants.EntityPropertyName))
+            {
+                var deserializedObject = JsonConvert.DeserializeObject<T>(
+                    entity.Properties[TableConstants.EntityPropertyName].StringValue);
+                return deserializedObject;
+            }
+            else
+            {
+                var foo = new T();
+                foreach (var simpleProperty in _simpleProperties.Values)
+                {
+                    simpleProperty.GetSetMethod()
+                        .Invoke(foo, new[] {entity.Properties[simpleProperty.Name].PropertyAsObject});
+                }
+                foreach (var complexProperty in _complexProperties.Values)
+                {
+                    complexProperty.GetSetMethod().Invoke(foo, new[]
+                    {
+                        JsonConvert.DeserializeObject(entity.Properties[complexProperty.Name].StringValue,
+                            complexProperty.PropertyType)
+                    });
+                }
+                return foo;
+            }
         }
 
         public async Task<IEnumerable<T>> GetRangeAsync(string id, string rangeStart, string rangeEnd)
@@ -100,16 +179,16 @@ namespace BeeHive.Azure
             }
             else
             {
-                var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
+                var conditionPK = TableQuery.GenerateFilterCondition(TableConstants.PartitionKey,
                QueryComparisons.Equal, id);
-                var conditionRKgt = TableQuery.GenerateFilterCondition("RowKey",
+                var conditionRKgt = TableQuery.GenerateFilterCondition(TableConstants.RowKey,
                     QueryComparisons.GreaterThanOrEqual, rangeStart);
-                var conditionRKlt = TableQuery.GenerateFilterCondition("RowKey",
+                var conditionRKlt = TableQuery.GenerateFilterCondition(TableConstants.RowKey,
                     QueryComparisons.LessThanOrEqual, rangeEnd);
 
-                var conditionRK = TableQuery.CombineFilters(conditionRKgt, "and", conditionRKlt);
+                var conditionRK = TableQuery.CombineFilters(conditionRKgt, TableConstants.And, conditionRKlt);
                 query = new TableQuery<DynamicTableEntity>()
-                    .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
+                    .Where(TableQuery.CombineFilters(conditionPK, TableConstants.And, conditionRK));
             }
                       
             return
@@ -154,13 +233,13 @@ namespace BeeHive.Azure
         public async Task<bool> ExistsAsync(string id, string rangeKey)
         {
             var table = await GetTable();
-            var conditionPK = TableQuery.GenerateFilterCondition("PartitionKey",
+            var conditionPK = TableQuery.GenerateFilterCondition(TableConstants.PartitionKey,
                 QueryComparisons.Equal, id);
-            var conditionRK = TableQuery.GenerateFilterCondition("RowKey",
+            var conditionRK = TableQuery.GenerateFilterCondition(TableConstants.RowKey,
                 QueryComparisons.Equal, rangeKey);
 
             var query = new TableQuery<DynamicTableEntity>()
-                .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
+                .Where(TableQuery.CombineFilters(conditionPK, TableConstants.And, conditionRK));
             return table.ExecuteQuery(query).Any();
         }
 
@@ -168,14 +247,29 @@ namespace BeeHive.Azure
         {
             var cwt = t as IConcurrencyAware;
             var tableEntity = new DynamicTableEntity()
-            {
-                PartitionKey = t.Id,
-                RowKey = t.RangeKey,
-                ETag = cwt == null || cwt.ETag == null ? "*" : cwt.ETag,
-                Timestamp = cwt == null || cwt.LastModified == null ? DateTimeOffset.UtcNow : cwt.LastModified.Value
-            };
+                {
+                    PartitionKey = t.Id,
+                    RowKey = t.RangeKey,
+                    ETag = cwt == null || cwt.ETag == null ? "*" : cwt.ETag,
+                    Timestamp = cwt == null || cwt.LastModified == null ? DateTimeOffset.UtcNow : cwt.LastModified.Value
+                };
+
             if (storeEntity)
-                tableEntity.Properties[EntityPropertyName] = new EntityProperty(JsonConvert.SerializeObject(t));
+            {
+                foreach (var simpleProperty in _simpleProperties.Values)
+                {
+                    tableEntity.Properties[simpleProperty.Name] =
+                        EntityProperty.CreateEntityPropertyFromObject(simpleProperty.GetGetMethod().Invoke(t, null));
+                }
+
+                foreach (var complexProperty in _complexProperties.Values)
+                {
+                    tableEntity.Properties[complexProperty.Name] =
+                        EntityProperty.CreateEntityPropertyFromObject(
+                            JsonConvert.SerializeObject(complexProperty.GetGetMethod().Invoke(t, null)));
+                }
+            }
+
             return tableEntity;
         }
     }

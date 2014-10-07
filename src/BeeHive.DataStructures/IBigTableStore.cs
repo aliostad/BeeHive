@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BeeHive.DataStructures
 {
     public interface IBigTableStore<T>
-        where T : IHaveIdentityAndRange
+        where T : IHaveIdentityAndRange, new()
     {
         Task<T> GetAsync(string id, string rangeKey);
 
@@ -32,13 +32,13 @@ namespace BeeHive.DataStructures
     public static class IBigTableStoreExtensions
     {
         public static Task<IEnumerable<T>> GetAllAsync<T>(this IBigTableStore<T> table, string id)
-            where T : IHaveIdentityAndRange
+            where T : IHaveIdentityAndRange, new()
         {
             return table.GetRangeAsync(id, "0", "zzzzzzzz");
         }
 
         public static Task<IEnumerable<T>> GetAllAsync<T>(this IBigTableStore<T> table)
-            where T : IHaveIdentityAndRange
+            where T : IHaveIdentityAndRange, new()
         {
             return table.GetRangeAsync(null, "0", "zzzzzzzz");
         }
