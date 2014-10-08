@@ -13,7 +13,7 @@ namespace BeeHive.Azure.Tests.Integration
         private const string ConnectionString = "UseDevelopmentStorage=true;";
 
         [Fact]
-        public void GetInsertAndGet()
+        public void CanInsertAndGet()
         {
             var store = new AzureBigTableStore<HasIdentityAndRange>(connectionString:ConnectionString);
             var item = new HasIdentityAndRange()
@@ -21,11 +21,33 @@ namespace BeeHive.Azure.Tests.Integration
                 Id = Guid.NewGuid().ToString(),
                 RangeKey = "1",
                 ETag = "\"" + Guid.NewGuid().ToString() + "\"",
-                LastModified = DateTimeOffset.Now
+                LastModified = DateTimeOffset.Now,
+                When = DateTimeOffset.Now,
+                When2 = DateTime.Now,
+                HowMany = 1,
+                HowMany2 = 83248926438962,
+                HowMuch = 32423.45243,
+                Secret = Guid.NewGuid(),
+                What = "chapooli",
+                Really = true,
+                Booboo = new byte[100]
             };
             store.InsertAsync(item).Wait();
 
-            Assert.True(store.ExistsAsync(item.Id,item.RangeKey).Result);
+            var storedItem = store.GetAsync(item.Id, item.RangeKey).Result;
+            Assert.Equal(item.HowMany, storedItem.HowMany);
+            Assert.Equal(item.HowMany2, storedItem.HowMany2);
+            Assert.Equal(item.HowMany3, storedItem.HowMany3);
+            Assert.Equal(item.HowMuch, storedItem.HowMuch);
+            Assert.Equal(item.What, storedItem.What);
+            Assert.Equal(item.Really, storedItem.Really);
+            Assert.Equal(item.Really2, storedItem.Really2);
+            Assert.Equal(item.Secret, storedItem.Secret);
+            Assert.Equal(item.Secret2, storedItem.Secret2);
+            Assert.Equal(item.Booboo, storedItem.Booboo);
+            Assert.Equal(item.When, storedItem.When);
+            Assert.Equal(item.When2.Value.ToUniversalTime(), storedItem.When2);
+            Assert.Equal(item.When3, storedItem.When3);
         }
 
         [Fact]
@@ -80,6 +102,33 @@ namespace BeeHive.Azure.Tests.Integration
         public string RangeKey { get; set; }
         public DateTimeOffset? LastModified { get; set; }
         public string ETag { get; set; }
+
+        public string What { get; set; }
+
+        public DateTimeOffset When { get; set; }
+
+        public DateTime? When2 { get; set; }
+
+        public DateTime? When3 { get; set; }
+
+        public int HowMany { get; set; }
+
+        public long HowMany2 { get; set; }
+
+        public long HowMany3 { get; set; }
+
+        public double HowMuch { get; set; }
+
+        public bool? Really {get; set; }
+
+        public bool? Really2 {get; set; }
+
+        public Guid? Secret { get; set; }
+
+        public Guid Secret2 { get; set; }
+
+        public byte[] Booboo { get; set; }
+
     }
 
     public class FeedItem
@@ -111,6 +160,7 @@ namespace BeeHive.Azure.Tests.Integration
         public string ChannelCategory { get; set; }
 
         public bool HasOriginalPubDate { get; set; }
+
     }
 
     public class FeedItemEntity : FeedItem, IHaveIdentityAndRange

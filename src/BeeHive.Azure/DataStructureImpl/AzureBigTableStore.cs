@@ -153,16 +153,27 @@ namespace BeeHive.Azure
                 var foo = new T();
                 foreach (var simpleProperty in _simpleProperties.Values)
                 {
-                    simpleProperty.GetSetMethod()
-                        .Invoke(foo, new[] {entity.Properties[simpleProperty.Name].PropertyAsObject});
+                    if (entity.Properties.ContainsKey(simpleProperty.Name))
+                    {
+                        if (simpleProperty.PropertyType == typeof(DateTimeOffset)) // datetimeoffset is special case since object coming back is datetime
+                            simpleProperty.GetSetMethod()
+                            .Invoke(foo, new object[] { new DateTimeOffset(
+                                entity.Properties[simpleProperty.Name].DateTimeOffsetValue.Value.DateTime,TimeSpan.Zero)});
+                        else
+                            simpleProperty.GetSetMethod()
+                                .Invoke(foo, new[] { entity.Properties[simpleProperty.Name].PropertyAsObject });    
+                    }                    
                 }
                 foreach (var complexProperty in _complexProperties.Values)
                 {
-                    complexProperty.GetSetMethod().Invoke(foo, new[]
+                    if (entity.Properties.ContainsKey(complexProperty.Name))
                     {
-                        JsonConvert.DeserializeObject(entity.Properties[complexProperty.Name].StringValue,
-                            complexProperty.PropertyType)
-                    });
+                        complexProperty.GetSetMethod().Invoke(foo, new[]
+                        {
+                            JsonConvert.DeserializeObject(entity.Properties[complexProperty.Name].StringValue,
+                                complexProperty.PropertyType)
+                        });
+                    }
                 }
                 return foo;
             }
