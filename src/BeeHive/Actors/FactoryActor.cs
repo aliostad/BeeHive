@@ -54,6 +54,7 @@ namespace BeeHive.Actors
                     foreach (var gr in groups)
                     {
                         await _queueOperator.PushBatchAsync(gr);
+                        TryDisposeMessages(gr);
                     }
 
                     Trace.TraceInformation("Processing succeeded. Id: {0} Queue: {1} " , result.PollingResult.Id, _actorDescriptor.SourceQueueName);
@@ -68,12 +69,42 @@ namespace BeeHive.Actors
 
                 }
                 finally
-                {
+                {                    
+                   if (result.IsSuccessful)
+                       TryDisposeMessage(result.PollingResult);
                     _serviceLocator.ReleaseService(actor);
                 }
             }
 
             return result.IsSuccessful;
+        }
+
+        private void TryDisposeMessages(IEnumerable<Event> es)
+        {
+            foreach (var e in es)
+            {
+                TryDisposeMessage(e);
+            }
+        }
+
+        private void TryDisposeMessage(Event e)
+        {
+            if (e != null)
+            {
+                var disposable = e.UnderlyingMessage as IDisposable;
+                if (disposable != null)
+                {
+                    try
+                    {
+                        disposable.Dispose();
+                    }
+                    catch
+                    {                        
+                        // ignore
+                    }
+                    
+                }
+            }
         }
 
         public void Start()
