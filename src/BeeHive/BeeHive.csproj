@@ -84,6 +84,7 @@
     <Compile Include="Configuration\Pulsers.cs" />
     <Compile Include="Configuration\StartupSetup.cs" />
     <Compile Include="Events\Event.cs" />
+    <Compile Include="Events\EventExtensions.cs" />
     <Compile Include="Events\EventProperties.cs" />
     <Compile Include="Configuration\IActorConfiguration.cs" />
     <Compile Include="Internal\FuncExtensions.cs" />

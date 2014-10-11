@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BeeHive.Events;
 using BeeHive.Internal;
 using BeeHive.Scheduling;
 
@@ -83,28 +84,13 @@ namespace BeeHive.Actors
         {
             foreach (var e in es)
             {
-                TryDisposeMessage(e);
+                e.TryDisposeUnderlying();
             }
         }
 
         private void TryDisposeMessage(Event e)
         {
-            if (e != null)
-            {
-                var disposable = e.UnderlyingMessage as IDisposable;
-                if (disposable != null)
-                {
-                    try
-                    {
-                        disposable.Dispose();
-                    }
-                    catch
-                    {                        
-                        // ignore
-                    }
-                    
-                }
-            }
+            e.TryDisposeUnderlying();
         }
 
         public void Start()

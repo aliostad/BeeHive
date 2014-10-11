@@ -14,15 +14,12 @@ namespace BeeHive.Azure
 {
     public class ServiceBusOperator : IEventQueueOperator
     {
-        private string _connectionString;
         private NamespaceManager _namespaceManager;
         private TimeSpan _longPollingTimeout;
         private ClientProvider _clientProvider;
-        public ServiceBusOperator(string connectionString,
-            bool cacheClients = false)
+        public ServiceBusOperator(string connectionString)
             : this(connectionString, 
-            TimeSpan.FromSeconds(30),
-            cacheClients)
+            TimeSpan.FromSeconds(30))
         {
 
         }
@@ -32,20 +29,14 @@ namespace BeeHive.Azure
         /// </summary>
         /// <param name="connectionString"></param>
         /// <param name="longPollingTimeout"></param>
-        /// <param name="cacheClients">False by default to prevent hitting the 100 limit.
         /// Turn it on if you know the limit will not be reached</param>
         public ServiceBusOperator(string connectionString, 
-            TimeSpan longPollingTimeout,
-            bool cacheClients = false)
+            TimeSpan longPollingTimeout)
         {
             _longPollingTimeout = longPollingTimeout;
-            _connectionString = connectionString;
             _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
-            _clientProvider = new ClientProvider(connectionString, cacheClients);
+            _clientProvider = new ClientProvider(connectionString, false);
         }
-
-       
-     
 
         public async Task PushAsync(Event message)
         {
@@ -54,13 +45,14 @@ namespace BeeHive.Azure
             {
                 var client = _clientProvider.GetQueueClient(queueName);
                 await client.SendAsync(message.ToMessage());
+                client.Close();
             }
             else
             {
                 var client = _clientProvider.GetTopicClient(queueName);
                 await client.SendAsync(message.ToMessage());
+                client.Close();
             }
-
         }
 
         public async Task PushBatchAsync(IEnumerable<Event> messages)
@@ -69,7 +61,7 @@ namespace BeeHive.Azure
             const int BatchSize = 50;
             
             var msgs = messages.ToArray();
-            if (!messages.Any())
+            if (!msgs.Any())
                 return;
 
             var message = msgs.First();
@@ -84,7 +76,7 @@ namespace BeeHive.Azure
                     await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
                     i += BatchSize;
                 }
-
+                client.Close();
             }
             else
             {
@@ -94,11 +86,9 @@ namespace BeeHive.Azure
                     await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
                     i += BatchSize;
                 }
-                
+                client.Close();
             }
         }
-
-   
 
         public async Task<PollerResult<Event>> NextAsync(QueueName name)
         {
@@ -110,12 +100,13 @@ namespace BeeHive.Azure
                 {
                     var client = _clientProvider.GetQueueClient(name);
                     message = await client.ReceiveAsync(_longPollingTimeout);
-
+                    client.Close();
                 }
                 else
                 {
                     var client = _clientProvider.GetSubscriptionClient(name);
                     message = await client.ReceiveAsync(_longPollingTimeout); 
+                    client.Close();
                 }
 
                 return new PollerResult<Event>(message != null,
