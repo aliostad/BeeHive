@@ -37,7 +37,7 @@ namespace BeeHive.Actors
 
             if (result.IsSuccessful)
             {
-                Trace.TraceInformation("Receieved a message. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
+                TheTrace.TraceInformation("Receieved a message. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
                 var actor = (IProcessorActor)_serviceLocator.GetService(_actorDescriptor.ActorType);
                 try
                 {
@@ -58,13 +58,13 @@ namespace BeeHive.Actors
                         TryDisposeMessages(gr);
                     }
 
-                    Trace.TraceInformation("Processing succeeded. Id: {0} Queue: {1} " , result.PollingResult.Id, _actorDescriptor.SourceQueueName);
+                    TheTrace.TraceInformation("Processing succeeded. Id: {0} Queue: {1} " , result.PollingResult.Id, _actorDescriptor.SourceQueueName);
 
                 }
                 catch (Exception exception)
                 {
-                    Trace.TraceInformation("Processing failed. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
-                    Trace.TraceWarning(exception.ToString());
+                    TheTrace.TraceInformation("Processing failed. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
+                    TheTrace.TraceWarning(exception.ToString());
                     cancellationTokenSource.Cancel();
                     _queueOperator.AbandonAsync(result.PollingResult).SafeObserve().Wait();
 

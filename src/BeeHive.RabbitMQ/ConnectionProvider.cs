@@ -91,17 +91,17 @@ namespace BeeHive.RabbitMQ
                     }
                     catch (SocketException socketException)
                     {
-                        Trace.TraceWarning(socketException.ToString());
+                        TheTrace.TraceWarning(socketException.ToString());
                         item.Key.ErrorCount++;
                     }
                     catch (BrokerUnreachableException brokerUnreachableException)
                     {
-                        Trace.TraceWarning(brokerUnreachableException.ToString());
+                        TheTrace.TraceWarning(brokerUnreachableException.ToString());
                         item.Key.ErrorCount++;
                     }
                     catch (ConnectionNotOpenException)
                     {
-                        Trace.TraceWarning("Connection not open");
+                        TheTrace.TraceWarning("Connection not open");
                         item.Key.ErrorCount++;
                     }
 
@@ -117,7 +117,7 @@ namespace BeeHive.RabbitMQ
         private void _connection_ConnectionShutdown(IConnection connection,
             ShutdownEventArgs reason)
         {
-            Trace.TraceWarning("Connection was shut down: {0}", reason.ReplyText);
+            TheTrace.TraceWarning("Connection was shut down: {0}", reason.ReplyText);
             BuildConnection();
         }
     }

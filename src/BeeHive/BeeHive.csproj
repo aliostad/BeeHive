@@ -115,6 +115,7 @@
     <Compile Include="Scheduling\PollerResult.cs" />
     <Compile Include="Scheduling\RegularlyIncreasingInterval.cs" />
     <Compile Include="ServiceLocator\IServiceLocator.cs" />
+    <Compile Include="TheTrace.cs" />
     <Compile Include="Tools\ColourfulConsoleTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>

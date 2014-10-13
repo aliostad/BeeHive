@@ -54,7 +54,7 @@ namespace BeeHive.Azure
                 }
                 catch (Exception e)
                 {
-                    Trace.TraceInformation("Lock attempt - already locked: {0}", e);
+                    TheTrace.TraceInformation("Lock attempt - already locked: {0}", e);
                     // ignore
                 }
                 await Task.Delay(TimeSpan.FromMilliseconds(retryTimeoutMilliseconds / tries));
@@ -80,7 +80,7 @@ namespace BeeHive.Azure
                 }
                 catch (Exception exception) // someone else created it in the meanwhile
                 {
-                    Trace.TraceWarning(exception.ToString());
+                    TheTrace.TraceWarning(exception.ToString());
                 }
             }
 

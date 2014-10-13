@@ -116,7 +116,7 @@ namespace BeeHive.Azure
                 }
                 catch (Exception exception)
                 {
-                    Trace.TraceError(exception.ToString());
+                    TheTrace.TraceError(exception.ToString());
                 }
 
             }

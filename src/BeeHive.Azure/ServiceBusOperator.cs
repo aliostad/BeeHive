@@ -111,7 +111,7 @@ namespace BeeHive.Azure
             }
             catch (Exception e)
             {
-                Trace.TraceWarning(e.ToString());
+                TheTrace.TraceWarning(e.ToString());
                 return new PollerResult<Event>(false, null);
             }
         }
@@ -153,7 +153,7 @@ namespace BeeHive.Azure
                 }
                 catch (Exception exception)
                 {
-                    Trace.TraceError(exception.ToString());
+                    TheTrace.TraceError(exception.ToString());
                     break;
                 }
             }

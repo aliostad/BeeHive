@@ -69,7 +69,7 @@ namespace BeeHive.Azure
                 }
                 catch (Exception exception) // someone else created it in the meanwhile
                 {
-                    Trace.TraceWarning(exception.ToString());
+                    TheTrace.TraceWarning(exception.ToString());
                 }
             }
 

@@ -17,11 +17,11 @@ namespace BeeHive.Internal
                 {
                     var exception = t.Exception;
                     if(exception!=null)
-                        Trace.TraceWarning(exception.ToString()); // probably wil never run
+                       TheTrace.TraceWarning(exception.ToString()); // probably wil never run
                 }
                 catch (Exception e)
                 {
-                    Trace.TraceWarning(e.ToString());
+                   TheTrace.TraceWarning(e.ToString());
                 }
             });
         }

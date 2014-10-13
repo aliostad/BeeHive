@@ -19,7 +19,7 @@ namespace BeeHive.Internal
             {
                 if (handler == null)
                 {
-                    Trace.TraceError(exception.ToString());
+                   TheTrace.TraceError(exception.ToString());
                 }
                 else
                 {

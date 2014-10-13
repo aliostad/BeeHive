@@ -60,7 +60,7 @@ namespace BeeHive.Scheduling
             }
             catch (Exception exception)
             {
-                Trace.TraceWarning(exception.ToString());
+               TheTrace.TraceWarning(exception.ToString());
             }
 
             if (result)
