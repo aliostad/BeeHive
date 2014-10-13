@@ -24,6 +24,7 @@ namespace BeeHive.Azure.Tests.Integration
                 LastModified = DateTimeOffset.Now,
                 When = DateTimeOffset.Now,
                 When2 = DateTime.Now,
+                When4 = DateTimeOffset.Now,
                 HowMany = 1,
                 HowMany2 = 83248926438962,
                 HowMuch = 32423.45243,
@@ -35,6 +36,8 @@ namespace BeeHive.Azure.Tests.Integration
             store.InsertAsync(item).Wait();
 
             var storedItem = store.GetAsync(item.Id, item.RangeKey).Result;
+            Assert.Equal(item.Id, storedItem.Id);
+            Assert.Equal(item.RangeKey, storedItem.RangeKey);
             Assert.Equal(item.HowMany, storedItem.HowMany);
             Assert.Equal(item.HowMany2, storedItem.HowMany2);
             Assert.Equal(item.HowMany3, storedItem.HowMany3);
@@ -47,6 +50,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Equal(item.Booboo, storedItem.Booboo);
             Assert.Equal(item.When, storedItem.When);
             Assert.Equal(item.When2.Value.ToUniversalTime(), storedItem.When2);
+            Assert.Equal(item.When4, storedItem.When4);
             Assert.Equal(item.When3, storedItem.When3);
         }
 
@@ -106,6 +110,8 @@ namespace BeeHive.Azure.Tests.Integration
         public string What { get; set; }
 
         public DateTimeOffset When { get; set; }
+
+        public DateTimeOffset? When4 { get; set; }
 
         public DateTime? When2 { get; set; }
 

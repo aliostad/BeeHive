@@ -35,7 +35,7 @@ namespace BeeHive.Azure
         {
             _longPollingTimeout = longPollingTimeout;
             _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
-            _clientProvider = new ClientProvider(connectionString, false);
+            _clientProvider = new ClientProvider(connectionString, true);
         }
 
         public async Task PushAsync(Event message)
@@ -45,13 +45,11 @@ namespace BeeHive.Azure
             {
                 var client = _clientProvider.GetQueueClient(queueName);
                 await client.SendAsync(message.ToMessage());
-                client.Close();
             }
             else
             {
                 var client = _clientProvider.GetTopicClient(queueName);
                 await client.SendAsync(message.ToMessage());
-                client.Close();
             }
         }
 
@@ -76,7 +74,6 @@ namespace BeeHive.Azure
                     await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
                     i += BatchSize;
                 }
-                client.Close();
             }
             else
             {
@@ -86,7 +83,6 @@ namespace BeeHive.Azure
                     await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
                     i += BatchSize;
                 }
-                client.Close();
             }
         }
 
@@ -100,13 +96,11 @@ namespace BeeHive.Azure
                 {
                     var client = _clientProvider.GetQueueClient(name);
                     message = await client.ReceiveAsync(_longPollingTimeout);
-                    client.Close();
                 }
                 else
                 {
                     var client = _clientProvider.GetSubscriptionClient(name);
                     message = await client.ReceiveAsync(_longPollingTimeout); 
-                    client.Close();
                 }
 
                 return new PollerResult<Event>(message != null,
@@ -136,8 +130,9 @@ namespace BeeHive.Azure
 
         public Task DeferAsync(Event message, TimeSpan howLong)
         {
+            throw new NotImplementedException();
             var brokeredMessage = (BrokeredMessage)message.UnderlyingMessage;
-            return brokeredMessage.DeferAsync() ; // TODO: use howLong
+            return brokeredMessage.DeferAsync() ; // TODO: use howLong !!!!!
         }
 
         public async Task KeepExtendingLeaseAsync(Event message, TimeSpan howLong, CancellationToken cancellationToken)

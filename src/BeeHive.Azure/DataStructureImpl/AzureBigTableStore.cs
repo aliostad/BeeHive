@@ -151,11 +151,13 @@ namespace BeeHive.Azure
             else
             {
                 var foo = new T();
+                foo.Id = id;
+                foo.RangeKey = rangeKey;
                 foreach (var simpleProperty in _simpleProperties.Values)
                 {
                     if (entity.Properties.ContainsKey(simpleProperty.Name))
                     {
-                        if (simpleProperty.PropertyType == typeof(DateTimeOffset)) // datetimeoffset is special case since object coming back is datetime
+                        if (simpleProperty.PropertyType == typeof(DateTimeOffset) || simpleProperty.PropertyType == typeof(DateTimeOffset?)) // datetimeoffset is special case since object coming back is datetime
                             simpleProperty.GetSetMethod()
                             .Invoke(foo, new object[] { new DateTimeOffset(
                                 entity.Properties[simpleProperty.Name].DateTimeOffsetValue.Value.DateTime,TimeSpan.Zero)});

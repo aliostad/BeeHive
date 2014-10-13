@@ -9,6 +9,6 @@ namespace BeeHive.DataStructures
 {
     public interface IHaveIdentityAndRange : IHaveIdentity
     {
-        string RangeKey { get; }
+        string RangeKey { get; set; }
     }
 }
