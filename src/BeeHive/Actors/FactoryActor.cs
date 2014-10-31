@@ -64,7 +64,7 @@ namespace BeeHive.Actors
                 catch (Exception exception)
                 {
                     TheTrace.TraceInformation("Processing failed. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
-                    TheTrace.TraceWarning(exception.ToString());
+                    TheTrace.TraceError(exception.ToString());
                     cancellationTokenSource.Cancel();
                     _queueOperator.AbandonAsync(result.PollingResult).SafeObserve().Wait();
 
