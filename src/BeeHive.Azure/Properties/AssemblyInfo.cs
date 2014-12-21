@@ -16,3 +16,4 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("b15a8123-89d2-4a56-8dcd-865ac7f22d7c")]
+[assembly: InternalsVisibleTo("BeeHive.Azure.Tests")]

@@ -30,16 +30,13 @@ namespace BeeHive.Azure
             await blobReference.FetchAttributesAsync();
             var blob = new SimpleBlob()
             {
-                Body = new MemoryStream(),
+                Body = blobReference.ToStream(),
                 Metadata = new Dictionary<string, string>(blobReference.Metadata),
                 ETag = blobReference.Properties.ETag,
                 LastModified = blobReference.Properties.LastModified,
                 Id = id,
                 UnderlyingBlob = blobReference
             };
-
-            await blobReference.DownloadToStreamAsync(blob.Body);
-            blob.Body.Position = 0;
 
             return blob;
 

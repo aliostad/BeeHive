@@ -18,7 +18,8 @@ namespace BeeHive.Azure.Tests.Integration
         [Fact]
         public void ListItemsReturnsFolders()
         {
-            var store = new AzureKeyValueStore(ConnectionString,ContainerName);
+            var store = new AzureKeyValueStore(ConnectionString,ContainerName + Guid.NewGuid().ToString("N"));
+
             var root = Guid.NewGuid().ToString("N");
             var b1 = string.Format("{0}/a/b/{1}", root, Guid.NewGuid().ToString("N"));
             var b2 = string.Format("{0}/a/b/{1}", root, Guid.NewGuid().ToString("N"));

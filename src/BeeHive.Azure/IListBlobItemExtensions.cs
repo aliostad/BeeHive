@@ -21,7 +21,7 @@ namespace BeeHive.Azure
                 {
                     Id = blockBlob.Name,
                     IsVirtualFolder = false,
-                    Body = null,
+                    Body = blockBlob.ToStream(),
                     ETag = blockBlob.Properties.ETag,
                     LastModified = blockBlob.Properties.LastModified,
                     UnderlyingBlob = blockBlob,
