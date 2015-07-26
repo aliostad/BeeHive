@@ -16,6 +16,13 @@ namespace BeeHive.Demo.PrismoEcommerce.WorkflowState
 
         public int Quantity { get; set; }
 
-        public string Id { get { return OrderId; } }
+        public string Id
+        {
+            get
+            {
+                return OrderId;
+            }
+            set { OrderId = value; }
+        }
     }
 }

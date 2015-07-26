@@ -16,6 +16,13 @@ namespace BeeHive.Demo.PrismoEcommerce.Entities
 
         public int Quantity { get; set; }
 
-        public string Id { get { return ProductId; } }
+        public string Id
+        {
+            get
+            {
+                return ProductId;
+            }
+            set { ProductId = value; }
+        }
     }
 }

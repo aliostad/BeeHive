@@ -15,10 +15,17 @@ namespace BeeHive.Demo.PrismoEcommerce.WorkflowState
 
         public bool IsItemReadyToShip { get; set; }
 
-        public string Id { get { return ProductId; }}
+        public string Id
+        {
+            get
+            {
+                return ProductId;
+            }
+            set { ProductId = value; }
+        }
 
-        public DateTimeOffset? LastModofied { get; set; }
-        
+        public DateTimeOffset? LastModified { get; set; }
+
         public string ETag { get; set; }
     }
 }
