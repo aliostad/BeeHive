@@ -1,3 +1,7 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/7rj53liopu8lqy8n?svg=true)](https://ci.appveyor.com/project/aliostad/beehive)
+
+
+
 ![BeeHive](https://raw.githubusercontent.com/aliostad/PublicImages/master/diagrams/BeeHive-164px.png)
 
 BeeHive
