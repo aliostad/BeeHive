@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive", "src\BeeHive\BeeHive.csproj", "{3E0F3470-EAE7-4A78-9822-52F57DCDDE9B}"
 EndProject
@@ -38,6 +38,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Visualiser", "src\BeeHive.Visualiser\BeeHive.Visualiser.csproj", "{0D760819-F033-4917-94B5-4C71EBEECCF0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Vizualiser.Tests", "test\BeeHive.Vizualiser.Tests\BeeHive.Vizualiser.Tests.csproj", "{B508BFAD-3D41-454A-B0A8-A4F105D23401}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{4BF806CF-B387-479F-8FEF-357931374562}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Azure.Pusher", "tools\BeeHive.Azure.Pusher\BeeHive.Azure.Pusher.csproj", "{A1FCCEB6-480D-493C-ADC6-9E945A7AE84A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +93,10 @@ Global
 		{B508BFAD-3D41-454A-B0A8-A4F105D23401}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B508BFAD-3D41-454A-B0A8-A4F105D23401}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B508BFAD-3D41-454A-B0A8-A4F105D23401}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1FCCEB6-480D-493C-ADC6-9E945A7AE84A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1FCCEB6-480D-493C-ADC6-9E945A7AE84A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1FCCEB6-480D-493C-ADC6-9E945A7AE84A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1FCCEB6-480D-493C-ADC6-9E945A7AE84A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -105,5 +113,6 @@ Global
 		{E1761ECB-32FA-4BB7-8B7A-56B9ACB15854} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
 		{0D760819-F033-4917-94B5-4C71EBEECCF0} = {8241C829-3DB9-4BDD-9679-CA3CBE02AD88}
 		{B508BFAD-3D41-454A-B0A8-A4F105D23401} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
+		{A1FCCEB6-480D-493C-ADC6-9E945A7AE84A} = {4BF806CF-B387-479F-8FEF-357931374562}
 	EndGlobalSection
 EndGlobal
