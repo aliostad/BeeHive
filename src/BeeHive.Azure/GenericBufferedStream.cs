@@ -11,7 +11,7 @@ namespace BeeHive.Azure
     /// <summary>
     /// Not thread-safe, like any other stream
     /// </summary>
-    internal class BufferedStream : Stream
+    internal class GenericBufferedStream : Stream
     {
        
         private Func<long, byte[], int> _fillBuffer;
@@ -29,7 +29,7 @@ namespace BeeHive.Azure
         /// returns bytes read
         ///  </param>
         /// <param name="internalBufferSize"></param>
-        public BufferedStream(long length, Func<long, byte[], int> fillBuffer, long internalBufferSize = 1024*1024 // 1MB
+        public GenericBufferedStream(long length, Func<long, byte[], int> fillBuffer, long internalBufferSize = 1024*1024 // 1MB
             )
         {
             _internalBufferSize = internalBufferSize;

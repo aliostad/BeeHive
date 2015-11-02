@@ -86,6 +86,10 @@ namespace BeeHive
         /// </summary>
         public string QueueName { get; set; }
 
+        /// <summary>
+        /// An optional value that can be used to defer a message. If it is in the past, it is ignored
+        /// </summary>
+        public DateTimeOffset? EnqueueTime { get; set; }
 
         public T GetBody<T>()
         {

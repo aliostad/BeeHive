@@ -130,9 +130,9 @@ namespace BeeHive.Azure
 
         public Task DeferAsync(Event message, TimeSpan howLong)
         {
-            throw new NotImplementedException();
             var brokeredMessage = (BrokeredMessage)message.UnderlyingMessage;
-            return brokeredMessage.DeferAsync() ; // TODO: use howLong !!!!!
+            brokeredMessage.ScheduledEnqueueTimeUtc = DateTime.UtcNow.Add(howLong);
+            return PushAsync(message);
         }
 
         public async Task KeepExtendingLeaseAsync(Event message, TimeSpan howLong, CancellationToken cancellationToken)

@@ -74,8 +74,8 @@
     <Compile Include="..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="BufferedStream.cs" />
     <Compile Include="AzureConfigurationValueProvider.cs" />
+    <Compile Include="GenericBufferedStream.cs" />
     <Compile Include="CloudBlockBlobExtensions.cs" />
     <Compile Include="IListBlobItemExtensions.cs" />
     <Compile Include="DataStructureImpl\AzureBigTableStore.cs" />

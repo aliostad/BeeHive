@@ -18,6 +18,8 @@ namespace BeeHive.Azure.Tests
         [InlineData(1000, 9, 5)]
         [InlineData(1000, 15, 5)]
         [InlineData(1000, 5, 15)]
+        [InlineData(1000, 7, 15)]
+        [InlineData(1000, 15, 7)]
         public void TestBuffering(long length, int internalBufferCount, int clientBufferCount)
         {
             var random = new Random();
@@ -31,7 +33,7 @@ namespace BeeHive.Azure.Tests
                 Buffer.BlockCopy(remoteData, (int) remoteOffset, buff, 0, toRead);
                 return  toRead;
             };
-            var bufferedStream = new BufferedStream(length, reader, internalBufferCount);
+            var bufferedStream = new GenericBufferedStream(length, reader, internalBufferCount);
             while (true)
             {
                 int read = bufferedStream.Read(buffer, 0, buffer.Length);

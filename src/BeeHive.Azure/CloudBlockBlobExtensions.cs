@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace BeeHive.Azure
 {
     internal static class CloudBlockBlobExtensions
     {
-        public static BufferedStream ToStream(this CloudBlockBlob blob)
+        public static GenericBufferedStream ToStream(this CloudBlockBlob blob)
         {
             Func<long, byte[], int> filler = (remoteOffset, buffer) =>
             {
@@ -17,7 +18,7 @@ namespace BeeHive.Azure
                 return read;
             };
 
-            return new BufferedStream(blob.Properties.Length, filler);
+            return new GenericBufferedStream(blob.Properties.Length, filler);
         }
     }
 }

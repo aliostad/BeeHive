@@ -49,12 +49,17 @@ namespace BeeHive.Azure
 
         public static BrokeredMessage ToMessage(this Event @event)
         {
-            return new BrokeredMessage(@event.Body)
+            var msg = new BrokeredMessage(@event.Body)
                           {
                               ContentType = @event.ContentType,
-                              MessageId = @event.Id                              
+                              MessageId = @event.Id
                           };
+            if (@event.EnqueueTime.HasValue)
+            {
+                msg.ScheduledEnqueueTimeUtc = @event.EnqueueTime.Value.UtcDateTime;
+            }
 
+            return msg;
         }
 
 
