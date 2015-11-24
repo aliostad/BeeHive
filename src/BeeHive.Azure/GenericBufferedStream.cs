@@ -88,6 +88,9 @@ namespace BeeHive.Azure
         private bool Fill()
         {
 
+            if (_currentRemotePosition >= _length)
+                return false;
+
             var bytes = new byte[_internalBufferSize];
             var read = _fillBuffer(_currentRemotePosition, bytes);
             if (read == 0)

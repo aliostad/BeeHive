@@ -76,6 +76,7 @@
     <Compile Include="Integration\AzureKeyedListStoreTests.cs" />
     <Compile Include="Integration\AzureKeyValueStoreTests.cs" />
     <Compile Include="Integration\AzureLockStoreTests.cs" />
+    <Compile Include="Integration\RealBlobStorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
