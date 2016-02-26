@@ -18,7 +18,7 @@ namespace BeeHive
             }
             catch (Exception e)
             {
-                formatted += string.Format("\r\n\r\n [!!!FORMATTING ERROR MESSAGE FAILED (but ignored)!!! = {0}]", e.ToString());
+                formatted += string.Format("\r\n\r\n [!!!FORMATTING THE MESSAGE FAILED (but ignored)!!! = {0}]", e.ToString());
             }
             
             switch (level)

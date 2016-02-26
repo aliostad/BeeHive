@@ -16,6 +16,19 @@ namespace BeeHive.Tests
         }
 
         [Fact]
+        public void TraceErrorDoesNotThrowExceptionWithNoParams()
+        {
+            TheTrace.TraceError("chappi {1} {0}");
+        }
+
+        [Fact]
+        public void TraceErrorDoesNotThrowExceptionWithMissingParams()
+        {
+            TheTrace.TraceError("chappi {1} {0}", "hapachap");
+        }
+
+
+        [Fact]
         public void TraceInfoDoesNotThrowException()
         {
             TheTrace.TraceInformation("chappi {1} {0}", "hapachap", 7979);
