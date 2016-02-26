@@ -11,17 +11,27 @@ namespace BeeHive
     {
         private static Action<TraceLevel, string, object[]> _tracer = (level, message, parameters) =>
         {
+            var formatted = message;
+            try
+            {
+                formatted = FormatString(message, parameters);
+            }
+            catch (Exception e)
+            {
+                formatted += string.Format("\r\n\r\n [!!!FORMATTING ERROR MESSAGE FAILED (but ignored)!!! = {0}]", e.ToString());
+            }
+            
             switch (level)
             {
                 case TraceLevel.Error:
-                    Trace.TraceError(message, parameters);
+                    Trace.TraceError(formatted);
                     break;
                 case TraceLevel.Warning:
-                    Trace.TraceWarning(message, parameters);
+                    Trace.TraceWarning(formatted);
                     break;
                 case TraceLevel.Info:
                 case TraceLevel.Verbose:
-                    Trace.TraceInformation(message, parameters);
+                    Trace.TraceInformation(formatted);
                     break;
                 default:
                     // ignore
@@ -29,6 +39,14 @@ namespace BeeHive
 
             }
         };
+
+        private static string FormatString(string messageOrFormat, object[] parameters)
+        {
+            if (parameters == null || parameters.Length == 0)
+                return messageOrFormat;
+            else
+                return string.Format(messageOrFormat, parameters);
+        }
 
         public static Action<TraceLevel, string, object[]> Tracer
         {
