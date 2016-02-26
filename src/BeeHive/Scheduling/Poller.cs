@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,28 +60,6 @@ namespace BeeHive.Scheduling
                     Thread.Sleep(_interval.Next());
                 }
             }
-
         }
-
-        public IObservable<T> ToObservable<T>(Func<PollerResult<T>> publisher)
-        {
-            if(_isWorking)
-                throw new InvalidOperationException("Cannot be called while started and working. Call when is stopped");
-
-            return Observable.Create((IObserver<T> customer) =>
-            {
-                _work = () =>
-                {
-                    var result = publisher();
-                    if(result.IsSuccessful)
-                        customer.OnNext(result.PollingResult);
-
-                    return result.IsSuccessful;
-                };
-                return Stop;
-            });
-
-        }
-
     }
 }

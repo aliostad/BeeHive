@@ -3,7 +3,7 @@
   <metadata>
     <id>$id$-common</id>
     <version>$version$</version>
-    <title>$title$</title>
+    <title>$title$ [The real one!]</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
     <projectUrl>https://github.com/aliostad/BeeHive</projectUrl>
