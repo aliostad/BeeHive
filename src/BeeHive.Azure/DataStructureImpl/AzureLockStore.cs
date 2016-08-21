@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BeeHive.DataStructures;
 using Microsoft.WindowsAzure.Storage;
@@ -50,6 +51,13 @@ namespace BeeHive.Azure
                         TimeSpan.FromMilliseconds(timeoutMilliseconds),
                         token.TokenId.ToString("N"));
 
+                    KeepExtendingLeaseAsync(async () =>
+                    {
+                        await blob.AcquireLeaseAsync(
+                            TimeSpan.FromMilliseconds(timeoutMilliseconds),
+                            token.TokenId.ToString("N"));
+                    }, TimeSpan.FromMilliseconds(timeoutMilliseconds), token.RenewCancellation.Token); // DO NOT WAIT THIS!!!
+                    
                     return true;
                 }
                 catch (Exception e)
@@ -63,10 +71,35 @@ namespace BeeHive.Azure
             return false;
         }
 
+        private async Task KeepExtendingLeaseAsync(Func<Task> extendLeaseAsync, TimeSpan howLong, CancellationToken cancellationToken)
+        {
+
+            await Task.Delay(new TimeSpan(2 * howLong.Ticks / 3), cancellationToken);
+
+            while (true)
+            {
+                try
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                        break;
+
+
+                    await extendLeaseAsync();
+                    await Task.Delay(new TimeSpan(2 * howLong.Ticks / 3), cancellationToken);
+                }
+                catch (Exception exception)
+                {
+                    TheTrace.TraceError(exception.ToString());
+                    break;
+                }
+            }
+        }
+
         public async Task ReleaseLockAsync(LockToken token)
         {
             var blob = await GetBlobAsync(token.ResourceId);
             await blob.ReleaseLeaseAsync(AccessCondition.GenerateLeaseCondition(token.TokenId.ToString("N")));
+            token.RenewCancellation.Cancel();
         }
 
         private async Task<CloudBlockBlob> GetBlobAsync(string key)
@@ -80,7 +113,7 @@ namespace BeeHive.Azure
                 }
                 catch (Exception exception) // someone else created it in the meanwhile
                 {
-                    TheTrace.TraceWarning(exception.ToString());
+                    TheTrace.TraceWarning("someone else created {0} meanwhile: {1}", key, exception.ToString());
                 }
             }
 
