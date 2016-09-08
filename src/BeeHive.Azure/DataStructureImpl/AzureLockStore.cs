@@ -18,6 +18,8 @@ namespace BeeHive.Azure
         private CloudBlobContainer _containerReference;
         private BlobSource _source;
 
+        const int MaxLockPossibleMilliseconds = 30*1000;
+
         public AzureLockStore(BlobSource source)
         {
             _source = source;
@@ -48,15 +50,18 @@ namespace BeeHive.Azure
                 try
                 {
                     await blob.AcquireLeaseAsync(
-                        TimeSpan.FromMilliseconds(timeoutMilliseconds),
+                        TimeSpan.FromMilliseconds(Math.Min(MaxLockPossibleMilliseconds, timeoutMilliseconds)),
                         token.TokenId.ToString("N"));
 
-                    KeepExtendingLeaseAsync(async () =>
+                    if (timeoutMilliseconds > MaxLockPossibleMilliseconds)
                     {
-                        await blob.AcquireLeaseAsync(
-                            TimeSpan.FromMilliseconds(timeoutMilliseconds),
-                            token.TokenId.ToString("N"));
-                    }, TimeSpan.FromMilliseconds(timeoutMilliseconds), token.RenewCancellation.Token); // DO NOT WAIT THIS!!!
+                        KeepExtendingLeaseAsync(async () =>
+                        {
+                            await blob.AcquireLeaseAsync(
+                                TimeSpan.FromMilliseconds(MaxLockPossibleMilliseconds),
+                                token.TokenId.ToString("N"));
+                        }, TimeSpan.FromMilliseconds( MaxLockPossibleMilliseconds), token.RenewCancellation.Token); // DO NOT WAIT THIS!!!                       
+                    }
                     
                     return true;
                 }
@@ -74,7 +79,8 @@ namespace BeeHive.Azure
         private async Task KeepExtendingLeaseAsync(Func<Task> extendLeaseAsync, TimeSpan howLong, CancellationToken cancellationToken)
         {
 
-            await Task.Delay(new TimeSpan(2 * howLong.Ticks / 3), cancellationToken);
+            var thisLong = new TimeSpan(2*howLong.Ticks/3); // RATM: how long? This long, what you reap is what you sew!
+            await Task.Delay(thisLong, cancellationToken);
 
             while (true)
             {
@@ -83,9 +89,9 @@ namespace BeeHive.Azure
                     if (cancellationToken.IsCancellationRequested)
                         break;
 
-
                     await extendLeaseAsync();
-                    await Task.Delay(new TimeSpan(2 * howLong.Ticks / 3), cancellationToken);
+                    TheTrace.TraceInformation("Extended the lifetime of the lease...");
+                    await Task.Delay(thisLong, cancellationToken);
                 }
                 catch (Exception exception)
                 {
