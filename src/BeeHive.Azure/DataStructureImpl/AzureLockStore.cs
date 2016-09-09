@@ -60,7 +60,7 @@ namespace BeeHive.Azure
                             await blob.AcquireLeaseAsync(
                                 TimeSpan.FromMilliseconds(MaxLockPossibleMilliseconds),
                                 token.TokenId.ToString("N"));
-                        }, TimeSpan.FromMilliseconds( MaxLockPossibleMilliseconds), token.RenewCancellation.Token); // DO NOT WAIT THIS!!!                       
+                        }, TimeSpan.FromMilliseconds( MaxLockPossibleMilliseconds), token.RenewCancellation.Token, token.ResourceId); // DO NOT WAIT THIS!!!                       
                     }
                     
                     return true;
@@ -76,7 +76,7 @@ namespace BeeHive.Azure
             return false;
         }
 
-        private async Task KeepExtendingLeaseAsync(Func<Task> extendLeaseAsync, TimeSpan howLong, CancellationToken cancellationToken)
+        private async Task KeepExtendingLeaseAsync(Func<Task> extendLeaseAsync, TimeSpan howLong, CancellationToken cancellationToken, string resource)
         {
 
             var thisLong = new TimeSpan(2*howLong.Ticks/3); // RATM: how long? This long, what you reap is what you sew!
@@ -90,7 +90,7 @@ namespace BeeHive.Azure
                         break;
 
                     await extendLeaseAsync();
-                    TheTrace.TraceInformation("Extended the lifetime of the lease...");
+                    TheTrace.TraceInformation("Extended the lifetime of the lease for {0}...", resource);
                     await Task.Delay(thisLong, cancellationToken);
                 }
                 catch (Exception exception)
