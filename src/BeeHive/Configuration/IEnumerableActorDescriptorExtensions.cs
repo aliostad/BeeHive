@@ -26,5 +26,29 @@ namespace BeeHive.Configuration
         {
             return new NoNonsenseConfiguration(descriptors);
         }
+
+        /// <summary>
+        /// Updates the DegreeOfParallelism with entry from configuration in the form of Beehive.ActorParallelism.{ActorName}
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="configurationValueProvider"></param>
+        /// <returns>an updated configuration</returns>
+        public static IActorConfiguration UpdateParallelism(this IActorConfiguration configuration, IConfigurationValueProvider configurationValueProvider)
+        {
+            var descriptors = configuration.GetDescriptors()
+                .Select(descriptor =>
+                {
+                    string value =
+                        configurationValueProvider.GetValue("Beehive.ActorParallelism." + descriptor.ActorType.Name);
+                    int parallelism = descriptor.DegreeOfParallelism;
+
+                    if (int.TryParse(value, out parallelism))
+                        descriptor.DegreeOfParallelism = parallelism;
+
+                    return descriptor;
+                });
+
+            return new NoNonsenseConfiguration(descriptors);
+        }
     }
 }
