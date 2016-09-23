@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace BeeHive
@@ -16,7 +17,20 @@ namespace BeeHive
         {
             
         }
+
+        public Event(object body, IDictionary<string, object> properties)
+            : this(body, true, properties)
+        {
+
+        }
+
         public Event(object body, bool forTopic)
+            : this(body, forTopic, null)
+        {
+            
+        }
+
+        public Event(object body, bool forTopic, IDictionary<string, object> properties)
             : this()
         {
             if(body==null)
@@ -30,7 +44,7 @@ namespace BeeHive
                 ? BeeHive.QueueName.FromTopicName(body.GetType().Name).ToString()
                 : BeeHive.QueueName.FromSimpleQueueName(body.GetType().Name).ToString();
             EventType = body.GetType().Name;
-
+            Properties = properties ?? new Dictionary<string, object>();
         }
 
 
@@ -90,6 +104,11 @@ namespace BeeHive
         /// An optional value that can be used to defer a message. If it is in the past, it is ignored
         /// </summary>
         public DateTimeOffset? EnqueueTime { get; set; }
+
+        /// <summary>
+        /// This is mainly used at the time of writing so that the properties get promoted to message header
+        /// </summary>
+        public IDictionary<string, object> Properties { get; set; }
 
         public T GetBody<T>()
         {

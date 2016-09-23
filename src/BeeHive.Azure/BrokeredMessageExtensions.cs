@@ -54,11 +54,20 @@ namespace BeeHive.Azure
                               ContentType = @event.ContentType,
                               MessageId = @event.Id
                           };
+
+            if (@event.Properties != null)
+            {
+                foreach (var property in @event.Properties)
+                {
+                    msg.Properties.Add(property);
+                }                
+            }
+
             if (@event.EnqueueTime.HasValue)
             {
                 msg.ScheduledEnqueueTimeUtc = @event.EnqueueTime.Value.UtcDateTime;
             }
-
+            
             return msg;
         }
 
