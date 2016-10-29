@@ -100,7 +100,8 @@ namespace BeeHive.Azure
                 }
                 catch (Exception exception)
                 {
-                    TheTrace.TraceError(exception.ToString());
+                    if (!cancellationToken.IsCancellationRequested) // it is OK if cancellation requested, it would have been cancellation
+                        TheTrace.TraceError(exception.ToString());
                     break;
                 }
             }

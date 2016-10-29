@@ -153,7 +153,8 @@ namespace BeeHive.Azure
                 }
                 catch (Exception exception)
                 {
-                    TheTrace.TraceError(exception.ToString());
+                    if(!cancellationToken.IsCancellationRequested) // log error if it was not cancelled.
+                        TheTrace.TraceError(exception.ToString());
                     break;
                 }
             }
