@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceDefinition name="BeeHive.Sample.NewsFeedKeywordNotification" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2015-04.2.6">
+<ServiceDefinition name="BeeHive.Sample.NewsFeedKeywordNotification" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2013-10.2.2">
   <WorkerRole name="BeeHive.Sample.NewsFeedKeywordNotification.Worker" vmsize="ExtraSmall">
     <Imports>
       <Import moduleName="Diagnostics" />
@@ -7,7 +7,6 @@
     <ConfigurationSettings>
       <Setting name="BusConnectionString" />
       <Setting name="StorageConnectionString" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString"/>
     </ConfigurationSettings>
   </WorkerRole>
 </ServiceDefinition>
