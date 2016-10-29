@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using BeeHive.DataStructures;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+#pragma warning disable 4014
 
 namespace BeeHive.Azure
 {
@@ -39,19 +40,23 @@ namespace BeeHive.Azure
             LockToken token, 
             int tries = 16, // this is NOT retry - it is try
             int retryTimeoutMilliseconds = 15000, 
-            int timeoutMilliseconds = 15000)
+            int timeoutMilliseconds = 15000,
+            int aquireTimeoutMilliseconds = 15000)
         {
             if (tries < 1)
                 tries = 1;
 
             var blob = await GetBlobAsync(token.ResourceId);
-            for (int i = 0; i < tries; i++)
+            for (var i = 0; i < tries; i++)
             {
                 try
                 {
-                    await blob.AcquireLeaseAsync(
-                        TimeSpan.FromMilliseconds(Math.Min(MaxLockPossibleMilliseconds, timeoutMilliseconds)),
-                        token.TokenId.ToString("N"));
+                    using (var cancellationTokenSource = new CancellationTokenSource(aquireTimeoutMilliseconds))
+                    {
+                        await blob.AcquireLeaseAsync(
+                            TimeSpan.FromMilliseconds(Math.Min(MaxLockPossibleMilliseconds, timeoutMilliseconds)),
+                            token.TokenId.ToString("N"), cancellationTokenSource.Token);
+                    }
 
                     if (timeoutMilliseconds > MaxLockPossibleMilliseconds)
                     {
