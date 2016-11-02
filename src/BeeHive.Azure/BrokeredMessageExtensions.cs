@@ -43,7 +43,8 @@ namespace BeeHive.Azure
                     ContentType = message.ContentType,
                     EventType = queueName.TopicName,
                     QueueName = queueName.ToString(),
-                    UnderlyingMessage = message
+                    UnderlyingMessage = message,
+                    Timestamp = message.EnqueuedTimeUtc
                 };
         }
 
