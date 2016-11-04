@@ -15,7 +15,7 @@
       <dependency id="BeeHive-common" version="$version$" />
       <dependency id="BeeHive.DataStructures" version="$version$" />
       <dependency id="WindowsAzure.Storage" version="2.1.0.4" />
-      <dependency id="WindowsAzure.ServiceBus" version="2.1.0.0" />
+      <dependency id="WindowsAzure.ServiceBus" version="3.4.1" />
       <dependency id="Microsoft.Data.Services.Client" version="5.2.0.0" />	  
     </dependencies>
   </metadata>
