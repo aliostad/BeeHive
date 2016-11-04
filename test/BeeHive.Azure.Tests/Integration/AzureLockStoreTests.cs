@@ -83,7 +83,7 @@ namespace BeeHive.Azure.Tests.Integration
 
             var newtoken = new LockToken(resource);
             var sw = Stopwatch.StartNew();
-            var canDoubleLock = _locker.TryLockAsync(newtoken, 0, retryTimeoutMilliseconds: 100).Result;
+            var canDoubleLock = _locker.TryLockAsync(newtoken, 0, aquireTimeoutMilliseconds: 100).Result;
 
             Assert.False(canDoubleLock);
             Assert.InRange(sw.Elapsed.TotalSeconds, 0, 2);
