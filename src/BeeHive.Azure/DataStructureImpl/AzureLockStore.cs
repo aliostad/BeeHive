@@ -75,7 +75,9 @@ namespace BeeHive.Azure
                     TheTrace.TraceInformation("Lock attempt - already locked: {0}", e);
                     // ignore
                 }
-                await Task.Delay(TimeSpan.FromMilliseconds(retryTimeoutMilliseconds / tries));
+
+                if (i < tries-1)
+                    await Task.Delay(TimeSpan.FromMilliseconds(retryTimeoutMilliseconds / tries));
             }
 
             return false;
