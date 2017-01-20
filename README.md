@@ -189,7 +189,7 @@ Obviously, we can add another actor to subscribe to this event to send email, SM
 
 ### Controlling actor parallelism by configuration
 
-BeeHive by default looks for configuration values (both app.config and Azure config) `"Beehive.ActorParallelism." + <Actor Type Name>` and if it finds it, uses the count as the degree of parallelism. For example, this sets number of actors to 5 for class MyActor:
+BeeHive by default looks for configuration values (both app.config and Azure config) `Beehive.ActorParallelism.<Actor Type Name>` and if it finds it, uses the count as the degree of parallelism. For example, this sets number of actors to 5 for class MyActor:
 
 ``` XML
   <add key="Beehive.ActorParallelism.MyActor" value="5" />
