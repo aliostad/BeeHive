@@ -9,6 +9,7 @@ namespace BeeHive
     {
 
         public static readonly Event Empty = new Event();
+        private string _body = string.Empty;
 
         private const string ContentTypeFormat = "application/{0}+json";
 
@@ -81,7 +82,20 @@ namespace BeeHive
         /// String content of the body.
         /// Typically a serialised JSON
         /// </summary>
-        public string Body { get; set; }
+        public string Body {
+            get { return _body; }
+            set
+            {
+                _body = value;
+                if (_body != null && _body.Length > 128*1024) // 128K
+                {
+                    TheTrace.TraceWarning("Message of type {0} and id of {2} is pretty large: length of string => {1} ", 
+                        this.EventType ?? "[Empty]",
+                        _body.Length,
+                        Id ?? "[Empty]");
+                }
+            }
+        }
 
 
         /// <summary>
@@ -127,7 +141,10 @@ namespace BeeHive
                 EventType = EventType,
                 Timestamp = Timestamp,
                 UnderlyingMessage = UnderlyingMessage,
-                Url = Url
+                Url = Url,
+                EnqueueTime = EnqueueTime,
+                Properties = Properties,
+                QueueName = QueueName
             };
         }
     }
