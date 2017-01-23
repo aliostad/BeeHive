@@ -37,7 +37,7 @@ namespace BeeHive.Actors
 
             if (result.IsSuccessful)
             {
-                TheTrace.TraceInformation("Receieved a message. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
+                TheTrace.TraceInformation("Received a message. Id: {0} Queue: {1} ", result.PollingResult.Id, _actorDescriptor.SourceQueueName);
                 var actor = (IProcessorActor)_serviceLocator.GetService(_actorDescriptor.ActorType);
                 try
                 {
