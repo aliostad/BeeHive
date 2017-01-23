@@ -54,10 +54,7 @@ namespace BeeHive.Azure
         }
 
         public async Task PushBatchAsync(IEnumerable<Event> messages)
-        {
-
-            const int BatchSize = 50;
-            
+        {            
             var msgs = messages.ToArray();
             if (!msgs.Any())
                 return;
@@ -69,21 +66,43 @@ namespace BeeHive.Azure
             if (queueName.IsSimpleQueue)
             {
                 var client = _clientProvider.GetQueueClient(queueName);
-                while (i < msgs.Length)
+                foreach (var batch in BatchUp(msgs))
                 {
-                    await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
-                    i += BatchSize;
-                }
+                    await client.SendBatchAsync(batch);
+                }                
             }
             else
             {
                 var client = _clientProvider.GetTopicClient(queueName);
-                while (i < msgs.Length)
+                foreach (var batch in BatchUp(msgs))
                 {
-                    await client.SendBatchAsync(msgs.Skip(i).Take(BatchSize).Select(x => x.ToMessage()));
-                    i += BatchSize;
-                }
+                    await client.SendBatchAsync(batch);
+                }                   
             }
+        }
+
+        internal static List<List<BrokeredMessage>> BatchUp(IEnumerable<Event> messages)
+        {
+            const long SizeLimit = 240*1024; // 240KB
+            var listOfBatches = new List<List<BrokeredMessage>>();
+            var list = new List<BrokeredMessage>();
+            var size = 0L;
+            foreach (var message in messages)
+            {
+                var brokeredMessage = message.ToMessage();
+                if (size + brokeredMessage.Size >= SizeLimit)
+                {
+                    listOfBatches.Add(list);
+                    list = new List<BrokeredMessage>();
+                    size = 0;
+                }
+                
+                size += brokeredMessage.Size;
+                list.Add(brokeredMessage);
+            }
+
+            listOfBatches.Add(list);
+            return listOfBatches;
         }
 
         public async Task<PollerResult<Event>> NextAsync(QueueName name)

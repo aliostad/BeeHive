@@ -139,5 +139,34 @@ namespace BeeHive.Azure.Tests
 
         }
 
+        [Fact]
+        public void NeverEverCreatesAMessageBiggerThan256KB()
+        {
+            const int BufferSize = 10*1024;
+            const int NumberOfMessages = 1000;
+            var random = new Random();
+            var list = new List<Event>();
+            for (int i = 0; i < NumberOfMessages; i++)
+            {
+                var fatMessage = new FatMessage() {ALotOfBytes = new byte[BufferSize + random.Next(10000)]};
+                random.NextBytes(fatMessage.ALotOfBytes);
+                list.Add(new Event(fatMessage));
+            }
+
+            var batchUp = ServiceBusOperator.BatchUp(list);
+            foreach (var batch in batchUp)
+            {
+                var sum = batch.Sum(x => x.Size);
+                Assert.True(sum < 256 * 1024, "Size BIg!" );
+                Console.WriteLine("Size => {0}", sum);
+            }
+
+            Assert.Equal(NumberOfMessages, batchUp.Sum(x => x.Count));
+        }
+
+        class FatMessage
+        {
+            public byte[] ALotOfBytes { get; set; }
+        }
     }
 }
