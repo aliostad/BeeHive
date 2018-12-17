@@ -16,5 +16,7 @@ namespace BeeHive
 
         public int DegreeOfParallelism { get; set; }
 
+        public TimeSpan? MaximumLease { get; set; }
+
     }
 }

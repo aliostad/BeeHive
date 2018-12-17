@@ -7,19 +7,23 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BeeHive.Scheduling;
-using Microsoft.ServiceBus;
-using Microsoft.ServiceBus.Messaging;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus.Management;
+
 
 namespace BeeHive.Azure
 {
     public class ServiceBusOperator : IEventQueueOperator
     {
-        private NamespaceManager _namespaceManager;
-        private TimeSpan _longPollingTimeout;
         private ClientProvider _clientProvider;
-        public ServiceBusOperator(string connectionString)
-            : this(connectionString, 
-            TimeSpan.FromSeconds(30))
+        private string _connectionString;
+        private Lazy<ManagementClient> _lazyNamespaceManager;
+        private TimeSpan _maxAutoRenew;
+
+        public bool IsEventDriven => true;
+
+        public ServiceBusOperator(string connectionString) :
+            this(connectionString, TimeSpan.FromMinutes(30))
         {
 
         }
@@ -28,15 +32,18 @@ namespace BeeHive.Azure
         /// 
         /// </summary>
         /// <param name="connectionString"></param>
-        /// <param name="longPollingTimeout"></param>
         /// Turn it on if you know the limit will not be reached</param>
-        public ServiceBusOperator(string connectionString, 
-            TimeSpan longPollingTimeout)
+        public ServiceBusOperator(string connectionString, TimeSpan maxAutoRenew)
         {
-            _longPollingTimeout = longPollingTimeout;
-            _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
+            _connectionString = connectionString;
             _clientProvider = new ClientProvider(connectionString, true);
+
+            // NOTE: reason for lazy is not in all cases connection string allows management. 
+            // Some might decide to create Queues, Topics and Subscriptions separately and give read/write access only.
+            _lazyNamespaceManager = new Lazy<ManagementClient>(() => new ManagementClient(_connectionString));
+            _maxAutoRenew = maxAutoRenew;
         }
+
 
         public async Task PushAsync(Event message)
         {
@@ -68,7 +75,7 @@ namespace BeeHive.Azure
                 var client = _clientProvider.GetQueueClient(queueName);
                 foreach (var batch in BatchUp(msgs))
                 {
-                    await client.SendBatchAsync(batch);
+                    await client.SendAsync(batch);
                 }                
             }
             else
@@ -76,16 +83,16 @@ namespace BeeHive.Azure
                 var client = _clientProvider.GetTopicClient(queueName);
                 foreach (var batch in BatchUp(msgs))
                 {
-                    await client.SendBatchAsync(batch);
+                    await client.SendAsync(batch);
                 }                   
             }
         }
 
-        internal static List<List<BrokeredMessage>> BatchUp(IEnumerable<Event> messages)
+        internal static List<List<Message>> BatchUp(IEnumerable<Event> messages)
         {
             const long SizeLimit = 240*1024; // 240KB
-            var listOfBatches = new List<List<BrokeredMessage>>();
-            var list = new List<BrokeredMessage>();
+            var listOfBatches = new List<List<Message>>();
+            var list = new List<Message>();
             var size = 0L;
             foreach (var message in messages)
             {
@@ -93,7 +100,7 @@ namespace BeeHive.Azure
                 if (size + brokeredMessage.Size >= SizeLimit)
                 {
                     listOfBatches.Add(list);
-                    list = new List<BrokeredMessage>();
+                    list = new List<Message>();
                     size = 0;
                 }
                 
@@ -107,107 +114,71 @@ namespace BeeHive.Azure
 
         public async Task<PollerResult<Event>> NextAsync(QueueName name)
         {
-            try
-            {
-
-                BrokeredMessage message = null;
-                if (name.IsSimpleQueue)
-                {
-                    var client = _clientProvider.GetQueueClient(name);
-                    message = await client.ReceiveAsync(_longPollingTimeout);
-                }
-                else
-                {
-                    var client = _clientProvider.GetSubscriptionClient(name);
-                    message = await client.ReceiveAsync(_longPollingTimeout); 
-                }
-
-                return new PollerResult<Event>(message != null,
-                        message == null
-                            ? null
-                            : message.ToEvent(name)
-                        );
-            }
-            catch (Exception e)
-            {
-                TheTrace.TraceWarning(e.ToString());
-                return new PollerResult<Event>(false, null);
-            }
+            throw new NotSupportedException();
         }
 
         public Task AbandonAsync(Event message)
         {
-            var brokeredMessage = (BrokeredMessage) message.UnderlyingMessage;
-            return brokeredMessage.AbandonAsync();
+            var brokeredMessage = (Message) message.UnderlyingMessage;
+            var q = new QueueName(message.QueueName);
+            if (q.IsSimpleQueue)
+            {
+                return _clientProvider.GetQueueClient(q).AbandonAsync(brokeredMessage.SystemProperties.LockToken);
+            }
+            else
+            {
+                return _clientProvider.GetSubscriptionClient(q).AbandonAsync(brokeredMessage.SystemProperties.LockToken);
+            }            
         }
 
         public Task CommitAsync(Event message)
         {
-            var brokeredMessage = (BrokeredMessage)message.UnderlyingMessage;
-            return brokeredMessage.CompleteAsync();
+            var brokeredMessage = (Message)message.UnderlyingMessage;
+            var q = new QueueName(message.QueueName);
+            if (q.IsSimpleQueue)
+            {
+                return _clientProvider.GetQueueClient(q).CompleteAsync(brokeredMessage.SystemProperties.LockToken);
+            }
+            else
+            {
+                return _clientProvider.GetSubscriptionClient(q).CompleteAsync(brokeredMessage.SystemProperties.LockToken);
+            }
         }
 
         public Task DeferAsync(Event message, TimeSpan howLong)
         {
-            var brokeredMessage = (BrokeredMessage)message.UnderlyingMessage;
+            var brokeredMessage = (Message)message.UnderlyingMessage;
             brokeredMessage.ScheduledEnqueueTimeUtc = DateTime.UtcNow.Add(howLong);
             return PushAsync(message);
         }
 
-        public async Task KeepExtendingLeaseAsync(Event message, TimeSpan howLong, CancellationToken cancellationToken)
-        {
-
-            await Task.Delay(new TimeSpan(2 * howLong.Ticks / 3), cancellationToken);
-
-            while (true)
-            {
-                try
-                {
-                    if(cancellationToken.IsCancellationRequested)
-                        break;
-
-                    var underlyingMessage = (BrokeredMessage) message.UnderlyingMessage;
-                    await underlyingMessage.RenewLockAsync();
-                    await Task.Delay(new TimeSpan(2*howLong.Ticks/3), cancellationToken);
-                }
-                catch (Exception exception)
-                {
-                    if(!cancellationToken.IsCancellationRequested) // log error if it was not cancelled.
-                        TheTrace.TraceError(exception.ToString());
-                    break;
-                }
-            }
-        }
-
-
         public async Task CreateQueueAsync(QueueName name)
         {
             if (name.IsSimpleQueue)
-                await _namespaceManager.CreateQueueAsync(name.TopicName);
+                await _lazyNamespaceManager.Value.CreateQueueAsync(name.TopicName);
             else
             {
                 if (name.IsTopic)
-                    await _namespaceManager.CreateTopicAsync(name.TopicName);
+                    await _lazyNamespaceManager.Value.CreateTopicAsync(name.TopicName);
                 else
                 {
                     await this.SetupQueueAsync(QueueName.FromTopicName(name.TopicName));
-                    await _namespaceManager.CreateSubscriptionAsync(name.TopicName,
+                    await _lazyNamespaceManager.Value.CreateSubscriptionAsync(name.TopicName,
                         name.SubscriptionName);
                 }
-                    
             }
         }
 
         public Task DeleteQueueAsync(QueueName name)
         {
             if (name.IsSimpleQueue)
-                return _namespaceManager.DeleteQueueAsync(name.TopicName);
+                return _lazyNamespaceManager.Value.DeleteQueueAsync(name.TopicName);
             else
             {
                 if (name.IsTopic)
-                    return _namespaceManager.DeleteTopicAsync(name.TopicName);
+                    return _lazyNamespaceManager.Value.DeleteTopicAsync(name.TopicName);
                 else
-                    return _namespaceManager.DeleteSubscriptionAsync(name.TopicName,
+                    return _lazyNamespaceManager.Value.DeleteSubscriptionAsync(name.TopicName,
                         name.SubscriptionName);
             }
         }
@@ -215,16 +186,58 @@ namespace BeeHive.Azure
         public async Task<bool> QueueExistsAsync(QueueName name)
         {
             if (name.IsSimpleQueue)
-                return await _namespaceManager.QueueExistsAsync(name.TopicName);
+                return await _lazyNamespaceManager.Value.QueueExistsAsync(name.TopicName);
             else
             {
                 if (name.IsTopic)
-                    return await _namespaceManager.TopicExistsAsync(name.TopicName);
+                    return await _lazyNamespaceManager.Value.TopicExistsAsync(name.TopicName);
                 else
                     return
-                        await _namespaceManager.TopicExistsAsync(name.TopicName) &&
-                        await _namespaceManager.SubscriptionExistsAsync(name.TopicName,
+                        await _lazyNamespaceManager.Value.TopicExistsAsync(name.TopicName) &&
+                        await _lazyNamespaceManager.Value.SubscriptionExistsAsync(name.TopicName,
                         name.SubscriptionName);
+            }
+        }
+
+        public Task KeepExtendingLeaseAsync(Event message, TimeSpan howLong, CancellationToken cancellationToken)
+        {
+            throw new NotSupportedException();
+        }
+
+        static Task ExceptionReceivedHandler(ExceptionReceivedEventArgs args)
+        {
+            TheTrace.TraceError("Boy this should have never happened since we have exception handling in Factory Actor: {}", args.Exception);
+            return Task.FromResult(false);
+        }
+
+        private async Task ProcessMessage(Message m, CancellationToken cancellationToken,
+            Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
+        {
+            var name = new QueueName(descriptor.SourceQueueName);
+            var messages = await handler(m.ToEvent(name));
+            await PushBatchAsync(messages);
+        }
+
+        public void RegisterHandler(Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
+        {
+            var name = new QueueName(descriptor.SourceQueueName);
+            Func<Message, CancellationToken, Task> h = (Message m, CancellationToken token) => ProcessMessage(m, token, handler, descriptor);
+            var options = new MessageHandlerOptions(ExceptionReceivedHandler)
+            {
+                MaxConcurrentCalls = descriptor.DegreeOfParallelism,
+                MaxAutoRenewDuration = descriptor.MaximumLease.HasValue ? descriptor.MaximumLease.Value : _maxAutoRenew,
+                AutoComplete = true
+            };
+
+            if (name.IsSimpleQueue)
+            {
+                var client = _clientProvider.GetQueueClient(name);
+                client.RegisterMessageHandler(h, options);
+            }
+            else
+            {
+                var client = _clientProvider.GetSubscriptionClient(name);
+                client.RegisterMessageHandler(h, options);
             }
         }
 
@@ -253,7 +266,7 @@ namespace BeeHive.Azure
             {
 
                 Func<object> factory = () =>
-                    SubscriptionClient.CreateFromConnectionString(_connectionString,
+                   new SubscriptionClient(_connectionString,
                         queueName.TopicName,
                         queueName.SubscriptionName);
 
@@ -276,9 +289,8 @@ namespace BeeHive.Azure
 
             public TopicClient GetTopicClient(QueueName queueName)
             {
-
                 Func<object> factory = () =>
-                    TopicClient.CreateFromConnectionString(_connectionString,
+                    new TopicClient(_connectionString,
                         queueName.TopicName);
 
                 if (_cache)
@@ -302,7 +314,7 @@ namespace BeeHive.Azure
             {
 
                 Func<object> factory = () =>
-                    QueueClient.CreateFromConnectionString(_connectionString,
+                    new QueueClient(_connectionString,
                         queueName.TopicName);
 
                 if (_cache)

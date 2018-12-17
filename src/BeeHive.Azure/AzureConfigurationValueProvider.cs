@@ -1,10 +1,12 @@
-﻿using System;
+﻿#if NET461
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BeeHive.Configuration;
-using Microsoft.WindowsAzure;
+using Microsoft.Azure;
+
 
 namespace BeeHive.Azure
 {
@@ -16,3 +18,4 @@ namespace BeeHive.Azure
         }
     }
 }
+#endif

@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 namespace BeeHive.Azure
 {
 
+
     internal class TableConstants
     {
         public const string PartitionKey = "PartitionKey";
@@ -108,7 +109,7 @@ namespace BeeHive.Azure
         private async Task<CloudTable> GetTable()
         {
 
-            if (!_table.Exists())
+            if (!await _table.ExistsAsync())
             {
                 try
                 {
@@ -134,7 +135,7 @@ namespace BeeHive.Azure
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(TableQuery.CombineFilters(conditionPK, TableConstants.And, conditionRK));
-            return GetItem(table.ExecuteQuery(query).FirstOrDefault(), id, rangeKey);
+            return GetItem((await table.ExecuteQueryAsync(query)).FirstOrDefault(), id, rangeKey);
         }
 
         private T GetItem(DynamicTableEntity entity, string id, string rangeKey)
@@ -205,7 +206,7 @@ namespace BeeHive.Azure
             }
                       
             return
-                table.ExecuteQuery(query).Select(x => GetItem(x, x.PartitionKey,x.RowKey));
+                (await table.ExecuteQueryAsync(query)).Select(x => GetItem(x, x.PartitionKey,x.RowKey));
                 
         }
 
@@ -253,7 +254,7 @@ namespace BeeHive.Azure
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(TableQuery.CombineFilters(conditionPK, TableConstants.And, conditionRK));
-            return table.ExecuteQuery(query).Any();
+            return (await table.ExecuteQuerySegmentedAsync(query, null)).Any();
         }
 
         private DynamicTableEntity GetEntity(T t, bool storeEntity = false)

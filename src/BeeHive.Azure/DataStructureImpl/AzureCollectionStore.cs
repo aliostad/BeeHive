@@ -29,7 +29,7 @@ namespace BeeHive.Azure
         private async Task<CloudTable> GetTable()
         {
            
-            if (!_table.Exists())
+            if (!await _table.ExistsAsync())
             {
                 try
                 {
@@ -86,7 +86,7 @@ namespace BeeHive.Azure
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
-            return GetItem(table.ExecuteQuery(query).FirstOrDefault(), id);
+            return GetItem((await table.ExecuteQueryAsync(query)).FirstOrDefault(), id);
         }
 
         private T GetItem(DynamicTableEntity entity, string id)
@@ -155,7 +155,7 @@ namespace BeeHive.Azure
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
-            return table.ExecuteQuery(query).Any();
+            return (await table.ExecuteQueryAsync(query)).Any(); 
         }
     }
 }

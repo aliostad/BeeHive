@@ -33,14 +33,11 @@ namespace BeeHive
         public async Task SetupAsync()
         {
             foreach (var descriptor in _configuration.GetDescriptors())
-            {
-                for (int i = 0; i < descriptor.DegreeOfParallelism; i++)
-                {
-                    var factoryActor = _serviceLocator.GetService<IFactoryActor>();
-                    factoryActor.Setup(descriptor);
-                    _actors.Add(factoryActor);
-                    await _queueOperator.SetupQueueAsync(new QueueName(descriptor.SourceQueueName));                    
-                }
+            {               
+                var factoryActor = _serviceLocator.GetService<IFactoryActor>();
+                factoryActor.Setup(descriptor);
+                _actors.Add(factoryActor);
+                await _queueOperator.SetupQueueAsync(new QueueName(descriptor.SourceQueueName));                    
             }
         }
 

@@ -86,14 +86,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BeeHive.Azure\BeeHive.Azure.csproj">
-      <Project>{22e3fc77-78cd-4910-9d27-7494a15a8916}</Project>
-      <Name>BeeHive.Azure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj">
-      <Project>{6ee378ae-c8c0-44b2-aa9a-711faada4e9c}</Project>
-      <Name>BeeHive.DataStructures</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj">
       <Project>{3e0f3470-eae7-4a78-9822-52f57dcdde9b}</Project>
       <Name>BeeHive</Name>
@@ -101,6 +93,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

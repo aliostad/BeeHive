@@ -48,10 +48,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BeeHive.Azure\BeeHive.Azure.csproj">
-      <Project>{22e3fc77-78cd-4910-9d27-7494a15a8916}</Project>
-      <Name>BeeHive.Azure</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj">
       <Project>{3e0f3470-eae7-4a78-9822-52f57dcdde9b}</Project>
       <Name>BeeHive</Name>

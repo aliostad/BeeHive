@@ -18,13 +18,13 @@ namespace BeeHive.Azure
      
         private CloudBlobContainer _containerReference;
         private BlobSource _source;
+        private bool _started = false;
 
         const int MaxLockPossibleMilliseconds = 30*1000;
 
         public AzureLockStore(BlobSource source)
         {
             _source = source;
-            GetClientAndReference();
         }
 
         private void GetClientAndReference()
@@ -32,9 +32,16 @@ namespace BeeHive.Azure
             var account = CloudStorageAccount.Parse(_source.ConnectionString);
             var client = account.CreateCloudBlobClient();
             _containerReference = client.GetContainerReference(_source.ContainerName);
-            _containerReference.CreateIfNotExists();
+            _containerReference.CreateIfNotExistsAsync();
         }
 
+        private async Task EnsureExists()
+        {
+            // cannot do this in lock :/
+            if (!_started)
+                GetClientAndReference();
+            _started = true;
+        }
 
         public async Task<bool> TryLockAsync(
             LockToken token, 
@@ -55,7 +62,7 @@ namespace BeeHive.Azure
                     {
                         await blob.AcquireLeaseAsync(
                             TimeSpan.FromMilliseconds(Math.Min(MaxLockPossibleMilliseconds, timeoutMilliseconds)),
-                            token.TokenId.ToString("N"), cancellationTokenSource.Token);
+                            token.TokenId.ToString("N"), null, null, null, cancellationTokenSource.Token);
                     }
 
                     if (timeoutMilliseconds > MaxLockPossibleMilliseconds)

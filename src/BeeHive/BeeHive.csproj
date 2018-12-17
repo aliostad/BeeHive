@@ -1,121 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3E0F3470-EAE7-4A78-9822-52F57DCDDE9B}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BeeHive</RootNamespace>
-    <AssemblyName>BeeHive</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.Services.Client" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Common\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Actors\ActorDescriptionAttributeExtensions.cs" />
-    <Compile Include="Actors\ActorDescriptor.cs" />
-    <Compile Include="Actors\IOrchestrator.cs" />
-    <Compile Include="Actors\IDelayedProcessorActor.cs" />
-    <Compile Include="Configuration\AggregateActorConfiguration.cs" />
-    <Compile Include="Configuration\ActorDescriptors.cs" />
-    <Compile Include="Configuration\AppSettingsActorConfiguration.cs" />
-    <Compile Include="Configuration\AppDomainExplorerActorConfiguration.cs" />
-    <Compile Include="Actors\FactoryActor.cs" />
-    <Compile Include="Actors\IActorFinder.cs" />
-    <Compile Include="Actors\IFactoryActor.cs" />
-    <Compile Include="Actors\IProcessorActor.cs" />
-    <Compile Include="Actors\IService.cs" />
-    <Compile Include="Actors\Orchestrator.cs" />
-    <Compile Include="Actors\ActorDescriptionAttribute.cs" />
-    <Compile Include="Configuration\IConfigurationValueProvider.cs" />
-    <Compile Include="Configuration\IEnumerableActorDescriptorExtensions.cs" />
-    <Compile Include="Configuration\IStartup.cs" />
-    <Compile Include="Configuration\Pulsers.cs" />
-    <Compile Include="Configuration\StartupSetup.cs" />
-    <Compile Include="Events\Event.cs" />
-    <Compile Include="Events\EventExtensions.cs" />
-    <Compile Include="Events\EventProperties.cs" />
-    <Compile Include="Configuration\IActorConfiguration.cs" />
-    <Compile Include="Internal\FuncExtensions.cs" />
-    <Compile Include="Internal\OtherExtensions.cs" />
-    <Compile Include="Internal\TaskExtensions.cs" />
-    <Compile Include="Internal\WhoCalledAMethod.cs" />
-    <Compile Include="IQueueOperator.cs" />
-    <Compile Include="IQueueOperatorExtensions.cs" />
-    <Compile Include="Scheduling\FixedInterval.cs" />
-    <Compile Include="Scheduling\IAsyncPulserExtensions.cs" />
-    <Compile Include="Scheduling\PulserIntervalAttribute.cs" />
-    <Compile Include="Scheduling\PulserPublisher.cs" />
-    <Compile Include="Scheduling\SimpleAutoPulserDescriptionAttribute.cs" />
-    <Compile Include="Scheduling\IAsyncPulser.cs" />
-    <Compile Include="Scheduling\IPulser.cs" />
-    <Compile Include="Scheduling\PulserDescriptionAttribute.cs" />
-    <Compile Include="Scheduling\PulserDescription.cs" />
-    <Compile Include="Scheduling\SimpleAutoPulser.cs" />
-    <Compile Include="ServiceLocator\IServiceLocatorExtensions.cs" />
-    <Compile Include="QueueName.cs" />
-    <Compile Include="Scheduling\AsyncPoller.cs" />
-    <Compile Include="Scheduling\Poller.cs" />
-    <Compile Include="Internal\PollingWorker.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scheduling\DoublyIncreasingInterval.cs" />
-    <Compile Include="Scheduling\IInterval.cs" />
-    <Compile Include="Scheduling\IntervalBase.cs" />
-    <Compile Include="Scheduling\PollerResult.cs" />
-    <Compile Include="Scheduling\RegularlyIncreasingInterval.cs" />
-    <Compile Include="ServiceLocator\IServiceLocator.cs" />
-    <Compile Include="TheTrace.cs" />
-    <Compile Include="Tools\ColourfulConsoleTraceListener.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+		<TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp2.0</TargetFrameworks>		
+		<Summary>BeeHive Actor Model mini-Library</Summary>
+		<AssemblyName>BeeHive</AssemblyName>
+		<PackageId>CacheCow.Client</PackageId>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+	</ItemGroup>
 </Project>
