@@ -11,7 +11,7 @@ namespace BeeHive.Tests
     public class QueueNameTests
     {
         [Theory]
-        [InlineData("Simple Queue", "SimpleQueueName", "SimpleQueueName", "SimpleQueueName")]
+        [InlineData("Simple Queue", "SimpleQueueName-SimpleQueueName", "SimpleQueueName", "SimpleQueueName")]
         [InlineData("Topic Queue", "Topic-Subscription", "Topic", "Subscription")]
         [InlineData("Multiple hyphen", "Simple-Queue-Name", "", "")]
         [InlineData("underscore and number fine", "1122fwef_fwef-23huh_buhasi", "1122fwef_fwef", "23huh_buhasi")]

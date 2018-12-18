@@ -8,8 +8,10 @@ using Xunit;
 
 namespace BeeHive.Tests
 {
+
     public class AppDomainExplorerActorConfigurationTests
     {
+#if NET461
         [Fact]
         public void Test()
         {
@@ -20,5 +22,6 @@ namespace BeeHive.Tests
             Assert.Equal(3, descriptor.DegreeOfParallelism);
             Assert.Equal("Dummy", descriptor.SourceQueueName);
         }
+#endif    
     }
 }
