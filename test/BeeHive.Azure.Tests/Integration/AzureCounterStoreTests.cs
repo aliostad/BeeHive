@@ -9,15 +9,11 @@ using Xunit;
 namespace BeeHive.Azure.Tests.Integration
 {
 
-    public class AzureCounterStoreTests
+    public class AzureCounterStoreTests: BaseStorageTest
     {
-
-        private const string ConnectionString = "UseDevelopmentStorage=true;";
-
         private const string ContainerName = "band25";
 
-
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void ConcurrentIncrementWorks()
         {
             ThreadPool.SetMinThreads(20, 20);

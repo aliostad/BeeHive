@@ -8,14 +8,11 @@ using Xunit;
 
 namespace BeeHive.Azure.Tests.Integration
 {
-    public class AzureKeyedListStoreTests
+    public class AzureKeyedListStoreTests : BaseStorageTest
     {
-        private const string ConnectionString = "UseDevelopmentStorage=true;";
         private const string ListName = "test";
-        
 
-
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void Stores()
         {
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
@@ -29,9 +26,9 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Equal(entity.Name, firstOrDefault.Name);
             Assert.Equal(entity.Id, firstOrDefault.Id);
         }
-    
 
-        [Fact]
+
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void Updates()
         {
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
@@ -51,7 +48,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Equal(entity.Id, firstOrDefault.Id);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void Removes()
         {
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
@@ -64,11 +61,10 @@ namespace BeeHive.Azure.Tests.Integration
             store.RemoveAsync(ListName, against).Wait();
 
             // assert
-            
             Assert.False(store.ExistsAsync(ListName, against).Result);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void ListExists_ForExisting()
         {
             var newListName = "Table" + Guid.NewGuid().ToString("N").Substring(10);
@@ -80,7 +76,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.True(store.ListExistsAsync(newListName).Result);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void ListDoesntExists_ForNonExisting()
         {
             var newListName = "Table" + Guid.NewGuid().ToString("N").Substring(10);

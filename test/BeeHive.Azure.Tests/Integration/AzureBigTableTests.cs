@@ -8,11 +8,9 @@ using Xunit;
 
 namespace BeeHive.Azure.Tests.Integration
 {
-    public class AzureBigTableTests
+    public class AzureBigTableTests : BaseStorageTest
     {
-        private const string ConnectionString = "UseDevelopmentStorage=true;";
-
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanInsertAndGet()
         {
             var store = new AzureBigTableStore<HasIdentityAndRange>(connectionString:ConnectionString);
@@ -54,7 +52,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Equal(item.When3, storedItem.When3);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanInsertAndDelete()
         {
             var store = new AzureBigTableStore<HasIdentityAndRange>(connectionString: ConnectionString);
@@ -71,7 +69,7 @@ namespace BeeHive.Azure.Tests.Integration
         }
 
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanGetRange()
         {
             var store = new AzureBigTableStore<HasIdentityAndRange>(connectionString: ConnectionString);
@@ -94,9 +92,6 @@ namespace BeeHive.Azure.Tests.Integration
 
             Assert.Equal(2, store.GetRangeAsync(item.Id, "1", "2").Result.Count());
         }
-
-
-
     }
 
 

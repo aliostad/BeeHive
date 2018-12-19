@@ -6,15 +6,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace BeeHive.Azure.Tests
+namespace BeeHive.Azure.Tests.Integration
 {
     public class AzureServiceBusTests
     {
+        string ConnectionString = null;
 
-        private const string ConnectionString =
-            "Endpoint=sb://beehivetest.servicebus.windows.net/;SharedSecretIssuer=owner;SharedSecretValue=FIFK7e6S7TgDX2q2zz+QYpNybFYaaCdZpKfKJLKb42c=";
+        public AzureServiceBusTests()
+        {
+            ConnectionString = Environment.GetEnvironmentVariable(EnvVars.ConnectionStrings.ServiceBus);
+        }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicCreateAndExists()
         {
             var topicName = Guid.NewGuid().ToString("N");
@@ -30,7 +33,7 @@ namespace BeeHive.Azure.Tests
 
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicAndSubscriptionCreateAndExists()
         {
             var topicName = Guid.NewGuid().ToString("N");
@@ -53,7 +56,7 @@ namespace BeeHive.Azure.Tests
 
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicAndSubscriptionCreateAndSent()
         {
             var topicName = Guid.NewGuid().ToString("N");
@@ -77,7 +80,7 @@ namespace BeeHive.Azure.Tests
 
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicAndSubscriptionCreateAndSentAndReceivedForOneMinute()
         {
             var topicName = Guid.NewGuid().ToString("N");
@@ -110,7 +113,7 @@ namespace BeeHive.Azure.Tests
 
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicAndSubscriptionCreateAndSentBatch()
         {
             var topicName = Guid.NewGuid().ToString("N");
@@ -139,7 +142,7 @@ namespace BeeHive.Azure.Tests
 
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
         public void NeverEverCreatesAMessageBiggerThan256KB()
         {
             const int BufferSize = 10*1024;

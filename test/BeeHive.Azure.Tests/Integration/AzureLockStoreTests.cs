@@ -7,31 +7,27 @@ using Xunit;
 
 namespace BeeHive.Azure.Tests.Integration
 {
-    public class AzureLockStoreTests
+    public class AzureLockStoreTests : BaseStorageTest
     {
 
-        private const string DefaultConnectionString = "UseDevelopmentStorage=true;";
         private const string ContainerName = "band25";
-        private readonly string _cn;
-        private readonly AzureLockStore _locker;
+        private AzureLockStore _locker;
 
-        public AzureLockStoreTests()
+        private void OpenConnection()
         {
-            var s = Environment.GetEnvironmentVariable("abs_connection_string");
-            _cn = string.IsNullOrEmpty(s) ? DefaultConnectionString : s;
-
             _locker = new AzureLockStore(
-                new BlobSource()
-                {
-                    ContainerName = ContainerName,
-                    ConnectionString = _cn,
-                    Path = "this/is/great/"
-                });
+                 new BlobSource()
+                 {
+                     ContainerName = ContainerName,
+                     ConnectionString = ConnectionString,
+                     Path = "this/is/great/"
+                 });
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void TwoCannotLockAtTheSameTime()
         {
+            OpenConnection();
             var resource = Guid.NewGuid().ToString();
             var token = new LockToken(resource);
 
@@ -46,14 +42,14 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.False(canDoubleLock);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void ICanLockForMoreThan30Seconds()
         {
             var locker = new AzureLockStore(
                 new BlobSource()
                 {
                     ContainerName = ContainerName,
-                    ConnectionString = _cn,
+                    ConnectionString = ConnectionString,
                     Path = "this/is/great/"
                 });
 
@@ -72,9 +68,11 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.False(canDoubleLock);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanFailFastOnAquiringLock()
         {
+            OpenConnection();
+
             var resource = Guid.NewGuid().ToString();
             var token = new LockToken(resource);
 
