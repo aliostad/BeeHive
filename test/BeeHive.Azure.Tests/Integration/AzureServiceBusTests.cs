@@ -81,39 +81,6 @@ namespace BeeHive.Azure.Tests.Integration
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
-        public void TopicAndSubscriptionCreateAndSentAndReceivedForOneMinute()
-        {
-            var topicName = Guid.NewGuid().ToString("N");
-            var subName = Guid.NewGuid().ToString("N");
-            var topicQueueName = QueueName.FromTopicName(topicName);
-            var queueName = QueueName.FromTopicAndSubscriptionName(topicName, subName);
-            var serviceBusOperator = new ServiceBusOperator(ConnectionString);
-
-
-            serviceBusOperator.CreateQueueAsync(topicQueueName).Wait();
-            serviceBusOperator.CreateQueueAsync(queueName).Wait();
-
-            serviceBusOperator.PushAsync(new Event("chashm")
-            {
-                QueueName = topicQueueName.ToString()
-            }).Wait();
-
-            var pollerResult = serviceBusOperator.NextAsync(queueName).Result;
-            var cancellationTokenSource = new CancellationTokenSource();
-            serviceBusOperator.KeepExtendingLeaseAsync(pollerResult.PollingResult, TimeSpan.FromSeconds(10),
-                cancellationTokenSource.Token);
-
-            Thread.Sleep(35000);
-            cancellationTokenSource.Cancel();
-            serviceBusOperator.CommitAsync(pollerResult.PollingResult);
-
-            serviceBusOperator.DeleteQueueAsync(queueName).Wait();
-            serviceBusOperator.DeleteQueueAsync(topicQueueName).Wait();
-
-
-        }
-
-        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicAndSubscriptionCreateAndSentBatch()
         {
             var topicName = Guid.NewGuid().ToString("N");

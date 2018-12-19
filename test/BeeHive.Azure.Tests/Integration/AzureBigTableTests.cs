@@ -97,6 +97,11 @@ namespace BeeHive.Azure.Tests.Integration
 
     public class HasIdentityAndRange : IHaveIdentityAndRange, IConcurrencyAware
     {
+        public HasIdentityAndRange()
+        {
+            When = DateTimeOffset.Now;
+        }
+
         public string Id { get; set; }
         public string RangeKey { get; set; }
         public DateTimeOffset? LastModified { get; set; }

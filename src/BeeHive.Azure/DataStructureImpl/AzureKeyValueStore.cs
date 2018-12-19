@@ -60,7 +60,7 @@ namespace BeeHive.Azure
             BlobContinuationToken token = null;
             do
             {
-                var r = await _container.ListBlobsSegmentedAsync(path, flatSearch, BlobListingDetails.All, null, token, null, null);
+                var r = await _container.ListBlobsSegmentedAsync(path, flatSearch, BlobListingDetails.Metadata, null, token, null, null);
                 result.AddRange(r.Results.Select(x => x.ToBlob()));
                 token = r.ContinuationToken;
             } while (token != null);

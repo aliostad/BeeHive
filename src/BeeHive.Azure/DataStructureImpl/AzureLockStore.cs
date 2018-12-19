@@ -50,6 +50,8 @@ namespace BeeHive.Azure
             int timeoutMilliseconds = 15000,
             int aquireTimeoutMilliseconds = 15000)
         {
+            await EnsureExists();
+
             if (tries < 1)
                 tries = 1;
 
@@ -92,6 +94,7 @@ namespace BeeHive.Azure
 
         private async Task KeepExtendingLeaseAsync(Func<Task> extendLeaseAsync, TimeSpan howLong, CancellationToken cancellationToken, string resource)
         {
+            await EnsureExists();
 
             var thisLong = new TimeSpan(2*howLong.Ticks/3); // RATM: how long? This long, what you reap is what you sew!
             await Task.Delay(thisLong, cancellationToken);
@@ -118,6 +121,8 @@ namespace BeeHive.Azure
 
         public async Task ReleaseLockAsync(LockToken token)
         {
+            await EnsureExists();
+
             var blob = await GetBlobAsync(token.ResourceId);
             await blob.ReleaseLeaseAsync(AccessCondition.GenerateLeaseCondition(token.TokenId.ToString("N")));
             token.RenewCancellation.Cancel();

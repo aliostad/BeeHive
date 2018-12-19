@@ -130,12 +130,11 @@ namespace BeeHive.Azure
                 };
                 ctx.UserHeaders.Add("ETag", tcw.ETag);
             }
-               
 
-            
+            var e = GetEntity(t, true);
             var table = await GetTable();
-            await table.ExecuteAsync(TableOperation.InsertOrReplace(GetEntity(t, true)),
-                null, ctx);
+            await table.ExecuteAsync(TableOperation.Replace(e), null
+                , ctx);
         }
 
 
