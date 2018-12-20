@@ -5,7 +5,6 @@
 		<TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp2.0</TargetFrameworks>		
 		<Summary>BeeHive Actor Model mini-Library</Summary>
 		<AssemblyName>BeeHive</AssemblyName>
-		<PackageId>CacheCow.Client</PackageId>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
