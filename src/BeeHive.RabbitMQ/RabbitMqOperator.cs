@@ -17,6 +17,8 @@ namespace BeeHive.RabbitMQ
 
         private const string FanOut = "fanout";
 
+        public bool IsEventDriven => false;
+
         public RabbitMqOperator(IConnectionProvider connectionProvider):
             this(connectionProvider, TimeSpan.FromSeconds(30))
         {
@@ -197,6 +199,11 @@ namespace BeeHive.RabbitMQ
         public Task<bool> QueueExistsAsync(QueueName name)
         {
             return Task.FromResult(false);
+        }
+
+        public void RegisterHandler(Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
+        {
+            throw new NotSupportedException("Is not event-driven");
         }
     }
 }

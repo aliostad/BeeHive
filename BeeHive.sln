@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeeHive.ServiceLocator.Wind
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeeHive.Azure.Tests", "test\BeeHive.Azure.Tests\BeeHive.Azure.Tests.csproj", "{F98E72FE-68E7-4E1C-95E5-A39DCEF6ABD9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeeHive.RabbitMQ", "src\BeeHive.RabbitMQ\BeeHive.RabbitMQ.csproj", "{CF08FC09-0375-4B49-8F1F-5909557123E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{F98E72FE-68E7-4E1C-95E5-A39DCEF6ABD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F98E72FE-68E7-4E1C-95E5-A39DCEF6ABD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F98E72FE-68E7-4E1C-95E5-A39DCEF6ABD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF08FC09-0375-4B49-8F1F-5909557123E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF08FC09-0375-4B49-8F1F-5909557123E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF08FC09-0375-4B49-8F1F-5909557123E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF08FC09-0375-4B49-8F1F-5909557123E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,6 +75,7 @@ Global
 		{0FC64A3D-D3CB-44A1-8186-FD3FAF7A7746} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
 		{A8A66D29-D387-42ED-AC8C-77DA5C70A728} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
 		{F98E72FE-68E7-4E1C-95E5-A39DCEF6ABD9} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
+		{CF08FC09-0375-4B49-8F1F-5909557123E1} = {8241C829-3DB9-4BDD-9679-CA3CBE02AD88}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5373A954-A876-4848-AB7D-20F5CE680949}
