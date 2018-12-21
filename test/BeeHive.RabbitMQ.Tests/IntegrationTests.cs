@@ -10,8 +10,9 @@ namespace BeeHive.RabbitMQ.Tests
 {
     public class IntegrationTests
     {
+        private const string EnvVar = "rabbitmq_service_running"; 
 
-        [Fact]
+        [EnvVarIgnoreFact(EnvVar)]
         public void CanCreateSendAndReadFromSimpleQueue()
         {
 
@@ -38,7 +39,7 @@ namespace BeeHive.RabbitMQ.Tests
         }
 
 
-        [Fact]
+        [EnvVarIgnoreFact(EnvVar)]
         public void CanCreateSendAndReadFromPubSubQueue()
         {
 
@@ -61,6 +62,18 @@ namespace BeeHive.RabbitMQ.Tests
             Assert.True(result.IsSuccessful);
             operat.CommitAsync(result.PollingResult).Wait();
             Assert.Equal(content, result.PollingResult.GetBody<string>());
+        }
+    }
+
+    class EnvVarIgnoreFactAttribute : FactAttribute
+    {
+        public EnvVarIgnoreFactAttribute(string envVar)
+        {
+            var env = Environment.GetEnvironmentVariable(envVar);
+            if (string.IsNullOrEmpty(env))
+            {
+                Skip = $"Please set {envVar} env var to run.";
+            }
         }
     }
 }

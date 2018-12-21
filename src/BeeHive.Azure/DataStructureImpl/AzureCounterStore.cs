@@ -12,8 +12,6 @@ using Microsoft.WindowsAzure.Storage.Blob;
 namespace BeeHive.Azure
 {
 
-    
-
     /// <summary>
     /// Note: This is atomic but not performant as it uses locking. Currently not available on Azure
     /// </summary>
@@ -22,7 +20,8 @@ namespace BeeHive.Azure
         private ILockStore _lockStore;
         private BlobSource _source;
         private CloudBlobContainer _containerReference;
-
+        private object _lock = new object();
+        private bool _started = false;
 
         public AzureCounterStore(
             BlobSource source)
@@ -36,12 +35,22 @@ namespace BeeHive.Azure
                     Path = source.Path.TrimEnd('/') + "/" + "_locks_"
                 });
 
-            GetClientAndReference();
         }
 
+        private async Task EnsureStarted()
+        {
+            // NOTE !!! CANNOT USE LOCK STATEMENT with await
+            if (!_started)
+            {
+                await GetClientAndReference();
+                _started = true;
+            }
+        }
 
         public async Task<long> GetAsync(string counterName, string id)
         {
+            await EnsureStarted();
+
             var key = string.Format("____COUNTER____{0}-{1}", counterName, id);
             var blob = await GetBlobAsync(key);
             var text = await blob.DownloadTextAsync();
@@ -50,16 +59,18 @@ namespace BeeHive.Azure
             return v;
         }
 
-        private void GetClientAndReference()
+        private Task GetClientAndReference()
         {
             var account = CloudStorageAccount.Parse(_source.ConnectionString);
             var client = account.CreateCloudBlobClient();
             _containerReference = client.GetContainerReference(_source.ContainerName);
-            _containerReference.CreateIfNotExists();
+            return _containerReference.CreateIfNotExistsAsync();
         }
 
         private async Task<CloudBlockBlob> GetBlobAsync(string key)
         {
+            await EnsureStarted();
+
             var blob = _containerReference.GetBlockBlobReference(_source.Path.TrimEnd('/') + "/" + key);
             if (!(await blob.ExistsAsync()))
             {
@@ -75,8 +86,11 @@ namespace BeeHive.Azure
 
             return blob;
         }
+
         public async Task IncrementAsync(string counterName, string id, long value)
         {
+            await EnsureStarted();
+
             var key = string.Format("____COUNTER____{0}-{1}", counterName, id);
             var token = new LockToken(key);
             var result = await _lockStore.TryLockAsync(token);

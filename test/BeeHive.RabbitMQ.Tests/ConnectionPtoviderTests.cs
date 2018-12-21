@@ -59,7 +59,7 @@ namespace BeeHive.RabbitMQ.Tests
         {
             _isOpen = isOpen;
         }
-
+ 
         public void Dispose()
         {
            
@@ -137,10 +137,21 @@ namespace BeeHive.RabbitMQ.Tests
 
         public bool AutoClose { get; set; }
         public IList<ShutdownReportEntry> ShutdownReport { get; private set; }
-        public event ConnectionShutdownEventHandler ConnectionShutdown;
-        public event CallbackExceptionEventHandler CallbackException;
-        public event ConnectionBlockedEventHandler ConnectionBlocked;
-        public event ConnectionUnblockedEventHandler ConnectionUnblocked;
+
+        public string ClientProvidedName => throw new NotImplementedException();
+
+        public ConsumerWorkService ConsumerWorkService => throw new NotImplementedException();
+
+        public int LocalPort => throw new NotImplementedException();
+
+        public int RemotePort => throw new NotImplementedException();
+
+        public event EventHandler<ShutdownEventArgs> ConnectionShutdown;
+        public event EventHandler<CallbackExceptionEventArgs> CallbackException;
+        public event EventHandler<ConnectionBlockedEventArgs> ConnectionBlocked;
+        public event EventHandler<EventArgs> ConnectionUnblocked;
+        public event EventHandler<EventArgs> RecoverySucceeded;
+        public event EventHandler<ConnectionRecoveryErrorEventArgs> ConnectionRecoveryError;
     }
 
     public class DummyConnectionFactoryWrapper : IConnectionFactoryWrapper

@@ -31,7 +31,7 @@ namespace BeeHive.Azure
             var account = CloudStorageAccount.Parse(_connectionString);
             var client = account.CreateCloudTableClient();
             var table = client.GetTableReference(tableName);
-            if (!table.Exists())
+            if (!await table.ExistsAsync())
             {
                 try
                 {
@@ -69,7 +69,7 @@ namespace BeeHive.Azure
                 QueryComparisons.Equal, key);
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(condition);
-            return table.ExecuteQuery(query)
+            return (await table.ExecuteQueryAsync(query))
                 .Select(x => JsonConvert.DeserializeObject<T>(x.Properties[EntityPropertyName].StringValue));
         }
 
@@ -96,7 +96,7 @@ namespace BeeHive.Azure
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(conditionPK);
 
-            return table.ExecuteQuery(query).Any();
+            return (await table.ExecuteQueryAsync(query)).Any(); // NOT EFFICIENT :/ TODO: fix it
         }
 
         public async Task<bool> ListExistsAsync(string listName)
@@ -104,7 +104,7 @@ namespace BeeHive.Azure
             var account = CloudStorageAccount.Parse(_connectionString);
             var client = account.CreateCloudTableClient();
             var table = client.GetTableReference(listName);
-            return table.Exists();
+            return await table.ExistsAsync();
         }
 
         public async Task<bool> ItemExistsAsync(string listName, string key, string itemId)
@@ -118,7 +118,7 @@ namespace BeeHive.Azure
 
             var query = new TableQuery<DynamicTableEntity>()
                 .Where(TableQuery.CombineFilters(conditionPK, "and", conditionRK));
-            return table.ExecuteQuery(query).Any();
+            return (await table.ExecuteQueryAsync(query)).Any(); // NOT EFFICIENT // TODO:  
         }
 
         public async Task UpdateAsync(string listName, string key, T t)

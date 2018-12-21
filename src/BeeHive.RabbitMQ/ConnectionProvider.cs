@@ -114,7 +114,7 @@ namespace BeeHive.RabbitMQ
 
         }
 
-        private void _connection_ConnectionShutdown(IConnection connection,
+        private void _connection_ConnectionShutdown(object sender,
             ShutdownEventArgs reason)
         {
             TheTrace.TraceWarning("Connection was shut down: {0}", reason.ReplyText);

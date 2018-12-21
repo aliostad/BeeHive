@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.ServiceBus.Messaging;
+using Microsoft.Azure.ServiceBus;
 
 namespace BeeHive.Azure
 {
@@ -18,14 +18,14 @@ namespace BeeHive.Azure
         /// <param name="eventType">event type. Normally the topic queue name</param>
         /// <param name="queueName">Fulle queue name</param>
         /// <returns>event</returns>
-        public static Event ToEvent(this BrokeredMessage message, 
+        public static Event ToEvent(this Message message, 
             string eventType,
             string queueName)
         {
             return
                 new Event()
                 {
-                    Body = message.GetBody<string>(),
+                    Body = Encoding.UTF8.GetString(message.Body),
                     ContentType = message.ContentType,
                     EventType = eventType,
                     QueueName = queueName,
@@ -33,24 +33,24 @@ namespace BeeHive.Azure
                 };
         }
 
-        public static Event ToEvent(this BrokeredMessage message,
+        public static Event ToEvent(this Message message,
            QueueName queueName)
             {
             return
                 new Event()
                 {
-                    Body = message.GetBody<string>(),
+                    Body = Encoding.UTF8.GetString(message.Body), 
                     ContentType = message.ContentType,
                     EventType = queueName.TopicName,
                     QueueName = queueName.ToString(),
                     UnderlyingMessage = message,
-                    Timestamp = message.EnqueuedTimeUtc
+                    Timestamp = message.SystemProperties.EnqueuedTimeUtc
                 };
         }
 
-        public static BrokeredMessage ToMessage(this Event @event)
+        public static Message ToMessage(this Event @event)
         {
-            var msg = new BrokeredMessage(@event.Body)
+            var msg = new Message(Encoding.UTF8.GetBytes(@event.Body))
                           {
                               ContentType = @event.ContentType,
                               MessageId = @event.Id
@@ -60,7 +60,7 @@ namespace BeeHive.Azure
             {
                 foreach (var property in @event.Properties)
                 {
-                    msg.Properties.Add(property);
+                    msg.UserProperties.Add(property);
                 }                
             }
 

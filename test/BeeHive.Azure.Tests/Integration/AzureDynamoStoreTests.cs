@@ -9,13 +9,11 @@ using Xunit;
 
 namespace BeeHive.Azure.Tests.Integration
 {
-    public class AzureDynamoStoreTests
+    public class AzureDynamoStoreTests : BaseStorageTest
     {
-        private const string ConnectionString = "UseDevelopmentStorage=true;";
-
         private const string ContainerName = "band25";
-        
-        [Fact]
+
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void ListItemsReturnsFolders()
         {
             var store = new AzureKeyValueStore(ConnectionString,ContainerName + Guid.NewGuid().ToString("N"));

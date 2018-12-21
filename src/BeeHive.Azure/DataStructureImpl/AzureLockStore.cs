@@ -18,13 +18,13 @@ namespace BeeHive.Azure
      
         private CloudBlobContainer _containerReference;
         private BlobSource _source;
+        private bool _started = false;
 
         const int MaxLockPossibleMilliseconds = 30*1000;
 
         public AzureLockStore(BlobSource source)
         {
             _source = source;
-            GetClientAndReference();
         }
 
         private void GetClientAndReference()
@@ -32,9 +32,16 @@ namespace BeeHive.Azure
             var account = CloudStorageAccount.Parse(_source.ConnectionString);
             var client = account.CreateCloudBlobClient();
             _containerReference = client.GetContainerReference(_source.ContainerName);
-            _containerReference.CreateIfNotExists();
+            _containerReference.CreateIfNotExistsAsync();
         }
 
+        private async Task EnsureExists()
+        {
+            // cannot do this in lock :/
+            if (!_started)
+                GetClientAndReference();
+            _started = true;
+        }
 
         public async Task<bool> TryLockAsync(
             LockToken token, 
@@ -43,6 +50,8 @@ namespace BeeHive.Azure
             int timeoutMilliseconds = 15000,
             int aquireTimeoutMilliseconds = 15000)
         {
+            await EnsureExists();
+
             if (tries < 1)
                 tries = 1;
 
@@ -55,7 +64,7 @@ namespace BeeHive.Azure
                     {
                         await blob.AcquireLeaseAsync(
                             TimeSpan.FromMilliseconds(Math.Min(MaxLockPossibleMilliseconds, timeoutMilliseconds)),
-                            token.TokenId.ToString("N"), cancellationTokenSource.Token);
+                            token.TokenId.ToString("N"), null, null, null, cancellationTokenSource.Token);
                     }
 
                     if (timeoutMilliseconds > MaxLockPossibleMilliseconds)
@@ -85,6 +94,7 @@ namespace BeeHive.Azure
 
         private async Task KeepExtendingLeaseAsync(Func<Task> extendLeaseAsync, TimeSpan howLong, CancellationToken cancellationToken, string resource)
         {
+            await EnsureExists();
 
             var thisLong = new TimeSpan(2*howLong.Ticks/3); // RATM: how long? This long, what you reap is what you sew!
             await Task.Delay(thisLong, cancellationToken);
@@ -111,6 +121,8 @@ namespace BeeHive.Azure
 
         public async Task ReleaseLockAsync(LockToken token)
         {
+            await EnsureExists();
+
             var blob = await GetBlobAsync(token.ResourceId);
             await blob.ReleaseLeaseAsync(AccessCondition.GenerateLeaseCondition(token.TokenId.ToString("N")));
             token.RenewCancellation.Cancel();

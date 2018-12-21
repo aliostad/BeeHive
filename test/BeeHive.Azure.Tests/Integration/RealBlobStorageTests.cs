@@ -19,7 +19,6 @@ namespace BeeHive.Azure.Tests.Integration
 
     public class RealBlobStorageTests
     {
-        private const string EnvVarNameForCn = "azure_storage_connection_string";
         private const string ContainerName = "beehivetest";
         private const string FileName9 = "ha/hooo/vi/voo/safa9.bin";
         private const string FileName2 = "ha/hooo/vi/voo/safa2.bin";
@@ -30,16 +29,11 @@ namespace BeeHive.Azure.Tests.Integration
 
         public RealBlobStorageTests()
         {
-            var cn = Environment.GetEnvironmentVariable(EnvVarNameForCn, EnvironmentVariableTarget.User);
-            if (string.IsNullOrEmpty(cn))
-            {
-                throw new InvalidOperationException("PLease set azure_storage_connection_string env var.");
-            }
-
+            var cn = Environment.GetEnvironmentVariable(EnvVars.ConnectionStrings.AzureStorage);
             _cn = cn;
         }
 
-        [Theory]
+        [EnvVarIgnoreTheory(EnvVars.ConnectionStrings.AzureStorage)]
         [InlineData(FileName1)]
         [InlineData(FileName2)]
         [InlineData(FileName4)]
@@ -54,7 +48,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Equal( ((CloudBlockBlob)blob.UnderlyingBlob).Properties.Length, stream.Length);
         }
 
-        [Theory]
+        [EnvVarIgnoreTheory(EnvVars.ConnectionStrings.AzureStorage)]
         [InlineData(FileName1, 150 * 1000)]
         [InlineData(FileName2, 374 * 1001)]
         [InlineData(FileName4, 659 * 997)]

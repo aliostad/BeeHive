@@ -11,7 +11,7 @@ using BeeHive.Demo.PrismoEcommerce.WorkflowState;
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
 
-    [ActorDescription("ItemOutOfStockForOrder")]
+    [ActorDescription("ItemOutOfStockForOrder-ItemOutOfStockForOrder")]
     public class ItemOutOfStockForOrderWorkflowActor : IProcessorActor
     {
         private ICounterStore _counterStore;

@@ -47,7 +47,7 @@ namespace BeeHive.Sample.NewsFeedKeywordNotification.Worker
             {
                 Body = new MemoryStream(Encoding.UTF8.GetBytes("http://feeds.bbci.co.uk/news/rss.xml")),
                 Id = "newsFeeds.txt",
-                LastModofied = DateTimeOffset.Now
+                LastModified = DateTimeOffset.Now
             };
             keyValueStore.UpsertAsync(blob);
 

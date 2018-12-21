@@ -11,7 +11,7 @@ using BeeHive.Demo.PrismoEcommerce.Events;
 namespace BeeHive.Demo.PrismoEcommerce.Actors
 {
 
-    [ActorDescription("OrderItemsNotYetAccountedFor")]
+    [ActorDescription("OrderItemsNotYetAccountedFor-OrderItemsNotYetAccountedFor")]
     public class OrderItemInventoryActor : IProcessorActor
     {
         private ICounterStore _inventoryStore;

@@ -10,13 +10,12 @@ using Xunit;
 
 namespace BeeHive.Azure.Tests.Integration
 {
-    public class AzureKeyValueStoreTests
+    public class AzureKeyValueStoreTests : BaseStorageTest
     {
 
-        private const string ConnectionString = "UseDevelopmentStorage=true;";
         private const string ContainerName = "band25";
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void ExistsReturnFalseForNonExistent()
         {
             var store = new AzureKeyValueStore(ConnectionString, ContainerName);
@@ -25,7 +24,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.False(exists);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanInsertAndExistsReturnsTrue()
         {
             var store = new AzureKeyValueStore(ConnectionString, ContainerName);
@@ -38,7 +37,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.True(store.ExistsAsync(simpleBlob.Id).Result);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanInsertAndGetBackMetadat()
         {
             var store = new AzureKeyValueStore(ConnectionString, ContainerName);

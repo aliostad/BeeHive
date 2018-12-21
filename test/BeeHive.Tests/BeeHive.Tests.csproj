@@ -1,92 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0FC64A3D-D3CB-44A1-8186-FD3FAF7A7746}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BeeHive.Tests</RootNamespace>
-    <AssemblyName>BeeHive.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Castle.Core.3.2.2\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=3.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Castle.Windsor.3.2.1\lib\net45\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="xunit">
-      <HintPath>..\..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.extensions">
-      <HintPath>..\..\packages\xunit.extensions.1.9.2\lib\net20\xunit.extensions.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AppDomainExplorerActorConfigurationTests.cs" />
-    <Compile Include="Configuration\FluentTests.cs" />
-    <Compile Include="Configuration\StartupSetupTests.cs" />
-    <Compile Include="DataStructures\IConcurrencyAwareTests.cs" />
-    <Compile Include="Data\DummyActor.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueueNameTests.cs" />
-    <Compile Include="Scheduling\PulserTests.cs" />
-    <Compile Include="TraceTests.cs" />
-    <Compile Include="WhoCalledTraceTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj">
-      <Project>{6ee378ae-c8c0-44b2-aa9a-711faada4e9c}</Project>
-      <Name>BeeHive.DataStructures</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj">
-      <Project>{3e0f3470-eae7-4a78-9822-52f57dcdde9b}</Project>
-      <Name>BeeHive</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+		<TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp2.0</TargetFrameworks>		
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="xunit" version="2.3.1"  />
+		<PackageReference Include="xunit.abstractions" version="2.0.1"  />
+		<PackageReference Include="xunit.analyzers" version="0.7.0" />
+		<PackageReference Include="xunit.assert" version="2.3.1" />
+		<PackageReference Include="xunit.core" version="2.3.1"  />
+		<PackageReference Include="xunit.extensibility.core" version="2.3.1" />
+		<PackageReference Include="xunit.extensibility.execution" version="2.3.1" />
+		<PackageReference Include="xunit.runner.console" version="2.3.1" />
+		<PackageReference Include="xunit.runner.visualstudio" version="2.3.1" />		
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj" />
+		<ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj" />
+	</ItemGroup>
 </Project>

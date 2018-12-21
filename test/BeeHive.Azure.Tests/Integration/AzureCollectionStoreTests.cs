@@ -8,11 +8,9 @@ using Xunit;
 
 namespace BeeHive.Azure.Tests.Integration
 {
-    public class AzureCollectionStoreTests
+    public class AzureCollectionStoreTests : BaseStorageTest
     {
-        private const string ConnectionString = "UseDevelopmentStorage=true;";
-
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanStoreAndRetrieve()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
@@ -28,7 +26,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Equal(id, t.Id);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanStoreAndRemoved()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
@@ -45,7 +43,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Throws<AggregateException>(() => store.GetAsync(id).Result);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanBeUpdated()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
@@ -63,7 +61,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Equal("The Fall", t2.Name);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CannotBeInsertedTwice()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
@@ -77,7 +75,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Throws<AggregateException>(() => store.InsertAsync(t).Wait());
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CanBeUpdatedForConcurrencyAware()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
@@ -97,7 +95,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Equal("The Fall", t2.Name);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void ETagsProvidedWillBeUsedAndStored()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
@@ -114,7 +112,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Equal(t.ETag, entity.ETag);
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CannotBeUpdatedForConcurrencyAwareWhenETagInConflict()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
@@ -135,7 +133,7 @@ namespace BeeHive.Azure.Tests.Integration
             Assert.Throws<AggregateException>(() => store.UpsertAsync(t).Wait());
         }
 
-        [Fact]
+        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
         public void CannotBeDeletedForConcurrencyAwareWhenETagInConflict()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);

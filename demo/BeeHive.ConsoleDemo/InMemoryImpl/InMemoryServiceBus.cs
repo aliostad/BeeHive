@@ -15,6 +15,8 @@ namespace BeeHive.ConsoleDemo
         private ConcurrentDictionary<string, InMemoryQueue<Event>> 
             _queues = new ConcurrentDictionary<string, InMemoryQueue<Event>>();
 
+        public bool IsEventDriven => false;
+
         public Task PushAsync(Event message)
         {
 
@@ -106,7 +108,7 @@ namespace BeeHive.ConsoleDemo
         {
             return Task.Run(() =>
             {
-                var q = _queues.GetOrAdd(topicName, new InMemoryQueue<Event>(topicName));
+                var q = _queues.GetOrAdd(topicName, new InMemoryQueue<Event>(subscriptionName));
                 q.TryAddSubscription(topicName);
             });
         }
@@ -132,6 +134,48 @@ namespace BeeHive.ConsoleDemo
                     CreateQueueAsync(name.TopicName, name.SubscriptionName);
             });
            
+        }
+
+        public Task CreateQueueAsync(QueueName name)
+        {
+            if (name.IsSimpleQueue)
+            {
+                return CreateQueueAsync(name.TopicName);
+            }
+            else
+            {
+                return CreateQueueAsync(name.TopicName, name.SubscriptionName);
+            }
+        }
+
+        public Task DeleteQueueAsync(QueueName name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> QueueExistsAsync(QueueName name)
+        {
+            return Task.FromResult(_queues.ContainsKey(name.TopicName));
+        }
+
+        public Task DeferAsync(Event message, TimeSpan howLong)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PollerResult<Event>> NextAsync(QueueName name)
+        {
+            return NextAsync(name.ToString());
+        }
+
+        public void RegisterHandler(Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
+        {
+            throw new NotSupportedException();
+        }
+
+        public async Task KeepExtendingLeaseAsync(Event message, TimeSpan howLong, CancellationToken cancellationToken)
+        {
+            // OK
         }
     }
 
@@ -214,6 +258,8 @@ namespace BeeHive.ConsoleDemo
             set { _name = value; }
         }
 
+        public bool IsEventDriven => throw new NotImplementedException();
+
         internal void AcceptMessage(T message)
         {
             _messages.Enqueue(message);
@@ -245,7 +291,26 @@ namespace BeeHive.ConsoleDemo
                     _leases.Remove(message);
             });
         }
-    
+
+        public Task DeferAsync(T message, TimeSpan howLong)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PollerResult<T>> NextAsync(QueueName name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RegisterHandler(Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task KeepExtendingLeaseAsync(T message, TimeSpan howLong, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

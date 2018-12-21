@@ -32,9 +32,10 @@ namespace BeeHive.Tests.Scheduling
             
                 events.ToList().ForEach(e =>
                 {
-                    if (e.EventType == "ev1")
+                    Console.WriteLine(e.EventType);
+                    if (e.EventType == "ev1-")
                         ev1GeneratedCount++; 
-                    if (e.EventType == "ev2")
+                    if (e.EventType == "ev2-")
                         ev2GeneratedCount++;
                     
                 });

@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+	<Description>A Reactive Cloud Actor library/mini-framework</Description>  
+    <Authors>Ali Kheyrollahi</Authors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>3.0.0-beta</Version>
+	<PackageProjectUrl>https://github.com/aliostad/BeeHive/</PackageProjectUrl>
+	<PackageLicenseUrl>https://github.com/aliostad/BeeHive/blob/master/LICENSE.txt</PackageLicenseUrl>	
+  </PropertyGroup>
+</Project>
