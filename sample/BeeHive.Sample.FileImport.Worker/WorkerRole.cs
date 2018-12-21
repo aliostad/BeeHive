@@ -51,7 +51,7 @@ namespace BeeHive.Sample.FileImport.Worker
                 Body = Assembly.GetExecutingAssembly()
                     .GetManifestResourceStream("BeeHive.Sample.FileImport.Worker.Data.SampleData.txt"),
                 Id = "FileDrop/ImportFiles/SampleData.txt",
-                LastModofied = DateTimeOffset.Now
+                LastModified = DateTimeOffset.Now
             };
             keyValueStore.UpsertAsync(blob);
 
@@ -59,10 +59,7 @@ namespace BeeHive.Sample.FileImport.Worker
             // because no actor registered against it
             var q = container.Resolve<IEventQueueOperator>();
 
-            q.CreateQueueAsync("NewIndexUpserted").Wait();
-
-
-
+            q.CreateQueueAsync(QueueName.FromSimpleQueueName("NewIndexUpserted")).Wait();
         }
 
         public override void Run()
