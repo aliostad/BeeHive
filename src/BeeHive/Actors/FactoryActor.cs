@@ -43,24 +43,12 @@ namespace BeeHive.Actors
                 {
 
                     // this is NOT supposed to be awaited upon!!
-                     _queueOperator.KeepExtendingLeaseAsync(result.PollingResult, TimeSpan.FromSeconds(30),
+                     if(!_queueOperator.IsEventDriven)
+                        _queueOperator.KeepExtendingLeaseAsync(result.PollingResult, TimeSpan.FromSeconds(30),
                         cancellationTokenSource.Token).SafeObserve();
 
-                    // Would have been great to make this fixed memory foot-print with real iterable vs. list
-                    var events = (await actor.ProcessAsync(result.PollingResult)).ToArray(); // the enumerable has to be turned into a list anyway. it does further on
-                    var groups = events.GroupBy(x=>x.QueueName);
-
-                    foreach (var gr in groups)
-                    {
-                        await _queueOperator.PushBatchAsync(gr);
-                        TryDisposeMessages(gr);
-                    }
-
-                    cancellationTokenSource.Cancel();
-                    await _queueOperator.CommitAsync(result.PollingResult);
-
+                    await ProcessEvent(actor, result.PollingResult, _queueOperator);
                     TheTrace.TraceInformation("Processing succeeded. Id: {0} Queue: {1} " , result.PollingResult.Id, _actorDescriptor.SourceQueueName);
-
                 }
                 catch (Exception exception)
                 {
@@ -81,7 +69,22 @@ namespace BeeHive.Actors
             return result.IsSuccessful;
         }
 
-        private void TryDisposeMessages(IEnumerable<Event> es)
+        internal async static Task ProcessEvent(IProcessorActor actor, Event ev, IEventQueueOperator queueOperator)
+        {
+            var events = (await actor.ProcessAsync(ev)).ToArray(); // the enumerable has to be turned into a list anyway. it does further on
+            var groups = events.GroupBy(x => x.QueueName);
+
+            foreach (var gr in groups)
+            {
+                await queueOperator.PushBatchAsync(gr);
+                TryDisposeMessages(gr);
+            }
+
+            await queueOperator.CommitAsync(ev);
+        }
+
+
+        private static void TryDisposeMessages(IEnumerable<Event> es)
         {
             foreach (var e in es)
             {
@@ -89,7 +92,7 @@ namespace BeeHive.Actors
             }
         }
 
-        private void TryDisposeMessage(Event e)
+        private static void TryDisposeMessage(Event e)
         {
             e.TryDisposeUnderlying();
         }
