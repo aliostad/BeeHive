@@ -48,6 +48,10 @@ namespace BeeHive.Actors
                         cancellationTokenSource.Token).SafeObserve();
 
                     await ProcessEvent(actor, result.PollingResult, _queueOperator);
+
+                    if (!_queueOperator.IsEventDriven)
+                        await _queueOperator.CommitAsync(result.PollingResult);
+
                     TheTrace.TraceInformation("Processing succeeded. Id: {0} Queue: {1} " , result.PollingResult.Id, _actorDescriptor.SourceQueueName);
                 }
                 catch (Exception exception)
@@ -79,8 +83,6 @@ namespace BeeHive.Actors
                 await queueOperator.PushBatchAsync(gr);
                 TryDisposeMessages(gr);
             }
-
-            await queueOperator.CommitAsync(ev);
         }
 
 

@@ -17,7 +17,7 @@ namespace BeeHive.Azure.Tests.Integration
             ConnectionString = Environment.GetEnvironmentVariable(EnvVars.ConnectionStrings.ServiceBus);
         }
 
-        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
+        [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicCreateAndExists()
         {
             var topicName = Guid.NewGuid().ToString("N");
@@ -33,7 +33,7 @@ namespace BeeHive.Azure.Tests.Integration
 
         }
 
-        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
+        [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicAndSubscriptionCreateAndExists()
         {
             var topicName = Guid.NewGuid().ToString("N");
@@ -56,7 +56,7 @@ namespace BeeHive.Azure.Tests.Integration
 
         }
 
-        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
+        [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicAndSubscriptionCreateAndSent()
         {
             var topicName = Guid.NewGuid().ToString("N");
@@ -80,7 +80,7 @@ namespace BeeHive.Azure.Tests.Integration
 
         }
 
-        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
+        [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
         public void TopicAndSubscriptionCreateAndSentBatch()
         {
             var topicName = Guid.NewGuid().ToString("N");
@@ -106,10 +106,11 @@ namespace BeeHive.Azure.Tests.Integration
             serviceBusOperator.DeleteQueueAsync(queueName).Wait();
             serviceBusOperator.DeleteQueueAsync(topicQueueName).Wait();
 
-
         }
 
-        [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.ServiceBus)]
+
+
+        [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
         public void NeverEverCreatesAMessageBiggerThan256KB()
         {
             const int BufferSize = 10*1024;
@@ -133,6 +134,8 @@ namespace BeeHive.Azure.Tests.Integration
 
             Assert.Equal(NumberOfMessages, batchUp.Sum(x => x.Count));
         }
+
+
 
         class FatMessage
         {
