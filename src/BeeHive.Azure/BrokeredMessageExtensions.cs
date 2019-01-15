@@ -26,6 +26,7 @@ namespace BeeHive.Azure
             if (!body.StartsWith("{")) // this is from previous version of ServiceBus which serialises
             {
                 body = body.Substring(body.IndexOf('{'));
+                body = body.Substring(0, body.LastIndexOf('}') + 1);
             }
 
             return
