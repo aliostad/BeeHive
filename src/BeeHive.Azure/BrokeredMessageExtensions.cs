@@ -22,10 +22,16 @@ namespace BeeHive.Azure
             string eventType,
             string queueName)
         {
+            var body = Encoding.UTF8.GetString(message.Body);
+            if (!body.StartsWith("{")) // this is from previous version of ServiceBus which serialises
+            {
+                body = body.Substring(body.IndexOf('{'));
+            }
+
             return
                 new Event()
                 {
-                    Body = Encoding.UTF8.GetString(message.Body),
+                    Body = body,
                     ContentType = message.ContentType,
                     EventType = eventType,
                     QueueName = queueName,
@@ -35,17 +41,8 @@ namespace BeeHive.Azure
 
         public static Event ToEvent(this Message message,
            QueueName queueName)
-            {
-            return
-                new Event()
-                {
-                    Body = Encoding.UTF8.GetString(message.Body), 
-                    ContentType = message.ContentType,
-                    EventType = queueName.TopicName,
-                    QueueName = queueName.ToString(),
-                    UnderlyingMessage = message,
-                    Timestamp = message.SystemProperties.EnqueuedTimeUtc
-                };
+        {
+            return ToEvent(message, queueName.TopicName, queueName.ToString());
         }
 
         public static Message ToMessage(this Event @event)
