@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.Azure.ServiceBus;
 
 namespace BeeHive.Azure
 {
     public static class BrokeredMessageExtensions
     {
+        private static readonly DataContractSerializer _oldSerialiser = new DataContractSerializer(typeof(string));
+
         /// <summary>
         /// Creates an event.
         /// 
@@ -22,11 +27,16 @@ namespace BeeHive.Azure
             string eventType,
             string queueName)
         {
-            var body = Encoding.UTF8.GetString(message.Body);
-            if (!body.StartsWith("{")) // this is from previous version of ServiceBus which serialises
+            string body = null;
+            if (message.Body[0] == Convert.ToChar('{')) // this is from previous version of ServiceBus which serialises
             {
-                body = body.Substring(body.IndexOf('{'));
-                body = body.Substring(0, body.LastIndexOf('}') + 1);
+                var ms = new MemoryStream(message.Body);
+                var reader = XmlDictionaryReader.CreateBinaryReader(ms, XmlDictionaryReaderQuotas.Max);
+                body = (string)_oldSerialiser.ReadObject(reader);
+            }
+            else
+            {
+                body = Encoding.UTF8.GetString(message.Body);
             }
 
             return
