@@ -31,10 +31,13 @@ namespace BeeHive
         /// <returns></returns>
         Task<PollerResult<T>> NextAsync(QueueName name);
 
+
         /// <summary>
         /// Event-driven pipe for registering handler
         /// </summary>
-        void RegisterHandler(Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor);
+        /// <param name="handler"></param>
+        /// <param name="descriptor"></param>
+        void RegisterHandler(Func<Event, IEventQueueOperator, Task> handler, ActorDescriptor descriptor);
 
         /// <summary>
         /// Is required when NextAsync is used and there is risk of operation taking more than lease time

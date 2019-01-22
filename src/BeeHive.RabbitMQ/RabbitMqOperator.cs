@@ -199,9 +199,9 @@ namespace BeeHive.RabbitMQ
         public Task<bool> QueueExistsAsync(QueueName name)
         {
             return Task.FromResult(false);
-        }
+        }      
 
-        public void RegisterHandler(Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
+        public void RegisterHandler(Func<Event, IEventQueueOperator, Task> handler, ActorDescriptor descriptor)
         {
             throw new NotSupportedException("Is not event-driven");
         }

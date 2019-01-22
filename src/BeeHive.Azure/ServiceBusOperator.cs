@@ -211,14 +211,13 @@ namespace BeeHive.Azure
         }
 
         private async Task ProcessMessage(Message m, CancellationToken cancellationToken,
-            Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
+            Func<Event, IEventQueueOperator, Task> handler, ActorDescriptor descriptor)
         {
             var name = new QueueName(descriptor.SourceQueueName);
-            var messages = await handler(m.ToEvent(name));
-            await PushBatchAsync(messages);
+            await handler(m.ToEvent(name), this);
         }
 
-        public void RegisterHandler(Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
+        public void RegisterHandler(Func<Event, IEventQueueOperator, Task> handler, ActorDescriptor descriptor)
         {
             var name = new QueueName(descriptor.SourceQueueName);
             Func<Message, CancellationToken, Task> h = (Message m, CancellationToken token) => ProcessMessage(m, token, handler, descriptor);
@@ -239,6 +238,7 @@ namespace BeeHive.Azure
                 var client = _clientProvider.GetSubscriptionClient(name);
                 client.RegisterMessageHandler(h, options);
             }
+
         }
 
         internal class ClientProvider

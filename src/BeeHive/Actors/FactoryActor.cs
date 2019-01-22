@@ -27,9 +27,12 @@ namespace BeeHive.Actors
 
         }
 
-
+        // only for non-event driven
         private async Task<bool> Process(CancellationToken cancellationToken)
         {
+            if (_queueOperator.IsEventDriven)
+                throw new InvalidOperationException("Operator is event driven but used for NextAsync");
+
             var result = await _queueOperator.NextAsync(
                 new QueueName(_actorDescriptor.SourceQueueName));
 
@@ -43,14 +46,12 @@ namespace BeeHive.Actors
                 {
 
                     // this is NOT supposed to be awaited upon!!
-                     if(!_queueOperator.IsEventDriven)
-                        _queueOperator.KeepExtendingLeaseAsync(result.PollingResult, TimeSpan.FromSeconds(30),
+                    _queueOperator.KeepExtendingLeaseAsync(result.PollingResult, TimeSpan.FromSeconds(30),
                         cancellationTokenSource.Token).SafeObserve();
 
                     await ProcessEvent(actor, result.PollingResult, _queueOperator);
 
-                    if (!_queueOperator.IsEventDriven)
-                        await _queueOperator.CommitAsync(result.PollingResult);
+                    await _queueOperator.CommitAsync(result.PollingResult);
 
                     TheTrace.TraceInformation("Processing succeeded. Id: {0} Queue: {1} " , result.PollingResult.Id, _actorDescriptor.SourceQueueName);
                 }
@@ -101,10 +102,20 @@ namespace BeeHive.Actors
 
         public void Start()
         {
-            if (_poller == null)
-                throw new InvalidOperationException("You need to call Setup first.");
-
-            _poller.Start();
+            if (_poller != null)
+                _poller.Start();
+            else if(_queueOperator.IsEventDriven)
+            {
+                _queueOperator.RegisterHandler(async (e, oper) =>
+               {
+                   var actor = (IProcessorActor)_serviceLocator.GetService(_actorDescriptor.ActorType);
+                   await ProcessEvent(actor, e, oper);
+               }, _actorDescriptor);
+            }
+            else
+            {
+                throw new InvalidOperationException("You need to call setup first!");
+            }
         }
 
         public void Stop()
@@ -123,7 +134,10 @@ namespace BeeHive.Actors
                 throw new InvalidOperationException("Cannot call Setup twice.");
 
             _actorDescriptor = descriptor;
-            _poller = new AsyncPoller(descriptor.Interval, (Func<CancellationToken, Task<bool>>)Process);
+            if (!_queueOperator.IsEventDriven)
+            {
+                _poller = new AsyncPoller(descriptor.Interval, (Func<CancellationToken, Task<bool>>)Process);
+            }
         }
     }
 }
