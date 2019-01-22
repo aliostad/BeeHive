@@ -28,7 +28,7 @@ namespace BeeHive.Azure
             string queueName)
         {
             string body = null;
-            if (message.Body[0] != Convert.ToChar('{')) // this is from previous version of ServiceBus which serialises
+            if (message.Body[0] == Convert.ToChar('@')) // this is from previous version of ServiceBus which serialises
             {
                 var ms = new MemoryStream(message.Body);
                 var reader = XmlDictionaryReader.CreateBinaryReader(ms, XmlDictionaryReaderQuotas.Max);
