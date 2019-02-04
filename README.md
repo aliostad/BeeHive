@@ -21,7 +21,7 @@ BeeHive makes it rediculously easy to build highly decoupled and evolvable event
 
 For theoretical discussions, please refer to the [infoq article](http://www.infoq.com/articles/reactive-cloud-actors).
 
-### Version 3.0.0 Vreaking Changes and Notes
+### Version 3.0.0 Breaking Changes and Notes
 Version 3.0.0 features and changes include:
  - Supporting cross-platform development with .NET Core as well as supporting .NET Framework 4.5.2+
  - Upgrading all Azure dependencies (Storage and ServiceBus) to their latest version which removes some complexity and code from BeeHive since some features were not available in previous versions. For example, Service Bus now supports a polling queue/topic reader and keeps extending the lease, all of which were done as part of BeeHive itself.
