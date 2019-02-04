@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-	<Summary>Helper for running BeeHive actors in Azure Functions</Summary>
-	<PackageId></PackageId>
+    <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netstandard2.0</TargetFrameworks>		
+	  <Summary>Helper for running BeeHive actors in Azure Functions</Summary>
+	  <PackageId></PackageId>
   </PropertyGroup>
 
   <ItemGroup>

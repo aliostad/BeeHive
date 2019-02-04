@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-		<TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp2.0</TargetFrameworks>		
+		<TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netstandard2.0</TargetFrameworks>		
 		<Summary>Azure Implementation for BeeHive</Summary>
 		<AssemblyName>BeeHive.Azure</AssemblyName>
 		<PackageId></PackageId>
@@ -12,7 +12,7 @@
 		<PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.2.0" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-		<PackageReference Include="Microsoft.Azure.ConfigurationManager" Version="3.2.3" />
+		<PackageReference Include="Microsoft.Azure.ConfigurationManager" Version="4.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />

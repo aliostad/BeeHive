@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-		<TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp2.0</TargetFrameworks>		
+		<TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netstandard2.0</TargetFrameworks>		
 		<Summary>Data Structures for BeeHive Actor Model mini-Library</Summary>
 		<AssemblyName>BeeHive.DataStructures</AssemblyName>
 		<PackageId></PackageId>
