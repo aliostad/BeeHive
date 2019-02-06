@@ -23,10 +23,9 @@ For theoretical discussions, please refer to the [infoq article](http://www.info
 
 ### Version 3.0.0 Breaking Changes and Notes
 Version 3.0.0 features and changes include:
- - Supporting cross-platform development with .NET Core as well as supporting .NET Framework 4.5.2+
+ - Supporting cross-platform development with .NET Core as well as supporting .NET Framework 4.5.2+ (`BeeHive.Azure` package depends on .NET 4.6.1+)
  - Upgrading all Azure dependencies (Storage and ServiceBus) to their latest version which removes some complexity and code from BeeHive since some features were not available in previous versions. For example, Service Bus now supports a polling queue/topic reader and keeps extending the lease, all of which were done as part of BeeHive itself.
- - There is now an Azure Function helper library which allows you to turn your actors to Azure Functions
-
+ - There is now an Azure Function helper library which allows you to turn your actors to Azure Functions. This is particularly useful to move your existing actors to Azure Functions, but can equally be used for fresh projects. For more info on BeeHive and Azure Functions please see below.
 
 ## Getting Started
 
@@ -44,7 +43,7 @@ BeeHive works on a reactive event-based model. Instead of building components th
 
 BeeHive **Pulsers** do exactly that. On regular intervals, they are woken up to fire off their events. Simplest of pulsers, are assembly attribute ones:
 
-```
+``` csharp
 [assembly: SimpleAutoPulserDescription("NewsPulse", 5 * 60)]
 
 ```
@@ -55,7 +54,7 @@ The code above sets up a pulser that every 5 minutes sends an event of type `New
 
 Next we set up an actor to look up a list of feeds (one per each line) and send an event per each feed. We have stored this list in a blob storage which is abstracted as `IKeyValueStore` in BeeHive.
 
-``` c#
+``` csharp
 [ActorDescription("NewsPulse-Capture")]
 public class NewsPulseActor : IProcessorActor
 {
@@ -90,7 +89,7 @@ So we are publishing `NewsFeedPulsed` event for each news feed. When we construc
 
 Now we will be consuming these events in the next actor in the chain. `NewsFeedPulseActor` will subscribe to `NewsFeedPulsed` event and will use the URL to get the lastest RSS feed and look for latest news. To prevent from duplicate notifications, we need to know what was the most recent tem we checked last time. We will store this *offset* in a storage. For this use case, we choose `ICollectionStore<T>` which its Azure implementation uses Azure Table Storage.
 
-```
+``` csharp
 [ActorDescription("NewsFeedPulsed-Capture")]
 public class NewsFeedPulseActor : IProcessorActor
 {
@@ -130,7 +129,7 @@ At this stage we need to subscribe to `NewsItemCaptured` and check the content f
 
 So for the sake of simplicity, let's hardcode the keyword but it could have been equally loaded from a storage or a file - as we did with the list of feeds.
 
-```
+``` csharp
 [ActorDescription("NewsItemCaptured-KeywordCheck")]
 public class NewsItemKeywordActor : IProcessorActor
 {
@@ -143,7 +142,7 @@ public class NewsItemKeywordActor : IProcessorActor
         {
             return new Event[]
             {
-                new Event(new NewsItemContainingKeywordIentified()
+                new Event(new NewsItemContainingKeywordIdentified()
                 {
                     Item = newsItemCaptured.Item,
                     Keyword = Keyword
@@ -155,28 +154,30 @@ public class NewsItemKeywordActor : IProcessorActor
 }
 
 ```
-Now we can have several actors listening for `NewsItemContainingKeywordIentified` and send different notifications, here we implement a simple Trace-based one:
+Now we can have several actors listening for `NewsItemContainingKeywordIdentified` and send different notifications, here we implement a simple Trace-based one:
 
-```
-    [ActorDescription("NewsItemContainingKeywordIentified-TraceNotification")]
+``` csharp
+[ActorDescription("NewsItemContainingKeywordIdentified-TraceNotification")]
 public class TraceNotificationActor : IProcessorActor
 {
   public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
   {
-    var keywordIentified = evnt.GetBody<NewsItemContainingKeywordIentified>();
+    var keywordIdentified = evnt.GetBody<NewsItemContainingKeywordIdentified>();
     Trace.TraceInformation("Found {0} in {1}",
-        keywordIentified.Keyword, keywordIentified.Item.Links[0].Uri);
+        keywordIdentified.Keyword, keywordIdentified.Item.Links[0].Uri);
     return new Event[0];
   }
 }
 ```
 ### Setting up the worker role
 
+Using a Cloud Service worker role has been the standard means to host compute for BeeHive workloads. Having said that, BeeHive can be hosted in any compute model (including Service Fabric or even non-cloud) and also has built-in support for Azure Functions - see below.
+
 If you have an Azure account, you need a storage account, Azure Service Bus and a worker role (even an *Extra Small* instance would suffice). If not, you can use development emulators although for the Service Bus you need to use Service Bus for windows. Just bear in mind, with local emulators and Service Bus for Windows, you have to use special versions of Azure SDK - latest versions usually do not work.
 
 We can get a list of assembly pulsers by the code below:
 
-```
+``` csharp
 _pulsers = Pulsers.FromAssembly(Assembly.GetExecutingAssembly())
     .ToList();
 ```
@@ -201,4 +202,48 @@ BeeHive by default looks for configuration values (both app.config and Azure con
   <add key="Beehive.ActorParallelism.MyActor" value="5" />
 ```
 
+### Using BeeHive with Azure Functions
+BeeHive provides an intuitive and unified programming model to build event-driven applications. With Azure Cloud Services now considered legacy and availability of Azure Functions as a cheaper compute model, it is only natural that BeeHive should support running actors in Azure Functions.
 
+Now there is a question, why would you even need to use BeeHive? Well, reality is you don't. Having said that, even before Azure Functions, benefits of BeeHive was to provide a consistent programming model and abstractions for common distributed computing primitives such as Queues, Topics, Key Value stores, Collections, etc - nothing would prevent you to simply build directly on top of cloud features providing these primitives. And this has not changed with Azure Functions.
+
+So if you have existing BeeHive actors to move to Azure Functions - or equally would like to build new system using BeeHive and Azure Functions - you simply design your actor as usual and create a Service Bus Azure Function as below using tongue-in-cheek `SmoothOperatah` class to *direct your calls* to the *actor*:
+
+``` csharp
+[FunctionName("<name your function>")]
+public static async Task My_Function(
+    [ServiceBusTrigger("<topic>", "<subscription>", Connection = "<name of the setting for service bus connection>")] Message msg,
+    ILogger log)
+{
+    var actor = new MyBeeHiveActor();
+    await SmoothOperatah.DirectCallToActor(actor, 
+      new QueueName("<topic>-<subscription>"), 
+      msg, 
+      new ServiceBusOperator(Environment.GetEnvironmentVariable("<name of the setting for service bus connection>")));
+}      
+```
+
+Since in Azure Function all settings are loaded as environment variables, the class below sometimes could be useful if you had used Azure Configuration Management in the Cloud Service - you can replace it with below:
+
+``` csharp
+class EnvVarConfigProvider : IConfigurationValueProvider
+{
+    public string GetValue(string name)
+    {
+        return Environment.GetEnvironmentVariable(name);
+    }
+}
+```
+
+As for pulsers, you simply create a `TimerTrigger` and send a message to the topic - this is essentially what a pulser does - something like below:
+
+``` csharp
+[FunctionName("PulserExample")] // fires every 10 minutes
+public async static Task My_Pulser_Function([TimerTrigger("0 1/10 * * * *")]TimerInfo info, ILogger log)
+{
+    await GetOperator().PushAsync(new Event("this content does not matter")
+    {
+        QueueName = QueueName.FromTopicName("<topic name>").ToString()
+    });
+}
+```
