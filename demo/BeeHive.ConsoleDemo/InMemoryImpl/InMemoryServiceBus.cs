@@ -35,16 +35,15 @@ namespace BeeHive.ConsoleDemo
             }
         }
 
-        public Task<PollerResult<Event>> NextAsync(string queueName)
+        public Task<PollerResult<Event>> NextAsync(QueueName name)
         {
-            var name = new QueueName(queueName);
             var q = GetQueue(name);
 
-            return q.Subscriptions[name.SubscriptionName].NextAsync(name.SubscriptionName)
+            return q.Subscriptions[name.SubscriptionName].NextAsync(name)
                 .ContinueWith((task) =>
                 {
                     if (!task.IsFaulted && task.Result.IsSuccessful)
-                        task.Result.PollingResult.QueueName = queueName;
+                        task.Result.PollingResult.QueueName = name.ToString();
                     else
                     {
                         
@@ -163,19 +162,14 @@ namespace BeeHive.ConsoleDemo
             throw new NotImplementedException();
         }
 
-        public Task<PollerResult<Event>> NextAsync(QueueName name)
-        {
-            return NextAsync(name.ToString());
-        }
-
-        public void RegisterHandler(Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
-        {
-            throw new NotSupportedException();
-        }
-
         public async Task KeepExtendingLeaseAsync(Event message, TimeSpan howLong, CancellationToken cancellationToken)
         {
             // OK
+        }
+
+        public void RegisterHandler(Func<Event, IEventQueueOperator, Task> handler, ActorDescriptor descriptor)
+        {
+            throw new NotSupportedException();
         }
     }
 
@@ -258,7 +252,7 @@ namespace BeeHive.ConsoleDemo
             set { _name = value; }
         }
 
-        public bool IsEventDriven => throw new NotImplementedException();
+        public bool IsEventDriven => false;
 
         internal void AcceptMessage(T message)
         {
@@ -267,7 +261,7 @@ namespace BeeHive.ConsoleDemo
                 _cancellationTokenSource.Cancel();
         }
 
-        public async Task<PollerResult<T>> NextAsync(string queueName)
+        public async Task<PollerResult<T>> NextAsync(QueueName name)
         {
             T message;
             bool success = _messages.TryDequeue(out message);
@@ -294,22 +288,22 @@ namespace BeeHive.ConsoleDemo
 
         public Task DeferAsync(T message, TimeSpan howLong)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<PollerResult<T>> NextAsync(QueueName name)
-        {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void RegisterHandler(Func<Event, Task<IEnumerable<Event>>> handler, ActorDescriptor descriptor)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Task KeepExtendingLeaseAsync(T message, TimeSpan howLong, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
+        }
+
+        public void RegisterHandler(Func<Event, IEventQueueOperator, Task> handler, ActorDescriptor descriptor)
+        {
+            throw new NotSupportedException();
         }
     }
 

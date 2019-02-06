@@ -8,19 +8,19 @@ namespace BeeHive.Tests.Demo
         [Fact]
         public void TestSimpleQueue()
         {
-            const string QueueName = "Hello";
+            const string TheQueueName = "Hello";
 
             var inMemoryServiceBus = new InMemoryServiceBus();
-            inMemoryServiceBus.CreateQueueAsync(QueueName);
+            inMemoryServiceBus.CreateQueueAsync(TheQueueName);
             inMemoryServiceBus.PushAsync(new Event("Haya")
             {
-                EventType = QueueName
+                EventType = TheQueueName
             }).Wait();
 
-            var pollerResult = inMemoryServiceBus.NextAsync(QueueName).Result;
+            var pollerResult = inMemoryServiceBus.NextAsync(QueueName.FromSimpleQueueName(TheQueueName)).Result;
             Assert.True(pollerResult.IsSuccessful);
-            Assert.Equal(QueueName, pollerResult.PollingResult.QueueName);
-            Assert.Equal(QueueName, pollerResult.PollingResult.EventType);
+            Assert.Equal(TheQueueName, pollerResult.PollingResult.QueueName);
+            Assert.Equal(TheQueueName, pollerResult.PollingResult.EventType);
             Assert.Equal("Haya", pollerResult.PollingResult.GetBody<string>());
         }
     }

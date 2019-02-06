@@ -1,103 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3A33ACB5-6752-4429-88FC-C15D245EC79E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BeeHive.Demo.PrismoEcommerce</RootNamespace>
-    <AssemblyName>BeeHive.Demo.PrismoEcommerce</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="BeeHive.DataStructures" Version="3.0.0" />    
+    <PackageReference Include="BeeHive-common" Version="3.0.0" />    
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Actors\FraudCancelOrderActor.cs" />
-    <Compile Include="Actors\FraudCheckActor.cs" />
-    <Compile Include="Actors\FulfilmentActor.cs" />
-    <Compile Include="Actors\ItemBackInStockForOrderActor.cs" />
-    <Compile Include="Actors\ItemOutOfStockForOrderWorkflowActor.cs" />
-    <Compile Include="Actors\OrderInventoryActor.cs" />
-    <Compile Include="Actors\OrderItemInventoryActor.cs" />
-    <Compile Include="Actors\OrderShippedEmailActor.cs" />
-    <Compile Include="Actors\PaymentActor.cs" />
-    <Compile Include="Actors\PaymenyFailedActor.cs" />
-    <Compile Include="Actors\ProductBackInStockActor.cs" />
-    <Compile Include="Actors\ProductOutOfStockActor.cs" />
-    <Compile Include="Actors\TracingActor.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="Entities\Customer.cs" />
-    <Compile Include="Entities\Inventory.cs" />
-    <Compile Include="Entities\Order.cs" />
-    <Compile Include="Entities\Payment.cs" />
-    <Compile Include="Entities\Product.cs" />
-    <Compile Include="Entities\Shipment.cs" />
-    <Compile Include="Events\ConfirmationEmailSent.cs" />
-    <Compile Include="Events\FraudCheckFailed.cs" />
-    <Compile Include="Events\ItemBackInStockForOrder.cs" />
-    <Compile Include="Events\ProductOutOfStock.cs" />
-    <Compile Include="Events\ItemOutOfStockForOrder.cs" />
-    <Compile Include="Events\OrderAccepted.cs" />
-    <Compile Include="Events\OrderCancelled.cs" />
-    <Compile Include="Events\OrderInventoryCheckCompleted.cs" />
-    <Compile Include="Events\OrderItemsNotYetAccountedFor.cs" />
-    <Compile Include="Events\OrderShipped.cs" />
-    <Compile Include="Events\PaymentAuthorised.cs" />
-    <Compile Include="Events\PaymentFailed.cs" />
-    <Compile Include="Events\ProductArrivedBackInStock.cs" />
-    <Compile Include="Exceptions\PaymentFailureException.cs" />
-    <Compile Include="ExternalSystems\Emailer.cs" />
-    <Compile Include="ExternalSystems\FraudChecker.cs" />
-    <Compile Include="ExternalSystems\PaymentGateway.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorkflowState\ParkedOrderItem.cs" />
-    <Compile Include="WorkflowState\OrderWaitingForProduct.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj">
-      <Project>{6ee378ae-c8c0-44b2-aa9a-711faada4e9c}</Project>
-      <Name>BeeHive.DataStructures</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj">
-      <Project>{3e0f3470-eae7-4a78-9822-52f57dcdde9b}</Project>
-      <Name>BeeHive</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
