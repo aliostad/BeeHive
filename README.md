@@ -43,7 +43,7 @@ BeeHive works on a reactive event-based model. Instead of building components th
 
 BeeHive **Pulsers** do exactly that. On regular intervals, they are woken up to fire off their events. Simplest of pulsers, are assembly attribute ones:
 
-```
+``` csharp
 [assembly: SimpleAutoPulserDescription("NewsPulse", 5 * 60)]
 
 ```
@@ -54,7 +54,7 @@ The code above sets up a pulser that every 5 minutes sends an event of type `New
 
 Next we set up an actor to look up a list of feeds (one per each line) and send an event per each feed. We have stored this list in a blob storage which is abstracted as `IKeyValueStore` in BeeHive.
 
-``` c#
+``` csharp
 [ActorDescription("NewsPulse-Capture")]
 public class NewsPulseActor : IProcessorActor
 {
