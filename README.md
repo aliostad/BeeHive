@@ -171,11 +171,13 @@ public class TraceNotificationActor : IProcessorActor
 ```
 ### Setting up the worker role
 
+Using a Cloud Service worker role has been the standard means to host compute for BeeHive workloads. Having said that, BeeHive can be hosted in any compute model (including Service Fabric or even non-cloud) and also has built-in support for Azure Functions - see below.
+
 If you have an Azure account, you need a storage account, Azure Service Bus and a worker role (even an *Extra Small* instance would suffice). If not, you can use development emulators although for the Service Bus you need to use Service Bus for windows. Just bear in mind, with local emulators and Service Bus for Windows, you have to use special versions of Azure SDK - latest versions usually do not work.
 
 We can get a list of assembly pulsers by the code below:
 
-```
+``` csharp
 _pulsers = Pulsers.FromAssembly(Assembly.GetExecutingAssembly())
     .ToList();
 ```
