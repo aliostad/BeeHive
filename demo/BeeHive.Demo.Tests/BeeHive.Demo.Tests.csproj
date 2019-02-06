@@ -34,13 +34,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BeeHive, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\BeeHive-common.3.0.0-alpha3\lib\net452\BeeHive.dll</HintPath>
+      <HintPath>..\..\packages\BeeHive-common.3.0.0\lib\net452\BeeHive.dll</HintPath>
     </Reference>
     <Reference Include="BeeHive.DataStructures, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\BeeHive.DataStructures.3.0.0-alpha\lib\net452\BeeHive.DataStructures.dll</HintPath>
+      <HintPath>..\..\packages\BeeHive.DataStructures.3.0.0\lib\net452\BeeHive.DataStructures.dll</HintPath>
     </Reference>
     <Reference Include="BeeHive.ServiceLocator.Windsor, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\BeeHive.ServiceLocator.Windsor.3.0.0-alpha3\lib\net452\BeeHive.ServiceLocator.Windsor.dll</HintPath>
+      <HintPath>..\..\packages\BeeHive.ServiceLocator.Windsor.3.0.0\lib\net452\BeeHive.ServiceLocator.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Core.4.2.0\lib\net45\Castle.Core.dll</HintPath>
