@@ -156,8 +156,8 @@ public class NewsItemKeywordActor : IProcessorActor
 ```
 Now we can have several actors listening for `NewsItemContainingKeywordIdentified` and send different notifications, here we implement a simple Trace-based one:
 
-```
-    [ActorDescription("NewsItemContainingKeywordIdentified-TraceNotification")]
+``` csharp
+[ActorDescription("NewsItemContainingKeywordIdentified-TraceNotification")]
 public class TraceNotificationActor : IProcessorActor
 {
   public async Task<IEnumerable<Event>> ProcessAsync(Event evnt)
