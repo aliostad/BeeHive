@@ -12,7 +12,7 @@ namespace BeeHive.Azure.Functions
     /// </summary>
     public static class SmoothOperatah
     {
-        public static Task DirectCallToActor(IProcessorActor actor, QueueName queueName, Message msg, IEventQueueOperator queueOperator)
+        public static Task Invoke(this IProcessorActor actor, QueueName queueName, Message msg, IEventQueueOperator queueOperator)
         {
             var ev = msg.ToEvent(queueName);
             return FactoryActor.ProcessEvent(actor, ev, queueOperator);
