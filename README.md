@@ -247,3 +247,5 @@ public async static Task My_Pulser_Function([TimerTrigger("0 1/10 * * * *")]Time
     });
 }
 ```
+
+For an example please refer to Demo project in samples and look at [PrismoEcommerce Azure Function project](https://github.com/aliostad/BeeHive/tree/master/demo/BeeHive.Demo.PrismoEcommerce.Functions).
