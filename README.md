@@ -207,7 +207,7 @@ BeeHive provides an intuitive and unified programming model to build event-drive
 
 Now there is a question, why would you even need to use BeeHive? Well, reality is you don't. Having said that, even before Azure Functions, benefits of BeeHive was to provide a consistent programming model and abstractions for common distributed computing primitives such as Queues, Topics, Key Value stores, Collections, etc - nothing would prevent you to simply build directly on top of cloud features providing these primitives. And this has not changed with Azure Functions.
 
-So if you have existing BeeHive actors to move to Azure Functions - or equally would like to build new system using BeeHive and Azure Functions - you simply design your actor as usual and create a Service Bus Azure Function as below using tongue-in-cheek `SmoothOperatah` class to *direct your calls* to the *actor*:
+So if you have existing BeeHive actors to move to Azure Functions - or equally would like to build new system using BeeHive and Azure Functions - you simply design your actor as usual and add the dependency to the package `BeeHive.Azure.Functions` which contains an extension method for `IProcessorActor`. Then you would create a Service Bus Azure Function as below using the extension method to *direct your calls* to the *actor*:
 
 ``` csharp
 [FunctionName("<name your function>")]
@@ -216,7 +216,7 @@ public static async Task My_Function(
     ILogger log)
 {
     var actor = new MyBeeHiveActor();
-    await SmoothOperatah.DirectCallToActor(actor, 
+    await actor.Invoke(
       new QueueName("<topic>-<subscription>"), 
       msg, 
       new ServiceBusOperator(Environment.GetEnvironmentVariable("<name of the setting for service bus connection>")));
@@ -235,7 +235,7 @@ class EnvVarConfigProvider : IConfigurationValueProvider
 }
 ```
 
-As for pulsers, you simply create a `TimerTrigger` and send a message to the topic - this is essentially what a pulser does - something like below:
+As for pulsers, you simply create a `TimerTrigger` and send a message to the topic - this is essentially what a pulser does - something like below (assuming `GetOperator()` creates a service bus operator):
 
 ``` csharp
 [FunctionName("PulserExample")] // fires every 10 minutes
