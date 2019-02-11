@@ -1,3 +1,4 @@
+[![NuGet version](https://img.shields.io/nuget/v/BeeHive-common.svg)](https://www.nuget.org/packages/BeeHive-common/)
 [![Build status](https://ci.appveyor.com/api/projects/status/7rj53liopu8lqy8n?svg=true)](https://ci.appveyor.com/project/aliostad/beehive)
 
 
