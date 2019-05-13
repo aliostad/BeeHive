@@ -51,5 +51,25 @@ namespace BeeHive.Aws.Tests.Integration
             Assert.True(await store.ExistsAsync(Id));
         }
 
+        [EnvVarIgnoreFactAttribute(EnvVars.Key)]
+        public async Task CanDelete()
+        {
+            var store = new AwsKeyValueStore(RegionEndpoint.EUWest1, BucketName);
+            await store.UpsertAsync(
+                new SimpleBlob()
+                {
+                    Body = new MemoryStream(new byte[256]),
+                    Id = Id
+                });
+
+            await store.DeleteAsync(
+                new SimpleBlob()
+                {
+                    Id = Id
+                });
+
+            Assert.False(await store.ExistsAsync(Id));
+        }
+
     }
 }
