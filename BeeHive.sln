@@ -27,7 +27,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeeHive.RabbitMQ", "src\Bee
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeeHive.RabbitMQ.Tests", "test\BeeHive.RabbitMQ.Tests\BeeHive.RabbitMQ.Tests.csproj", "{9501BF68-552D-46CF-80B0-FC0BB2AC9EF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Azure.Functions", "src\BeeHive.Azure.Functions\BeeHive.Azure.Functions.csproj", "{DF1E3AC3-00EE-42ED-B670-9E94E01099D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeeHive.Azure.Functions", "src\BeeHive.Azure.Functions\BeeHive.Azure.Functions.csproj", "{DF1E3AC3-00EE-42ED-B670-9E94E01099D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeeHive.Aws", "src\BeeHive.Aws\BeeHive.Aws.csproj", "{E362471A-2566-4466-84EB-3F9AAD4853FC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeeHive.Aws.Tests", "test\BeeHive.Aws.Tests\BeeHive.Aws.Tests.csproj", "{796C19B7-592E-4B97-9471-BDAE9CE4B9D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeHive.Tests.Tooling", "test\BeeHive.Tests.Tooling\BeeHive.Tests.Tooling.csproj", "{4503444D-2B93-4985-A849-A54B6CDB4B0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +81,18 @@ Global
 		{DF1E3AC3-00EE-42ED-B670-9E94E01099D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF1E3AC3-00EE-42ED-B670-9E94E01099D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF1E3AC3-00EE-42ED-B670-9E94E01099D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E362471A-2566-4466-84EB-3F9AAD4853FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E362471A-2566-4466-84EB-3F9AAD4853FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E362471A-2566-4466-84EB-3F9AAD4853FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E362471A-2566-4466-84EB-3F9AAD4853FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{796C19B7-592E-4B97-9471-BDAE9CE4B9D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{796C19B7-592E-4B97-9471-BDAE9CE4B9D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{796C19B7-592E-4B97-9471-BDAE9CE4B9D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{796C19B7-592E-4B97-9471-BDAE9CE4B9D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4503444D-2B93-4985-A849-A54B6CDB4B0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4503444D-2B93-4985-A849-A54B6CDB4B0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4503444D-2B93-4985-A849-A54B6CDB4B0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4503444D-2B93-4985-A849-A54B6CDB4B0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +108,9 @@ Global
 		{CF08FC09-0375-4B49-8F1F-5909557123E1} = {8241C829-3DB9-4BDD-9679-CA3CBE02AD88}
 		{9501BF68-552D-46CF-80B0-FC0BB2AC9EF8} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
 		{DF1E3AC3-00EE-42ED-B670-9E94E01099D9} = {8241C829-3DB9-4BDD-9679-CA3CBE02AD88}
+		{E362471A-2566-4466-84EB-3F9AAD4853FC} = {8241C829-3DB9-4BDD-9679-CA3CBE02AD88}
+		{796C19B7-592E-4B97-9471-BDAE9CE4B9D3} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
+		{4503444D-2B93-4985-A849-A54B6CDB4B0B} = {CA4AD0CC-7D16-4AE3-BDF7-0356837347F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5373A954-A876-4848-AB7D-20F5CE680949}

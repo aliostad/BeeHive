@@ -21,7 +21,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\BeeHive.DataStructures\BeeHive.DataStructures.csproj" />
-		<ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj" />
+    <ProjectReference Include="..\..\test\BeeHive.Tests.Tooling\BeeHive.Tests.Tooling.csproj" />
+    <ProjectReference Include="..\..\src\BeeHive\BeeHive.csproj" />
 		<ProjectReference Include="..\..\src\BeeHive.Azure\BeeHive.Azure.csproj" />
 		<ProjectReference Include="..\..\src\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj" />
 

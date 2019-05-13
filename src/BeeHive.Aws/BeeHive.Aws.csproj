@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netstandard2.0</TargetFrameworks>
+    <Summary>AWS Implementation for BeeHive</Summary>
+    <AssemblyName>BeeHive.Aws</AssemblyName>
+    <PackageId></PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.3.101.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BeeHive.DataStructures\BeeHive.DataStructures.csproj" />
+    <ProjectReference Include="..\BeeHive.ServiceLocator.Windsor\BeeHive.ServiceLocator.Windsor.csproj" />
+    <ProjectReference Include="..\BeeHive\BeeHive.csproj" />
+  </ItemGroup>
+
+</Project>

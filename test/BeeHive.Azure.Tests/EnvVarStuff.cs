@@ -1,32 +1,9 @@
 ﻿using System;
-using Xunit;
+using System.Collections.Generic;
+using System.Text;
 
 namespace BeeHive.Azure.Tests
 {
-    class EnvVarIgnoreFactAttribute : FactAttribute
-    {
-        public EnvVarIgnoreFactAttribute(string envVar)
-        {
-            var env = Environment.GetEnvironmentVariable(envVar);
-            if (string.IsNullOrEmpty(env))
-            {
-                Skip = $"Please set {envVar} env var to run.";
-            }
-        }
-    }
-
-    class EnvVarIgnoreTheoryAttribute : TheoryAttribute
-    {
-        public EnvVarIgnoreTheoryAttribute(string envVar)
-        {
-            var env = Environment.GetEnvironmentVariable(envVar);
-            if (string.IsNullOrEmpty(env))
-            {
-                Skip = $"Please set {envVar} env var to run.";
-            }
-        }
-    }
-
     static class EnvVars
     {
         public static class ConnectionStrings
@@ -35,5 +12,4 @@ namespace BeeHive.Azure.Tests
             public const string AzureStorage = "azure_storage_connection_string";
         }
     }
-
 }

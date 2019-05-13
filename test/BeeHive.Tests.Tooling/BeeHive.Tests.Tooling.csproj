@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp2.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit" version="2.3.1"  />
+    <PackageReference Include="xunit.abstractions" version="2.0.1"  />
+    <PackageReference Include="xunit.analyzers" version="0.7.0" />
+    <PackageReference Include="xunit.assert" version="2.3.1" />
+    <PackageReference Include="xunit.core" version="2.3.1"  />
+    <PackageReference Include="xunit.extensibility.core" version="2.3.1" />
+    <PackageReference Include="xunit.extensibility.execution" version="2.3.1" />
+  </ItemGroup>
+
+</Project>

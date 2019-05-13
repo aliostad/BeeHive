@@ -21,11 +21,15 @@ namespace BeeHive.DataStructures
 
 
         /// <summary>
-        /// Blob data in a 
+        /// Blob data in the native format
         /// </summary>
         object UnderlyingBlob { get; set; }
 
         bool IsVirtualFolder { get; }
+
+        string ETag { get; }
+
+        DateTimeOffset? LastModified { get; }
 
     }
 }
