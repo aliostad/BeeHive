@@ -28,13 +28,23 @@ namespace BeeHive.Aws
 
         public async Task<bool> ExistsAsync(string id)
         {
-            var res = await _client.GetObjectMetadataAsync(new GetObjectMetadataRequest()
+            try
             {
-                BucketName = _bucketName,
-                Key = id
-            });
+                var res = await _client.GetObjectMetadataAsync(new GetObjectMetadataRequest()
+                {
+                    BucketName = _bucketName,
+                    Key = id
+                });
 
-            return res.HttpStatusCode != HttpStatusCode.NotFound;
+                return true;
+            }
+            catch (AmazonS3Exception s3ex)
+            {
+                if (s3ex.StatusCode == HttpStatusCode.NotFound)
+                    return false;
+                else
+                    throw;
+            }
         }
 
         public async Task<IBlob> GetAsync(string id)
