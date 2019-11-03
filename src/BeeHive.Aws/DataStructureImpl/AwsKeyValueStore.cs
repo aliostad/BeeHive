@@ -26,13 +26,18 @@ namespace BeeHive.Aws
             return _client.DeleteObjectAsync(_bucketName, t.Id);
         }
 
-        public async Task<bool> ExistsAsync(string id)
+        public Task<bool> ExistsAsync(string id)
+        {
+            return ExistsAsync(_client, _bucketName, id);
+        }
+
+        internal static async Task<bool> ExistsAsync(IAmazonS3 client, string bucketName, string id)
         {
             try
             {
-                var res = await _client.GetObjectMetadataAsync(new GetObjectMetadataRequest()
+                var res = await client.GetObjectMetadataAsync(new GetObjectMetadataRequest()
                 {
-                    BucketName = _bucketName,
+                    BucketName = bucketName,
                     Key = id
                 });
 
@@ -73,11 +78,21 @@ namespace BeeHive.Aws
             };
         }
 
-        public async Task InsertAsync(IBlob t)
+        public Task InsertAsync(IBlob t)
         {
-            var res = await _client.PutObjectAsync(new PutObjectRequest()
+            return PutAsync(_client, _bucketName, t);
+        }
+
+        public Task UpsertAsync(IBlob t)
+        {
+            return InsertAsync(t);
+        }
+
+        internal static async Task PutAsync(IAmazonS3 client, string bucketName, IBlob t)
+        {
+            var res = await client.PutObjectAsync(new PutObjectRequest()
             {
-                BucketName = _bucketName,
+                BucketName = bucketName,
                 Key = t.Id,
                 InputStream = t.Body
             });
@@ -86,11 +101,8 @@ namespace BeeHive.Aws
             {
                 throw new Amazon.S3.AmazonS3Exception($"Call to insert {t.Id} returned {res.HttpStatusCode}");
             }
+
         }
 
-        public Task UpsertAsync(IBlob t)
-        {
-            return InsertAsync(t);
-        }
     }
 }
