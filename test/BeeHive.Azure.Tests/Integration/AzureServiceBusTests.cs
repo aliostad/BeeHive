@@ -18,23 +18,23 @@ namespace BeeHive.Azure.Tests.Integration
         }
 
         [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
-        public void TopicCreateAndExists()
+        public async Task TopicCreateAndExists()
         {
             var topicName = Guid.NewGuid().ToString("N");
             var queueName = QueueName.FromTopicName(topicName);
             var serviceBusOperator = new ServiceBusOperator(ConnectionString);
-            Assert.False(serviceBusOperator.QueueExistsAsync(queueName).Result);
+            Assert.False(await serviceBusOperator.QueueExistsAsync(queueName));
 
-            serviceBusOperator.CreateQueueAsync(queueName).Wait();
-            Assert.True(serviceBusOperator.QueueExistsAsync(queueName).Result);
+            await serviceBusOperator.CreateQueueAsync(queueName);
+            Assert.True(await serviceBusOperator.QueueExistsAsync(queueName));
 
-            serviceBusOperator.DeleteQueueAsync(queueName).Wait();
-            Assert.False(serviceBusOperator.QueueExistsAsync(queueName).Result);
+            await serviceBusOperator.DeleteQueueAsync(queueName);
+            Assert.False(await serviceBusOperator.QueueExistsAsync(queueName));
 
         }
 
         [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
-        public void TopicAndSubscriptionCreateAndExists()
+        public async Task TopicAndSubscriptionCreateAndExists()
         {
             var topicName = Guid.NewGuid().ToString("N");
             var subName = Guid.NewGuid().ToString("N");
@@ -43,21 +43,21 @@ namespace BeeHive.Azure.Tests.Integration
             var serviceBusOperator = new ServiceBusOperator(ConnectionString);
 
 
-            Assert.False(serviceBusOperator.QueueExistsAsync(queueName).Result);
+            Assert.False(await serviceBusOperator.QueueExistsAsync(queueName));
 
-            serviceBusOperator.CreateQueueAsync(topicQueueName).Wait();
-            serviceBusOperator.CreateQueueAsync(queueName).Wait();
-            Assert.True(serviceBusOperator.QueueExistsAsync(queueName).Result);
+            await serviceBusOperator.CreateQueueAsync(topicQueueName);
+            await serviceBusOperator.CreateQueueAsync(queueName);
+            Assert.True(await serviceBusOperator.QueueExistsAsync(queueName));
 
-            serviceBusOperator.DeleteQueueAsync(queueName).Wait();
-            serviceBusOperator.DeleteQueueAsync(topicQueueName).Wait();
-            Assert.False(serviceBusOperator.QueueExistsAsync(queueName).Result);
+            await serviceBusOperator.DeleteQueueAsync(queueName);
+            await serviceBusOperator.DeleteQueueAsync(topicQueueName);
+            Assert.False(await serviceBusOperator.QueueExistsAsync(queueName));
 
 
         }
 
         [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
-        public void TopicAndSubscriptionCreateAndSent()
+        public async Task TopicAndSubscriptionCreateAndSent()
         {
             var topicName = Guid.NewGuid().ToString("N");
             var subName = Guid.NewGuid().ToString("N");
@@ -66,22 +66,22 @@ namespace BeeHive.Azure.Tests.Integration
             var serviceBusOperator = new ServiceBusOperator(ConnectionString);
 
 
-            serviceBusOperator.CreateQueueAsync(topicQueueName).Wait();
-            serviceBusOperator.CreateQueueAsync(queueName).Wait();
+            await serviceBusOperator.CreateQueueAsync(topicQueueName);
+            await serviceBusOperator.CreateQueueAsync(queueName);
 
-            serviceBusOperator.PushAsync(new Event("chashm")
+            await serviceBusOperator.PushAsync(new Event("chashm")
             {
                QueueName = topicQueueName.ToString()
-            }).Wait();
+            });
 
-            serviceBusOperator.DeleteQueueAsync(queueName).Wait();
-            serviceBusOperator.DeleteQueueAsync(topicQueueName).Wait();
+            await serviceBusOperator.DeleteQueueAsync(queueName);
+            await serviceBusOperator.DeleteQueueAsync(topicQueueName);
 
 
         }
 
         [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
-        public void TopicAndSubscriptionCreateAndSentBatch()
+        public async Task TopicAndSubscriptionCreateAndSentBatch()
         {
             var topicName = Guid.NewGuid().ToString("N");
             var subName = Guid.NewGuid().ToString("N");
@@ -90,10 +90,10 @@ namespace BeeHive.Azure.Tests.Integration
             var serviceBusOperator = new ServiceBusOperator(ConnectionString);
 
 
-            serviceBusOperator.CreateQueueAsync(topicQueueName).Wait();
-            serviceBusOperator.CreateQueueAsync(queueName).Wait();
+            await serviceBusOperator.CreateQueueAsync(topicQueueName);
+            await serviceBusOperator.CreateQueueAsync(queueName);
 
-            serviceBusOperator.PushBatchAsync(new[]{ new Event("chashm")
+            await serviceBusOperator.PushBatchAsync(new[]{ new Event("chashm")
             {
                 QueueName = topicQueueName.ToString()
             },
@@ -101,10 +101,10 @@ namespace BeeHive.Azure.Tests.Integration
             {
                 QueueName = topicQueueName.ToString()
             }
-            }).Wait();
+            });
 
-            serviceBusOperator.DeleteQueueAsync(queueName).Wait();
-            serviceBusOperator.DeleteQueueAsync(topicQueueName).Wait();
+            await serviceBusOperator.DeleteQueueAsync(queueName);
+            await serviceBusOperator.DeleteQueueAsync(topicQueueName);
 
         }
 

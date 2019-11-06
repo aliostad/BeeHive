@@ -105,7 +105,7 @@ namespace BeeHive.Azure
                 PartitionKey = GetPartitionKey(t.Id),
                 RowKey = t.Id,
                 ETag = cwt == null ? "*" : cwt.ETag,
-                Timestamp = cwt == null ? DateTimeOffset.UtcNow : cwt.LastModified.Value
+                Timestamp = cwt?.LastModified ?? DateTimeOffset.UtcNow
             };
             if (storeEntity)
                 tableEntity.Properties[EntityPropertyName] = new EntityProperty(JsonConvert.SerializeObject(t));
@@ -128,13 +128,23 @@ namespace BeeHive.Azure
                 {
                     UserHeaders = new Dictionary<string, string>()
                 };
+                
                 ctx.UserHeaders.Add("ETag", tcw.ETag);
             }
 
             var e = GetEntity(t, true);
             var table = await GetTable();
-            await table.ExecuteAsync(TableOperation.Replace(e), null
-                , ctx);
+            try
+            {
+                await table.ExecuteAsync(TableOperation.Replace(e), null
+                    , ctx);
+            }
+            catch (StorageException ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
         }
 
 

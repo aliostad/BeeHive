@@ -13,7 +13,7 @@ namespace BeeHive.RabbitMQ.Tests
         private const string EnvVar = "rabbitmq_service_running"; 
 
         [EnvVarIgnoreFact(EnvVar)]
-        public void CanCreateSendAndReadFromSimpleQueue()
+        public async Task CanCreateSendAndReadFromSimpleQueue()
         {
 
             string q = "shabash";
@@ -22,25 +22,25 @@ namespace BeeHive.RabbitMQ.Tests
             var operat = new RabbitMqOperator(
                 new ConnectionProvider(new ConnectionFactoryWrapper(
                     new ConnectionFactory())));
-            operat.DeleteQueueAsync(queueName).Wait();
+            await operat.DeleteQueueAsync(queueName);
             
             
-            operat.CreateQueueAsync(queueName).Wait();
-            operat.PushAsync(new Event(content)
+            await operat.CreateQueueAsync(queueName);
+            await operat.PushAsync(new Event(content)
                 {
                     EventType = q,
                     QueueName = q
-                }).Wait();
+                });
 
-            var result = operat.NextAsync(queueName).Result;
+            var result = await operat.NextAsync(queueName);
             Assert.True(result.IsSuccessful);
-            operat.CommitAsync(result.PollingResult).Wait();
+            await operat.CommitAsync(result.PollingResult);
             Assert.Equal(content, result.PollingResult.GetBody<string>());
         }
 
 
         [EnvVarIgnoreFact(EnvVar)]
-        public void CanCreateSendAndReadFromPubSubQueue()
+        public async Task CanCreateSendAndReadFromPubSubQueue()
         {
 
             string q = "skorantes-volidang";
@@ -48,19 +48,19 @@ namespace BeeHive.RabbitMQ.Tests
             var queueName = new QueueName(q);
             var operat = new RabbitMqOperator(
                 new ConnectionProvider(new ConnectionFactoryWrapper(new ConnectionFactory())));
-            operat.DeleteQueueAsync(queueName).Wait();
+            await operat.DeleteQueueAsync(queueName);
 
 
-            operat.CreateQueueAsync(queueName).Wait();
-            operat.PushAsync(new Event(content)
+            await operat.CreateQueueAsync(queueName);
+            await operat.PushAsync(new Event(content)
             {
                 EventType = queueName.SubscriptionName,
                 QueueName = queueName.SubscriptionName
-            }).Wait();
+            });
 
-            var result = operat.NextAsync(queueName).Result;
+            var result = await operat.NextAsync(queueName);
             Assert.True(result.IsSuccessful);
-            operat.CommitAsync(result.PollingResult).Wait();
+            await operat.CommitAsync(result.PollingResult);
             Assert.Equal(content, result.PollingResult.GetBody<string>());
         }
     }
