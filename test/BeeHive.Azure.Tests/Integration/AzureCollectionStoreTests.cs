@@ -15,10 +15,10 @@ namespace BeeHive.Azure.Tests.Integration
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
             var id = Guid.NewGuid().ToString("N");
-            store.InsertAsync(new TestCollectionEntity()
+            await store.InsertAsync(new TestCollectionEntity()
             {
                 Id = id
-            }).Wait();
+            });
 
             Assert.True(await store.ExistsAsync(id));
 
@@ -39,12 +39,12 @@ namespace BeeHive.Azure.Tests.Integration
 
             await store.DeleteAsync(t);
 
-            Assert.False(store.ExistsAsync(id).Result);
-            Assert.Throws<AggregateException>(() => store.GetAsync(id).Result);
+            Assert.False(await store.ExistsAsync(id));
+            await Assert.ThrowsAsync<AggregateException>(() => store.GetAsync(id));
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CanBeUpdated()
+        public async Task CanBeUpdated()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
             var id = Guid.NewGuid().ToString("N");
@@ -53,11 +53,11 @@ namespace BeeHive.Azure.Tests.Integration
                 Id = id,
                 Name = "Tommy Shooter"
             };
-            store.InsertAsync(t).Wait();
+            await store.InsertAsync(t);
             t.Name = "The Fall";
-            store.UpsertAsync(t).Wait();
+            await store.UpsertAsync(t);
             
-            var t2 = store.GetAsync(id).Result;
+            var t2 = await store.GetAsync(id);
             Assert.Equal("The Fall", t2.Name);
         }
 
@@ -97,7 +97,7 @@ namespace BeeHive.Azure.Tests.Integration
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void ETagsProvidedWillBeUsedAndStored()
+        public async Task ETagsProvidedWillBeUsedAndStored()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
             var id = Guid.NewGuid().ToString("N");
@@ -108,8 +108,8 @@ namespace BeeHive.Azure.Tests.Integration
                 ETag = "\"1234\"",
                 LastModified = DateTimeOffset.UtcNow.AddHours(1)
             };
-            store.InsertAsync(t).Wait();
-            var entity = store.GetAsync(id).Result;
+            await store.InsertAsync(t);
+            var entity = await store.GetAsync(id);
             Assert.Equal(t.ETag, entity.ETag);
         }
 

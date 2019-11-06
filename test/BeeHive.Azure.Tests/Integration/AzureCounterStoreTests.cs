@@ -14,7 +14,7 @@ namespace BeeHive.Azure.Tests.Integration
         private const string ContainerName = "band25";
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void ConcurrentIncrementWorks()
+        public async Task ConcurrentIncrementWorks()
         {
             ThreadPool.SetMinThreads(20, 20);
             var key = Guid.NewGuid().ToString("N");
@@ -31,10 +31,10 @@ namespace BeeHive.Azure.Tests.Integration
 
             Parallel.For(0, ParallelClients, (i) =>
             {
-                counter.IncrementAsync(CounterName, key, Increment).Wait();
+                counter.IncrementAsync(CounterName, key, Increment).ConfigureAwait(false).GetAwaiter().GetResult();
             });
 
-            var result = counter.GetAsync(CounterName, key).Result;
+            var result = await counter.GetAsync(CounterName, key);
             Assert.Equal(ParallelClients * Increment, result);
         }
     }

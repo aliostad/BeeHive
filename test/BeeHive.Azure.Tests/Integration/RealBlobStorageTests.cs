@@ -39,10 +39,10 @@ namespace BeeHive.Azure.Tests.Integration
         [InlineData(FileName4)]
         [InlineData(FileName9)]
         [InlineData(FileName12)]
-        public void ReadLargeFile(string fileName)
+        public async Task ReadLargeFile(string fileName)
         {
             var store = new AzureKeyValueStore(_cn, ContainerName);
-            var blob = store.GetAsync(fileName).Result;
+            var blob = await store.GetAsync(fileName);
             var stream = new MemoryStream();
             blob.Body.CopyTo(stream);
             Assert.Equal( ((CloudBlockBlob)blob.UnderlyingBlob).Properties.Length, stream.Length);
@@ -54,15 +54,15 @@ namespace BeeHive.Azure.Tests.Integration
         [InlineData(FileName4, 659 * 997)]
         [InlineData(FileName9, 1032 * 979)]
         [InlineData(FileName12, 1731 * 979)]
-        public void WriteLargeFile(string fileName, int rounds)
+        public async Task WriteLargeFile(string fileName, int rounds)
         {
             var store = new AzureKeyValueStore(_cn, ContainerName);
-            store.InsertAsync(new SimpleBlob()
+            await store.InsertAsync(new SimpleBlob()
             {
                 Id = fileName,
                 Body = GetRandomStream(rounds)
 
-            }).Wait();
+            });
         }
 
         private Stream GetRandomStream(int rounds)
