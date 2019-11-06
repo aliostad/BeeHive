@@ -13,14 +13,14 @@ namespace BeeHive.Azure.Tests.Integration
         private const string ListName = "test";
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void Stores()
+        public async Task Stores()
         {
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
             var entity = new TestEntity(){Name = "chipabla"};
             var against = Guid.NewGuid().ToString("N");
-            store.AddAsync(ListName, against , entity).Wait();
+            await store.AddAsync(ListName, against , entity);
 
-            var values = store.GetAsync(ListName, against).Result;
+            var values = await store.GetAsync(ListName, against);
             var firstOrDefault = values.FirstOrDefault(x=> x.Id == entity.Id);
             Assert.NotNull(firstOrDefault);
             Assert.Equal(entity.Name, firstOrDefault.Name);
@@ -29,19 +29,19 @@ namespace BeeHive.Azure.Tests.Integration
 
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void Updates()
+        public async Task Updates()
         {
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
             var entity = new TestEntity(){Name = "chipabla"};
             var against = Guid.NewGuid().ToString("N");
-            store.AddAsync(ListName, against , entity).Wait();
+            await store.AddAsync(ListName, against , entity);
             entity.Name = "chobandikola";
 
             // act
-            store.UpdateAsync(ListName, against, entity).Wait();
+            await store.UpdateAsync(ListName, against, entity);
             
             // assert
-            var values = store.GetAsync(ListName, against).Result;
+            var values = await  store.GetAsync(ListName, against);
             var firstOrDefault = values.FirstOrDefault(x=> x.Id == entity.Id);
             Assert.NotNull(firstOrDefault);
             Assert.Equal(entity.Name, firstOrDefault.Name);
@@ -49,39 +49,39 @@ namespace BeeHive.Azure.Tests.Integration
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void Removes()
+        public async Task Removes()
         {
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
             var entity = new TestEntity() { Name = "chipabla" };
             var against = Guid.NewGuid().ToString("N");
-            store.AddAsync(ListName, against, entity).Wait();
+            await store.AddAsync(ListName, against, entity);
             entity.Name = "chobandikola";
 
             // act
-            store.RemoveAsync(ListName, against).Wait();
+            await store.RemoveAsync(ListName, against);
 
             // assert
-            Assert.False(store.ExistsAsync(ListName, against).Result);
+            Assert.False(await store.ExistsAsync(ListName, against));
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void ListExists_ForExisting()
+        public async Task ListExists_ForExisting()
         {
             var newListName = "Table" + Guid.NewGuid().ToString("N").Substring(10);
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
             var entity = new TestEntity() { Name = "chipabla" };
             var against = Guid.NewGuid().ToString("N");
-            store.AddAsync(newListName, against, entity).Wait();
+            await store.AddAsync(newListName, against, entity);
 
-            Assert.True(store.ListExistsAsync(newListName).Result);
+            Assert.True(await store.ListExistsAsync(newListName));
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void ListDoesntExists_ForNonExisting()
+        public async Task ListDoesntExists_ForNonExisting()
         {
             var newListName = "Table" + Guid.NewGuid().ToString("N").Substring(10);
             var store = new AzureKeyedListStore<TestEntity>(ConnectionString);
-            Assert.False(store.ListExistsAsync(newListName).Result);
+            Assert.False(await store.ListExistsAsync(newListName));
         }
 
     }

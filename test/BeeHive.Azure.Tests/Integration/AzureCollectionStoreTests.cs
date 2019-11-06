@@ -11,7 +11,7 @@ namespace BeeHive.Azure.Tests.Integration
     public class AzureCollectionStoreTests : BaseStorageTest
     {
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CanStoreAndRetrieve()
+        public async Task CanStoreAndRetrieve()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
             var id = Guid.NewGuid().ToString("N");
@@ -20,14 +20,14 @@ namespace BeeHive.Azure.Tests.Integration
                 Id = id
             }).Wait();
 
-            Assert.True(store.ExistsAsync(id).Result);
+            Assert.True(await store.ExistsAsync(id));
 
-            var t = store.GetAsync(id).Result;
+            var t = await store.GetAsync(id);
             Assert.Equal(id, t.Id);
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CanStoreAndRemoved()
+        public async Task CanStoreAndRemoved()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
             var id = Guid.NewGuid().ToString("N");
@@ -35,9 +35,9 @@ namespace BeeHive.Azure.Tests.Integration
             {
                 Id = id
             };
-            store.InsertAsync(t).Wait();
+            await store.InsertAsync(t);
 
-            store.DeleteAsync(t).Wait();
+            await store.DeleteAsync(t);
 
             Assert.False(store.ExistsAsync(id).Result);
             Assert.Throws<AggregateException>(() => store.GetAsync(id).Result);
@@ -62,7 +62,7 @@ namespace BeeHive.Azure.Tests.Integration
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CannotBeInsertedTwice()
+        public async Task CannotBeInsertedTwice()
         {
             var store = new AzureCollectionStore<TestCollectionEntity>(ConnectionString);
             var id = Guid.NewGuid().ToString("N");
@@ -71,8 +71,8 @@ namespace BeeHive.Azure.Tests.Integration
                 Id = id,
                 Name = "Tommy Shooter"
             };
-            store.InsertAsync(t).Wait();
-            Assert.Throws<AggregateException>(() => store.InsertAsync(t).Wait());
+            await store.InsertAsync(t);
+            await Assert.ThrowsAsync<AggregateException>(() => store.InsertAsync(t));
         }
 
         [Fact(Skip = "Azure have broken it on latest releases")]
@@ -114,7 +114,7 @@ namespace BeeHive.Azure.Tests.Integration
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CannotBeUpdatedForConcurrencyAwareWhenETagInConflict()
+        public async Task CannotBeUpdatedForConcurrencyAwareWhenETagInConflict()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
             var id = Guid.NewGuid().ToString("N");
@@ -126,16 +126,17 @@ namespace BeeHive.Azure.Tests.Integration
                 LastModified = DateTimeOffset.UtcNow
                 
             };
-            store.InsertAsync(t).Wait();
+            
+            await store.InsertAsync(t);
 
             t.Name = "The Fall";
             t.ETag = "\"8998\"";
             
-            Assert.Throws<AggregateException>(() => store.UpsertAsync(t).Wait());
+            await Assert.ThrowsAsync<AggregateException>(() => store.UpsertAsync(t));
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CannotBeDeletedForConcurrencyAwareWhenETagInConflict()
+        public async Task CannotBeDeletedForConcurrencyAwareWhenETagInConflict()
         {
             var store = new AzureCollectionStore<TestCollectionEntityConcurrencyAware>(ConnectionString);
             var id = Guid.NewGuid().ToString("N");
@@ -146,12 +147,12 @@ namespace BeeHive.Azure.Tests.Integration
                 ETag = "1234",
                 LastModified = DateTimeOffset.UtcNow
             };
-            store.InsertAsync(t).Wait();
+            await store.InsertAsync(t);
 
             t.Name = "The Fall";
             t.ETag = "4567";
 
-            Assert.Throws<AggregateException>(() => store.DeleteAsync(t).Wait());
+            await Assert.ThrowsAsync<AggregateException>(() => store.DeleteAsync(t));
         }
 
 

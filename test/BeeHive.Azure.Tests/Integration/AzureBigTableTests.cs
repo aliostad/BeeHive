@@ -11,7 +11,7 @@ namespace BeeHive.Azure.Tests.Integration
     public class AzureBigTableTests : BaseStorageTest
     {
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CanInsertAndGet()
+        public async Task CanInsertAndGet()
         {
             var store = new AzureBigTableStore<HasIdentityAndRange>(connectionString:ConnectionString);
             var item = new HasIdentityAndRange()
@@ -31,9 +31,10 @@ namespace BeeHive.Azure.Tests.Integration
                 Really = true,
                 Booboo = new byte[100]
             };
-            store.InsertAsync(item).Wait();
+            
+            await store.InsertAsync(item);
 
-            var storedItem = store.GetAsync(item.Id, item.RangeKey).Result;
+            var storedItem = await store.GetAsync(item.Id, item.RangeKey);
             Assert.Equal(item.Id, storedItem.Id);
             Assert.Equal(item.RangeKey, storedItem.RangeKey);
             Assert.Equal(item.HowMany, storedItem.HowMany);
@@ -53,7 +54,7 @@ namespace BeeHive.Azure.Tests.Integration
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CanInsertAndDelete()
+        public async Task CanInsertAndDelete()
         {
             var store = new AzureBigTableStore<HasIdentityAndRange>(connectionString: ConnectionString);
             var item = new HasIdentityAndRange()
@@ -62,15 +63,15 @@ namespace BeeHive.Azure.Tests.Integration
                 RangeKey = "1",
                 LastModified = DateTimeOffset.Now
             };
-            store.InsertAsync(item).Wait();
-            store.DeleteAsync(item).Wait();
+            await store.InsertAsync(item);
+            await store.DeleteAsync(item);
 
-            Assert.False(store.ExistsAsync(item.Id, item.RangeKey).Result);
+            Assert.False(await store.ExistsAsync(item.Id, item.RangeKey));
         }
 
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CanGetRange()
+        public async Task CanGetRange()
         {
             var store = new AzureBigTableStore<HasIdentityAndRange>(connectionString: ConnectionString);
             var item = new HasIdentityAndRange()
@@ -87,8 +88,8 @@ namespace BeeHive.Azure.Tests.Integration
                 ETag = "\"" + Guid.NewGuid().ToString() + "\"",
                 LastModified = DateTimeOffset.Now
             };
-            store.InsertAsync(item).Wait();
-            store.InsertAsync(item2).Wait();
+            await store.InsertAsync(item);
+            await store.InsertAsync(item2);
 
             Assert.Equal(2, store.GetRangeAsync(item.Id, "1", "2").Result.Count());
         }
