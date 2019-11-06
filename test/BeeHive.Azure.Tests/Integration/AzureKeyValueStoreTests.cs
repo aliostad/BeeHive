@@ -16,16 +16,16 @@ namespace BeeHive.Azure.Tests.Integration
         private const string ContainerName = "band25";
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void ExistsReturnFalseForNonExistent()
+        public async Task ExistsReturnFalseForNonExistent()
         {
             var store = new AzureKeyValueStore(ConnectionString, ContainerName);
-            var exists = store.ExistsAsync("adas/asdas/asdasdsa").Result;
+            var exists = await store.ExistsAsync("adas/asdas/asdasdsa");
 
             Assert.False(exists);
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CanInsertAndExistsReturnsTrue()
+        public async Task CanInsertAndExistsReturnsTrue()
         {
             var store = new AzureKeyValueStore(ConnectionString, ContainerName);
             var simpleBlob = new SimpleBlob()
@@ -33,12 +33,12 @@ namespace BeeHive.Azure.Tests.Integration
                 Body = new MemoryStream(new byte[4096]),
                 Id = Guid.NewGuid().ToString("N")
             };
-            store.InsertAsync(simpleBlob).Wait();
-            Assert.True(store.ExistsAsync(simpleBlob.Id).Result);
+            await store.InsertAsync(simpleBlob);
+            Assert.True(await store.ExistsAsync(simpleBlob.Id));
         }
 
         [EnvVarIgnoreFactAttribute(EnvVars.ConnectionStrings.AzureStorage)]
-        public void CanInsertAndGetBackMetadat()
+        public async Task CanInsertAndGetBackMetadat()
         {
             var store = new AzureKeyValueStore(ConnectionString, ContainerName);
             var simpleBlob = new SimpleBlob()
@@ -52,9 +52,9 @@ namespace BeeHive.Azure.Tests.Integration
                     {"Content-Type", "image/png"}
                 }
             };
-            store.InsertAsync(simpleBlob).Wait();
-            var metadata = store.GetMetadataAsync(simpleBlob.Id).Result;
-            var blob2 = store.GetAsync(simpleBlob.Id).Result;
+            await store.InsertAsync(simpleBlob);
+            var metadata = await store.GetMetadataAsync(simpleBlob.Id);
+            var blob2 = await store.GetAsync(simpleBlob.Id);
 
             var blockBlob = (CloudBlockBlob) blob2.UnderlyingBlob;
             Assert.Equal("b", metadata["a"]);

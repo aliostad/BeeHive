@@ -111,7 +111,7 @@ namespace BeeHive.Azure.Tests.Integration
 
 
         [EnvVarIgnoreFact(EnvVars.ConnectionStrings.ServiceBus)]
-        public void NeverEverCreatesAMessageBiggerThan256KB()
+        public async Task NeverEverCreatesAMessageBiggerThan256KB()
         {
             const int BufferSize = 10*1024;
             const int NumberOfMessages = 1000;
